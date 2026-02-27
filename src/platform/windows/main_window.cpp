@@ -598,7 +598,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
       AddTooltip(g_optionsButton, L"Open Options dialog");
       AddTooltip(g_layoutEditorButton, L"Open Layout Editor");
       AddTooltip(g_minimizeButton, L"Minimize to system tray");
-      AddTooltip(g_closeButton, L"Close Bijoy Bayanno");
+      AddTooltip(g_closeButton, L"Close Omor Ekushe");
 
       g_notifyIcon.cbSize = sizeof(g_notifyIcon);
       g_notifyIcon.hWnd = hwnd;
@@ -606,7 +606,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
       g_notifyIcon.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
       g_notifyIcon.uCallbackMessage = kTrayIconMessage;
       g_notifyIcon.hIcon = g_defaultIcon;
-      wcscpy_s(g_notifyIcon.szTip, L"Bijoy Bayanno");
+      wcscpy_s(g_notifyIcon.szTip, L"Omor Ekushe");
       Shell_NotifyIconW(NIM_ADD, &g_notifyIcon);
 
       BuildTrayMenu();
@@ -629,12 +629,12 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
       }
 
       if (controlId == IDC_OPTIONS_BUTTON) {
-        MessageBoxW(hwnd, L"Options dialog is not implemented yet.", L"Bijoy Bayanno", MB_OK | MB_ICONINFORMATION);
+        MessageBoxW(hwnd, L"Options dialog is not implemented yet.", L"Omor Ekushe", MB_OK | MB_ICONINFORMATION);
         return 0;
       }
 
       if (controlId == IDC_LAYOUT_EDITOR_BUTTON) {
-        MessageBoxW(hwnd, L"Layout Editor is not implemented yet.", L"Bijoy Bayanno", MB_OK | MB_ICONINFORMATION);
+        MessageBoxW(hwnd, L"Layout Editor is not implemented yet.", L"Omor Ekushe", MB_OK | MB_ICONINFORMATION);
         return 0;
       }
 
@@ -768,7 +768,7 @@ HWND CreateMainWindow(HINSTANCE hInstance) {
   windowClass.cbSize = sizeof(windowClass);
   windowClass.lpfnWndProc = MainWindowProc;
   windowClass.hInstance = hInstance;
-  windowClass.lpszClassName = L"BijoyBayannoMain";
+  windowClass.lpszClassName = L"OmorEkusheMain";
   windowClass.hIcon = g_windowClassIconLarge;
   windowClass.hIconSm = g_windowClassIconSmall;
   windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -779,7 +779,7 @@ HWND CreateMainWindow(HINSTANCE hInstance) {
   g_mainWindow = CreateWindowExW(
       WS_EX_TOOLWINDOW | WS_EX_TOPMOST,
       windowClass.lpszClassName,
-      L"Bijoy Bayanno",
+      L"Omor Ekushe",
       WS_POPUPWINDOW,
       CW_USEDEFAULT,
       g_requestedWindowTop,

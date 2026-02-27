@@ -1,4 +1,4 @@
-# Bijoy Bayanno C++ – Technical Documentation
+# Omor Ekushe C++ – Technical Documentation
 
 Detailed notes for developers: design, modules, and implementation details.
 
@@ -57,7 +57,7 @@ Detailed notes for developers: design, modules, and implementation details.
 
 ### 2.7 my_functions
 
-- **Password:** Static `Password` string; `GetRegistryPassword(out)`, `SetRegistryPassword(value)` for `SOFTWARE\BijoyBayanno\Options`.
+- **Password:** Static `Password` string; `GetRegistryPassword(out)`, `SetRegistryPassword(value)` for `SOFTWARE\OmorEkushe\Options`.
 - **GetMachineId:** `GetComputerNameW` (fallback "PC").
 - **VerifyPath:** Ensures path ends with `\`.
 - **Encrypt:** Simplified compared to C# (used for activation logic).

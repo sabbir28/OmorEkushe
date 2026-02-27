@@ -69,7 +69,7 @@ int WINAPI wWinMain(
         MessageBoxW(
                 nullptr,
                 L"No layout XML files found. Expected paths include data\\layout.",
-                L"Bijoy Bayanno",
+                L"Omor Ekushe",
                 MB_OK | MB_ICONERROR);
         return 1;
     }
@@ -82,7 +82,7 @@ int WINAPI wWinMain(
         MessageBoxW(
                 nullptr,
                 L"Failed to install keyboard hook.",
-                L"Bijoy Bayanno",
+                L"Omor Ekushe",
                 MB_OK | MB_ICONERROR);
         return 1;
     }

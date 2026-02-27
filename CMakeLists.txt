@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(BijoyBayanno LANGUAGES CXX)
+project(OmorEkushe LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,7 +15,7 @@ file(MAKE_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}")
 file(MAKE_DIRECTORY "${BIJOY_DATA_DIR}")
 file(MAKE_DIRECTORY "${BIJOY_BUILD_ROOT}/temp")
 
-add_executable(BijoyBayanno WIN32
+add_executable(OmorEkushe WIN32
         src/app/main.cpp
         src/core/app_state.cpp
         src/core/keyboard_hook_service.cpp
@@ -34,31 +34,31 @@ option(BIJOY_INCLUDE_RESOURCES "Compile Win32 resource file (app.rc)" ON)
 if(BIJOY_INCLUDE_RESOURCES)
   if(CMAKE_RC_COMPILER)
     enable_language(RC)
-    target_sources(BijoyBayanno PRIVATE src/platform/windows/app.rc)
+    target_sources(OmorEkushe PRIVATE src/platform/windows/app.rc)
   else()
     message(WARNING "Resource compiler not found. Building without src/platform/windows/app.rc")
   endif()
 endif()
 
-target_include_directories(BijoyBayanno PRIVATE include)
+target_include_directories(OmorEkushe PRIVATE include)
 target_compile_definitions(
-        BijoyBayanno
+        OmorEkushe
         PRIVATE
         UNICODE
         _UNICODE
         BIJOY_DATA_DIR=L"${BIJOY_DATA_DIR}/"
 )
 
-target_link_libraries(BijoyBayanno PRIVATE comctl32 shell32 shlwapi msimg32)
+target_link_libraries(OmorEkushe PRIVATE comctl32 shell32 shlwapi msimg32)
 
-set_target_properties(BijoyBayanno PROPERTIES
+set_target_properties(OmorEkushe PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}"
         )
 
 if(MSVC)
-  target_compile_options(BijoyBayanno PRIVATE /W4)
+  target_compile_options(OmorEkushe PRIVATE /W4)
 else()
-  target_compile_options(BijoyBayanno PRIVATE -Wall -Wextra)
+  target_compile_options(OmorEkushe PRIVATE -Wall -Wextra)
 endif()
 
 # ------------------------------------------------------------------
@@ -77,10 +77,10 @@ if(MINGW)
   foreach(DLL ${MINGW_DLLS})
     if(EXISTS "${MINGW_BIN_DIR}/${DLL}")
       add_custom_command(
-              TARGET BijoyBayanno POST_BUILD
+              TARGET OmorEkushe POST_BUILD
               COMMAND ${CMAKE_COMMAND} -E copy_if_different
               "${MINGW_BIN_DIR}/${DLL}"
-              "$<TARGET_FILE_DIR:BijoyBayanno>"
+              "$<TARGET_FILE_DIR:OmorEkushe>"
       )
     endif()
   endforeach()
@@ -90,10 +90,10 @@ if(WIN32 AND BIJOY_BUILD_LAYOUT_EDITOR)
   add_subdirectory(LayoutEditor)
 endif()
 
-add_custom_target(bijoy_cpp_all
-        DEPENDS BijoyBayanno
+add_custom_target(omorekushe_all
+        DEPENDS OmorEkushe
 )
 
 if(TARGET LayoutEditor)
-  add_dependencies(bijoy_cpp_all LayoutEditor)
+  add_dependencies(omorekushe_all LayoutEditor)
 endif()

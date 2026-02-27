@@ -1,6 +1,6 @@
 # Missing Functionality – C++ Port vs C# Original
 
-This document lists features and behaviors of the original C# Bijoy Bayanno application that are **not implemented** or are **reduced** in the current C++ port. Use it as a checklist for bringing the C++ version to parity.
+This document lists features and behaviors of the original C# Omor Ekushe application that are **not implemented** or are **reduced** in the current C++ port. Use it as a checklist for bringing the C++ version to parity.
 
 ---
 
@@ -37,7 +37,7 @@ This document lists features and behaviors of the original C# Bijoy Bayanno appl
 
 | Feature | C# | C++ | Notes |
 |--------|----|-----|------|
-| **Registry keys (BijoyEkushe)** | ApplicationMode, Password, TrayMode, DefaultLayout, Position, LAM | Only BijoyBayanno\Options Password | Other options not saved/restored. |
+| **Registry keys (BijoyEkushe)** | ApplicationMode, Password, TrayMode, DefaultLayout, Position, LAM | Only OmorEkushe\Options Password | Other options not saved/restored. |
 | **ApplicationMode** | 1/2/3: normal, always visible, tray only | Not implemented | No mode; behavior is effectively tray-only after registration. |
 | **TrayMode** | Start in tray vs start with main form visible | Not implemented | Main window is shown after registration; no “start in tray” option. |
 | **Position** | Main form Left saved/restored | Not implemented | No main form position persistence. |
