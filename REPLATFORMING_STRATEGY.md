@@ -1,4 +1,4 @@
-# Replatforming Strategy: Legacy C# Bijoy Bayanno to Native C/C++
+# Replatforming Strategy: Legacy C# Omor Ekushe to Native C/C++
 
 This document explains the migration strategy for moving the legacy C# Windows desktop application (last materially maintained around 2014) to a modern, maintainable native C/C++ codebase.
 

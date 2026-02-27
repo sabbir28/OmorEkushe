@@ -93,7 +93,7 @@ namespace bijoy::platform::windows {
                             MessageBoxW(
                                     dialog,
                                     L"Wrong Password",
-                                    L"Bijoy Bayanno",
+                                    L"Omor Ekushe",
                                     MB_OK | MB_ICONERROR);
                         }
                         return TRUE;

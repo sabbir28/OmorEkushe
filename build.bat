@@ -1,7 +1,7 @@
 @echo off
 setlocal ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
-rem Build script for BijoyBayanno native C++ application.
+rem Build script for OmorEkushe native C++ application.
 rem Usage examples:
 rem   build.bat
 rem   build.bat Release Win32
@@ -46,5 +46,5 @@ if errorlevel 1 (
 )
 
 echo [SUCCESS] Build completed.
-echo [SUCCESS] Output: "%BUILD_DIR%\%CONFIG%\BijoyBayanno.exe"
+echo [SUCCESS] Output: "%BUILD_DIR%\%CONFIG%\OmorEkushe.exe"
 exit /b 0

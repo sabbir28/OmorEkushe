@@ -1,6 +1,6 @@
-# Bijoy Bayanno – C/C++ Port
+# Omor Ekushe – C/C++ Port
 
-Native Win32 C/C++ port of the Bijoy Bayanno keyboard layout application (originally C#/.NET). It provides multi-layout input with shortcut switching and per-window layout memory.
+Native Win32 C/C++ port of the Omor Ekushe keyboard layout application (originally C#/.NET). It provides multi-layout input with shortcut switching and per-window layout memory.
 
 ---
 
@@ -29,7 +29,7 @@ Native Win32 C/C++ port of the Bijoy Bayanno keyboard layout application (origin
 ## Requirements
 
 - **OS:** Windows 10/11 (or compatible)
-- **Build:** 
+- **Build:**
   - **Option A:** Visual Studio 2019/2022 with “Desktop development with C++” and **Win32** (x86) support
   - **Option B:** MinGW-w64 with `g++` and `windres` (or CMake’s default generator)
 - **CMake:** 3.14 or newer
@@ -47,12 +47,12 @@ cmake --preset windows-default
 cmake --build --preset build-cpp
 ```
 
-### Inside `BijoyBayannoCpp/`
+### Inside `OmorEkusheCpp/`
 
 ### One-command build script (Windows)
 
 ```batch
-cd BijoyBayannoCpp
+cd OmorEkusheCpp
 build.bat
 ```
 
@@ -66,21 +66,21 @@ build.bat Debug Win32 "Visual Studio 17 2022"
 ### Visual Studio (Win32)
 
 ```batch
-cd BijoyBayannoCpp
+cd OmorEkusheCpp
 mkdir build
 cd build
 cmake .. -G "Visual Studio 17 2022" -A Win32
 cmake --build . --config Release
 ```
 
-Executable: `build\Release\BijoyBayanno.exe` (or `Debug\BijoyBayanno.exe` for Debug).
+Executable: `build\Release\OmorEkushe.exe` (or `Debug\OmorEkushe.exe` for Debug).
 
 ### Command line (MSVC)
 
 ```batch
-cd BijoyBayannoCpp\build
+cd OmorEkusheCpp\build
 cmake .. -G "Visual Studio 17 2022" -A Win32
-msbuild BijoyBayanno.sln /p:Configuration=Release /p:Platform=Win32
+msbuild OmorEkushe.sln /p:Configuration=Release /p:Platform=Win32
 ```
 
 ### MinGW
@@ -89,7 +89,7 @@ If your environment does not provide a resource compiler (`rc.exe`/`windres`), c
 
 
 ```batch
-cd BijoyBayannoCpp
+cd OmorEkusheCpp
 mkdir build
 cd build
 cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++
@@ -101,7 +101,7 @@ cmake --build .
 ## Project Structure
 
 ```
-BijoyBayannoCpp/
+OmorEkusheCpp/
 ├── CMakeLists.txt          # CMake project and executable
 ├── README.md                # This file
 ├── DOCUMENTATION.md         # Detailed module and design notes
@@ -139,11 +139,11 @@ BijoyBayannoCpp/
 
 ## Configuration & Data
 
-- **Registry:**  
-  - Password (activation): `HKEY_CURRENT_USER\SOFTWARE\BijoyBayanno\Options` → `Password`  
+- **Registry:**
+  - Password (activation): `HKEY_CURRENT_USER\SOFTWARE\OmorEkushe\Options` → `Password`
   - The C# app also used `SOFTWARE\BijoyEkushe\Options` for DefaultLayout, TrayMode, Position, LAM, ApplicationMode; the C++ port does not yet persist all of these (see [MISSING_FUNCTIONALITY.md](MISSING_FUNCTIONALITY.md)).
-- **Paths:**  
-  - Layouts: `%AppDir%\Layouts\` (and subfolders), `*.xml`  
+- **Paths:**
+  - Layouts: `%AppDir%\Layouts\` (and subfolders), `*.xml`
   - Icons (C#): `%AppDir%\Icons\`; C++ tray uses a default icon unless you add an `.ico` and reference it in `app.rc`.
 
 ---
@@ -181,3 +181,9 @@ For full migration rationale and phased architecture, see **[REPLATFORMING_STRAT
 ## Missing Functionality vs C#
 
 See **[MISSING_FUNCTIONALITY.md](MISSING_FUNCTIONALITY.md)** for a detailed list of features present in the original C# app but not yet implemented (or simplified) in the C++ port, and **[DOCUMENTATION.md](DOCUMENTATION.md)** for more technical and design notes.
+
+---
+
+## License
+
+This project is released under the **Sabbir Legacy License (MIT)**. See **[LICENSE](LICENSE)**.

@@ -10,7 +10,7 @@
 namespace bijoy::platform::windows {
     namespace {
 
-        constexpr wchar_t kSplashClassName[] = L"BijoyBayannoSplash";
+        constexpr wchar_t kSplashClassName[] = L"OmorEkusheSplash";
         constexpr UINT_PTR kSplashTimerId = 1;
         constexpr int kTickMs = 10;
         constexpr BYTE kFadeStepAlpha = 6;
@@ -177,7 +177,7 @@ namespace bijoy::platform::windows {
                 SelectObject(hdc, subtitleFont);
                 RECT subtitleRect = card;
                 subtitleRect.top += 100;
-                DrawTextW(hdc, L"Bijoy Bayanno", -1, &subtitleRect, DT_CENTER | DT_SINGLELINE);
+                DrawTextW(hdc, L"Omor Ekushe", -1, &subtitleRect, DT_CENTER | DT_SINGLELINE);
 
                 SelectObject(hdc, oldFont);
                 DeleteObject(titleFont);
