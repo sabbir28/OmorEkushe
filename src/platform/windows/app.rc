@@ -1,0 +1,22 @@
+#include <windows.h>
+
+#include "../../../include/platform/windows/resource.h"
+
+IDI_APP ICON "Bijoy.ico"
+
+IDD_REGISTRATION DIALOG 0, 0, 320, 240
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Bijoy Bayanno - Registration"
+FONT 9, "Segoe UI"
+BEGIN
+    LTEXT           "&Machine ID", IDC_MACHINE_ID_LBL, 30, 43, 220, 12
+    EDITTEXT        IDC_ID_EDIT, 32, 63, 220, 14, ES_READONLY | ES_CENTER
+    LTEXT           "&Activation Code", IDC_ACTIVATION_LBL, 29, 123, 220, 12
+    EDITTEXT        IDC_PASSWORD_EDIT, 31, 144, 61, 14, ES_CENTER
+    EDITTEXT        IDC_PASSWORD1, 95, 144, 61, 14, ES_CENTER
+    EDITTEXT        IDC_PASSWORD2, 159, 144, 61, 14, ES_CENTER
+    EDITTEXT        IDC_PASSWORD3, 223, 144, 61, 14, ES_CENTER
+    EDITTEXT        IDC_PASSWORD4, 31, 164, 61, 14, ES_CENTER
+    PUSHBUTTON      "OK", IDOK_BTN, 242, 204, 94, 23
+    PUSHBUTTON      "Cancel", IDCANCEL_BTN, 140, 204, 94, 23
+END

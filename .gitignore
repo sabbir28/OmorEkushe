@@ -1,0 +1,32 @@
+# -------------------------------------------------
+# CMake build directories
+# -------------------------------------------------
+cmake-build-debug/
+cmake-build-release/
+cmake-build-*/
+
+# -------------------------------------------------
+# CMake generated files
+# -------------------------------------------------
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+
+# -------------------------------------------------
+# Build artifacts
+# -------------------------------------------------
+*.lib
+*.a
+*.o
+*.obj
+
+# -------------------------------------------------
+# IDE / editor noise
+# -------------------------------------------------
+.vscode/
+.idea/
+*.user
+*.suo
+*.log
