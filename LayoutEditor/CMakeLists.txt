@@ -1,35 +1,19 @@
-cmake_minimum_required(VERSION 3.20)
 project(LayoutEditor LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 add_executable(LayoutEditor WIN32
-        src/LayoutEditor.cpp
-        )
+        src/main.cpp
+        src/MainWindow.cpp
+)
 
-target_include_directories(LayoutEditor PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        )
+target_include_directories(LayoutEditor PRIVATE include)
+target_compile_definitions(LayoutEditor PRIVATE UNICODE _UNICODE)
+target_link_libraries(LayoutEditor PRIVATE comctl32 user32 gdi32)
 
-target_compile_definitions(LayoutEditor PRIVATE
-        UNICODE
-        _UNICODE
-        WIN32_LEAN_AND_MEAN
-        NOMINMAX
-        )
+set_target_properties(LayoutEditor PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}"
+)
 
-target_link_libraries(LayoutEditor PRIVATE
-        user32
-        gdi32
-        comctl32
-        )
-
-if(MINGW)
-    target_compile_options(LayoutEditor PRIVATE -Wall -Wextra -Wpedantic -municode)
-    target_link_options(LayoutEditor PRIVATE
-            -municode
-            -mwindows
-            )
+# Also add to the omorekushe_all target if defined
+if(TARGET omorekushe_all)
+    add_dependencies(omorekushe_all LayoutEditor)
 endif()

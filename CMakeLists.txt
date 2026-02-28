@@ -86,14 +86,14 @@ if(MINGW)
   endforeach()
 endif()
 
-if(WIN32 AND BIJOY_BUILD_LAYOUT_EDITOR)
-  add_subdirectory(LayoutEditor)
-endif()
+
 
 add_custom_target(omorekushe_all
         DEPENDS OmorEkushe
 )
 
-if(TARGET LayoutEditor)
-  add_dependencies(omorekushe_all LayoutEditor)
+if(BIJOY_BUILD_LAYOUT_EDITOR)
+    add_subdirectory(LayoutEditor)
 endif()
+
+
