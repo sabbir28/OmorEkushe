@@ -5,6 +5,10 @@
 #include <future>
 #include <string>
 #include <windows.h>
+#include <vector>
+
+#include "core/layout_discovery.h"
+#include "lib/stb_image.h"
 
 
 namespace bijoy::platform::windows {
@@ -14,10 +18,10 @@ namespace bijoy::platform::windows {
         constexpr UINT_PTR kSplashTimerId = 1;
         constexpr int kTickMs = 10;
         constexpr BYTE kFadeStepAlpha = 6;
-        constexpr int kMinVisibleMs = 1200;
+        constexpr int kMinVisibleMs = 5000;
 
-        constexpr int kWindowWidth = 360;
-        constexpr int kWindowHeight = 260;
+        constexpr int kWindowWidth = 350;
+        constexpr int kWindowHeight = 450;
 
         class SplashScreenController {
         public:
@@ -84,6 +88,9 @@ namespace bijoy::platform::windows {
                     case WM_PAINT:    self->OnPaint(); return 0;
                     case WM_DESTROY:  KillTimer(hwnd, kSplashTimerId); return 0;
                     case WM_NCDESTROY:
+                        if (self->backgroundBitmap_) {
+                            DeleteObject(self->backgroundBitmap_);
+                        }
                         self->OnDestroyed();
                         delete self;
                         return 0;
@@ -94,7 +101,8 @@ namespace bijoy::platform::windows {
 
             LRESULT OnCreate() {
                 alpha_ = 0;
-                SetLayeredWindowAttributes(hwnd_, 0, alpha_, LWA_ALPHA);
+                LoadBackgroundImage();
+                UpdateWindowAlpha(0);
                 CenterOnScreen();
 
                 startTime_ = std::chrono::steady_clock::now();
@@ -121,7 +129,7 @@ namespace bijoy::platform::windows {
 
                 if (alpha_ < 255) {
                     alpha_ = static_cast<BYTE>(std::min(255, alpha_ + kFadeStepAlpha));
-                    SetLayeredWindowAttributes(hwnd_, 0, alpha_, LWA_ALPHA);
+                    UpdateWindowAlpha(alpha_);
                     return;
                 }
 
@@ -136,54 +144,84 @@ namespace bijoy::platform::windows {
 
             void OnPaint() {
                 PAINTSTRUCT ps;
-                HDC hdc = BeginPaint(hwnd_, &ps);
+                BeginPaint(hwnd_, &ps);
+                EndPaint(hwnd_, &ps);
+            }
+
+            void LoadBackgroundImage() {
+                const std::wstring appDir = bijoy::core::GetAppDirectory();
+                const std::wstring candidates[] = {
+                    appDir + L"data\\splash.png",
+                    appDir + L"..\\data\\splash.png",
+                    appDir + L"splash.png"
+                };
+
+                std::wstring resolvedPath;
+                for (const auto& candidate : candidates) {
+                    if (GetFileAttributesW(candidate.c_str()) != INVALID_FILE_ATTRIBUTES) {
+                        resolvedPath = candidate;
+                        break;
+                    }
+                }
+
+                if (resolvedPath.empty()) return;
+
+                // Convert wstring path to string for stb_image
+                int len = WideCharToMultiByte(CP_UTF8, 0, resolvedPath.c_str(), -1, nullptr, 0, nullptr, nullptr);
+                if (len <= 0) return;
+                std::string pathUtf8(len - 1, '\0');
+                WideCharToMultiByte(CP_UTF8, 0, resolvedPath.c_str(), -1, &pathUtf8[0], len, nullptr, nullptr);
+
+                int width, height, channels;
+                stbi_uc* data = stbi_load(pathUtf8.c_str(), &width, &height, &channels, 4);
+                if (!data) return;
+
+                BITMAPINFO bmi = {};
+                bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                bmi.bmiHeader.biWidth = width;
+                bmi.bmiHeader.biHeight = -height; // Top-down
+                bmi.bmiHeader.biPlanes = 1;
+                bmi.bmiHeader.biBitCount = 32;
+                bmi.bmiHeader.biCompression = BI_RGB;
+
+                HDC screenDc = GetDC(nullptr);
+                void* bits = nullptr;
+                backgroundBitmap_ = CreateDIBSection(screenDc, &bmi, DIB_RGB_COLORS, &bits, nullptr, 0);
+                if (backgroundBitmap_ && bits) {
+                    // Convert RGBA to BGRA and Pre-multiply Alpha
+                    auto* pixels = static_cast<unsigned char*>(bits);
+                    for (int i = 0; i < width * height; ++i) {
+                        unsigned char a = data[i * 4 + 3];
+                        pixels[i * 4 + 0] = (data[i * 4 + 2] * a) / 255; // B
+                        pixels[i * 4 + 1] = (data[i * 4 + 1] * a) / 255; // G
+                        pixels[i * 4 + 2] = (data[i * 4 + 0] * a) / 255; // R
+                        pixels[i * 4 + 3] = a;                           // A
+                    }
+                }
+                ReleaseDC(nullptr, screenDc);
+                stbi_image_free(data);
+            }
+
+            void UpdateWindowAlpha(BYTE alpha) {
+                if (!backgroundBitmap_) return;
 
                 RECT rect;
-                GetClientRect(hwnd_, &rect);
+                GetWindowRect(hwnd_, &rect);
+                SIZE size = { kWindowWidth, kWindowHeight };
+                POINT ptSrc = { 0, 0 };
+                POINT ptDest = { rect.left, rect.top };
 
-                // Gradient background
-                TRIVERTEX vertices[2] = {
-                        {0, 0, 230 << 8, 235 << 8, 240 << 8, 0},
-                        {rect.right, rect.bottom, 255 << 8, 255 << 8, 255 << 8, 0}
-                };
-                GRADIENT_RECT gRect = {0, 1};
-                GradientFill(hdc, vertices, 2, &gRect, 1, GRADIENT_FILL_RECT_V);
+                HDC screenDc = GetDC(nullptr);
+                HDC memDc = CreateCompatibleDC(screenDc);
+                HGDIOBJ oldBitmap = SelectObject(memDc, backgroundBitmap_);
 
-                // Card
-                RECT card = {20, 20, rect.right - 20, rect.bottom - 20};
-                HBRUSH cardBrush = CreateSolidBrush(RGB(255, 255, 255));
-                FillRect(hdc, &card, cardBrush);
-                DeleteObject(cardBrush);
+                BLENDFUNCTION blend = { AC_SRC_OVER, 0, alpha, AC_SRC_ALPHA };
 
-                SetBkMode(hdc, TRANSPARENT);
-                SetTextColor(hdc, RGB(32, 32, 32));
+                UpdateLayeredWindow(hwnd_, screenDc, &ptDest, &size, memDc, &ptSrc, 0, &blend, ULW_ALPHA);
 
-                HFONT titleFont = CreateFontW(
-                        34, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
-                        DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-                        CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
-
-                HFONT subtitleFont = CreateFontW(
-                        16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
-                        DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-                        CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
-
-                HFONT oldFont = static_cast<HFONT>(SelectObject(hdc, titleFont));
-
-                RECT titleRect = card;
-                titleRect.top += 50;
-                DrawTextW(hdc, L"বিজয়", -1, &titleRect, DT_CENTER | DT_SINGLELINE);
-
-                SelectObject(hdc, subtitleFont);
-                RECT subtitleRect = card;
-                subtitleRect.top += 100;
-                DrawTextW(hdc, L"Omor Ekushe", -1, &subtitleRect, DT_CENTER | DT_SINGLELINE);
-
-                SelectObject(hdc, oldFont);
-                DeleteObject(titleFont);
-                DeleteObject(subtitleFont);
-
-                EndPaint(hwnd_, &ps);
+                SelectObject(memDc, oldBitmap);
+                DeleteDC(memDc);
+                ReleaseDC(nullptr, screenDc);
             }
 
             void OnDestroyed() {
@@ -202,6 +240,7 @@ namespace bijoy::platform::windows {
             HWND hwnd_ = nullptr;
             BYTE alpha_ = 0;
             bool initCompleted_ = false;
+            HBITMAP backgroundBitmap_ = nullptr;
 
             SplashInitTask initTask_;
             SplashCompletedCallback onCompleted_;

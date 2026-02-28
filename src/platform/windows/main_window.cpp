@@ -443,6 +443,17 @@ void PopulateLayoutCombo() {
   SelectLayout(currentIndex);
 }
 
+void CycleToNextLayout() {
+  const int count = bijoy::core::GetLayoutCount();
+  const int current = bijoy::core::GetCurrentLayoutIndex();
+  // Cycle: English (-1) -> Layout 0 -> Layout 1 ... -> English (-1)
+  int next = current + 1;
+  if (next >= count) {
+    next = -1;
+  }
+  SelectLayout(next);
+}
+
 void BuildTrayMenu() {
   if (g_trayMenu) {
     DestroyMenu(g_trayMenu);
@@ -450,7 +461,8 @@ void BuildTrayMenu() {
 
   g_trayMenu = CreatePopupMenu();
 
-  AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_SHOW, L"&Show");
+  const bool isVisible = g_mainWindow && IsWindowVisible(g_mainWindow);
+  AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_SHOW, isVisible ? L"&Hide" : L"&Show");
   AppendMenuW(g_trayMenu, MF_SEPARATOR, 0, nullptr);
 
   AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_LAYOUT_BASE, L"English");
@@ -474,7 +486,8 @@ void OnTrayCommand(UINT id) {
   }
 
   if (id == IDM_TRAY_SHOW) {
-    SetMainWindowVisible(true);
+    const bool isVisible = g_mainWindow && IsWindowVisible(g_mainWindow);
+    SetMainWindowVisible(!isVisible);
     return;
   }
 
@@ -663,6 +676,8 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         GetCursorPos(&pt);
         SetForegroundWindow(hwnd);
 
+        BuildTrayMenu(); // Update Show/Hide text based on current window state
+
         const int command = TrackPopupMenu(
             g_trayMenu,
             TPM_RETURNCMD | TPM_NONBLOCKING,
@@ -675,6 +690,8 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
         if (command) {
           OnTrayCommand(static_cast<UINT>(command));
         }
+      } else if (lParam == WM_LBUTTONUP) {
+        CycleToNextLayout();
       } else if (lParam == WM_LBUTTONDBLCLK) {
         SetMainWindowVisible(true);
       }
