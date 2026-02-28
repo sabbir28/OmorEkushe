@@ -7,6 +7,11 @@
 #include "KeyboardView.h"
 #include "KeyEditDialog.h"
 #include <commctrl.h>
+#include <shlwapi.h>
+
+#ifdef _MSC_VER
+#pragma comment(lib, "shlwapi.lib")
+#endif
 
 static HFONT g_hFont = nullptr;
 
@@ -17,6 +22,7 @@ HWND MainWindow::s_hKeyboardView = nullptr;
 HWND MainWindow::s_hEditName = nullptr;
 
 constexpr int IDC_KEYBOARD_VIEW = 2001;
+constexpr int IDC_BTN_ICON = 2002;
 
 bool MainWindow::Register(HINSTANCE hInstance) {
     if (!editor::KeyboardView::Register(hInstance)) {
@@ -82,9 +88,19 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
     s_hEditName = CreateWindowW(
         L"EDIT", L"",
         WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
-        150, 18, 300, 24,
+        150, 18, 220, 24,
         hwnd,
         reinterpret_cast<HMENU>(IDC_EDIT_NAME),
+        hInstance,
+        nullptr
+    );
+    
+    CreateWindowW(
+        L"BUTTON", L"Icon...",
+        WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+        380, 17, 70, 26,
+        hwnd,
+        reinterpret_cast<HMENU>(IDC_BTN_ICON),
         hInstance,
         nullptr
     );
@@ -218,9 +234,51 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
             }
 
             switch (wmId) {
-                case IDC_BTN_NEW:
-                    MessageBoxW(hwnd, L"New layout initialized.", L"Keyboard Layout Editor", MB_ICONINFORMATION | MB_OK);
+                case IDC_BTN_ICON: {
+                    if (s_currentLayoutIndex >= 0 && s_currentLayoutIndex < s_layouts.size()) {
+                        wchar_t filename[MAX_PATH] = {};
+                        OPENFILENAMEW ofn = {};
+                        ofn.lStructSize = sizeof(ofn);
+                        ofn.hwndOwner = hwnd;
+                        ofn.lpstrFile = filename;
+                        ofn.nMaxFile = MAX_PATH;
+                        ofn.lpstrFilter = L"Icons (*.ico)\0*.ico\0All Files (*.*)\0*.*\0";
+                        ofn.nFilterIndex = 1;
+                        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+                        
+                        if (GetOpenFileNameW(&ofn)) {
+                            // Only store filename, not full path
+                            s_layouts[s_currentLayoutIndex].iconName = PathFindFileNameW(filename);
+                            MessageBoxW(hwnd, L"Icon updated! Remember to save layout.", L"Success", MB_ICONINFORMATION | MB_OK);
+                        }
+                    } else {
+                        MessageBoxW(hwnd, L"Please select or create a layout first.", L"Warning", MB_ICONWARNING | MB_OK);
+                    }
                     return 0;
+                }
+                
+                case IDC_BTN_NEW: {
+                    editor::LayoutData newLayout;
+                    newLayout.name = L"New Layout";
+                    newLayout.id = (int)s_layouts.size();
+                    
+                    wchar_t exePath[MAX_PATH] = {};
+                    GetModuleFileNameW(nullptr, exePath, MAX_PATH);
+                    PathRemoveFileSpecW(exePath);
+                    std::wstring dir = exePath;
+                    dir += L"\\Layouts\\";
+                    CreateDirectoryW(dir.c_str(), nullptr);
+                    newLayout.path = dir + L"New_Layout.xml";
+                    
+                    s_layouts.push_back(newLayout);
+                    SendMessageW(s_hCombo, CB_ADDSTRING, 0, (LPARAM)newLayout.name.c_str());
+                    SendMessageW(s_hCombo, CB_SETCURSEL, s_layouts.size() - 1, 0);
+                    s_currentLayoutIndex = (int)s_layouts.size() - 1;
+                    UpdateLayoutView(hwnd);
+
+                    MessageBoxW(hwnd, L"New layout created! Please name it and save.", L"Keyboard Layout Editor", MB_ICONINFORMATION | MB_OK);
+                    return 0;
+                }
 
                 case IDC_BTN_SAVE: {
                     if (s_currentLayoutIndex >= 0 && s_currentLayoutIndex < s_layouts.size()) {
@@ -228,8 +286,22 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
                         GetWindowTextW(s_hEditName, newName, 256);
                         
                         s_layouts[s_currentLayoutIndex].name = newName;
+                        if (s_layouts[s_currentLayoutIndex].path.empty()) {
+                            wchar_t exePath[MAX_PATH] = {};
+                            GetModuleFileNameW(nullptr, exePath, MAX_PATH);
+                            PathRemoveFileSpecW(exePath);
+                            std::wstring dir = exePath;
+                            dir += L"\\Layouts\\";
+                            CreateDirectoryW(dir.c_str(), nullptr);
+                            s_layouts[s_currentLayoutIndex].path = dir + newName + L".xml";
+                        }
+                        
                         if (s_layouts[s_currentLayoutIndex].saveToFile(s_layouts[s_currentLayoutIndex].path.c_str())) {
-                            MessageBoxW(hwnd, L"Layout explicitly saved back to XML!", L"Success", MB_ICONINFORMATION | MB_OK);
+                            SendMessageW(s_hCombo, CB_DELETESTRING, s_currentLayoutIndex, 0);
+                            SendMessageW(s_hCombo, CB_INSERTSTRING, s_currentLayoutIndex, (LPARAM)newName);
+                            SendMessageW(s_hCombo, CB_SETCURSEL, s_currentLayoutIndex, 0);
+                            
+                            MessageBoxW(hwnd, L"Layout explicitely saved back to XML!", L"Success", MB_ICONINFORMATION | MB_OK);
                         } else {
                             MessageBoxW(hwnd, L"Failed to save to file!", L"Error", MB_ICONERROR | MB_OK);
                         }

@@ -6,36 +6,54 @@ namespace editor {
 struct KeyboardKey {
     int keyCode;
     float rx, ry, rw, rh; // Relative coordinates 0.0 to 1.0 (approximated)
-    const wchar_t* normalChar;
-    const wchar_t* shiftChar;
+    bool modifiable;
+    const wchar_t* label;
 };
 
-// Very basic and simplified relative layout for main keyboard block
+// Full standard 104-key US keyboard approximation
 static std::vector<KeyboardKey> g_BaseKeys = {
-    // Top row (digits)
-    {192, 0.00f, 0.0f, 0.06f, 0.2f, L"", L""}, {49,  0.06f, 0.0f, 0.06f, 0.2f, L"", L""}, {50,  0.12f, 0.0f, 0.06f, 0.2f, L"", L""},
-    {51,  0.18f, 0.0f, 0.06f, 0.2f, L"", L""}, {52,  0.24f, 0.0f, 0.06f, 0.2f, L"", L""}, {53,  0.30f, 0.0f, 0.06f, 0.2f, L"", L""},
-    {54,  0.36f, 0.0f, 0.06f, 0.2f, L"", L""}, {55,  0.42f, 0.0f, 0.06f, 0.2f, L"", L""}, {56,  0.48f, 0.0f, 0.06f, 0.2f, L"", L""},
-    {57,  0.54f, 0.0f, 0.06f, 0.2f, L"", L""}, {48,  0.60f, 0.0f, 0.06f, 0.2f, L"", L""}, {189, 0.66f, 0.0f, 0.06f, 0.2f, L"", L""},
-    {187, 0.72f, 0.0f, 0.06f, 0.2f, L"", L""},
+    // Esc & Function Keys (Row 0)
+    {27,  0.00f, 0.00f, 0.06f, 0.15f, false, L"Esc"},
+    {112, 0.10f, 0.00f, 0.06f, 0.15f, false, L"F1"}, {113, 0.16f, 0.00f, 0.06f, 0.15f, false, L"F2"}, {114, 0.22f, 0.00f, 0.06f, 0.15f, false, L"F3"}, {115, 0.28f, 0.00f, 0.06f, 0.15f, false, L"F4"},
+    {116, 0.36f, 0.00f, 0.06f, 0.15f, false, L"F5"}, {117, 0.42f, 0.00f, 0.06f, 0.15f, false, L"F6"}, {118, 0.48f, 0.00f, 0.06f, 0.15f, false, L"F7"}, {119, 0.54f, 0.00f, 0.06f, 0.15f, false, L"F8"},
+    {120, 0.62f, 0.00f, 0.06f, 0.15f, false, L"F9"}, {121, 0.68f, 0.00f, 0.06f, 0.15f, false, L"F10"}, {122, 0.74f, 0.00f, 0.06f, 0.15f, false, L"F11"}, {123, 0.80f, 0.00f, 0.06f, 0.15f, false, L"F12"},
+    {44,  0.87f, 0.00f, 0.05f, 0.15f, false, L"Prt"}, {145, 0.93f, 0.00f, 0.05f, 0.15f, false, L"Scr"}, {19, 0.99f, 0.00f, 0.05f, 0.15f, false, L"Pse"},
 
-    // Row 1
-    {81,  0.08f, 0.2f, 0.06f, 0.2f, L"", L""}, {87,  0.14f, 0.2f, 0.06f, 0.2f, L"", L""}, {69,  0.20f, 0.2f, 0.06f, 0.2f, L"", L""},
-    {82,  0.26f, 0.2f, 0.06f, 0.2f, L"", L""}, {84,  0.32f, 0.2f, 0.06f, 0.2f, L"", L""}, {89,  0.38f, 0.2f, 0.06f, 0.2f, L"", L""},
-    {85,  0.44f, 0.2f, 0.06f, 0.2f, L"", L""}, {73,  0.50f, 0.2f, 0.06f, 0.2f, L"", L""}, {79,  0.56f, 0.2f, 0.06f, 0.2f, L"", L""},
-    {80,  0.62f, 0.2f, 0.06f, 0.2f, L"", L""}, {219, 0.68f, 0.2f, 0.06f, 0.2f, L"", L""}, {221, 0.74f, 0.2f, 0.06f, 0.2f, L"", L""},
+    // Number Row (Row 1) (Y offset 0.18)
+    {192, 0.00f, 0.18f, 0.05f, 0.15f, true, L"`"}, {49,  0.05f, 0.18f, 0.05f, 0.15f, true, L"1"}, {50,  0.10f, 0.18f, 0.05f, 0.15f, true, L"2"},
+    {51,  0.15f, 0.18f, 0.05f, 0.15f, true, L"3"}, {52,  0.20f, 0.18f, 0.05f, 0.15f, true, L"4"}, {53,  0.25f, 0.18f, 0.05f, 0.15f, true, L"5"},
+    {54,  0.30f, 0.18f, 0.05f, 0.15f, true, L"6"}, {55,  0.35f, 0.18f, 0.05f, 0.15f, true, L"7"}, {56,  0.40f, 0.18f, 0.05f, 0.15f, true, L"8"},
+    {57,  0.45f, 0.18f, 0.05f, 0.15f, true, L"9"}, {48,  0.50f, 0.18f, 0.05f, 0.15f, true, L"0"}, {189, 0.55f, 0.18f, 0.05f, 0.15f, true, L"-"},
+    {187, 0.60f, 0.18f, 0.05f, 0.15f, true, L"="}, {8,   0.65f, 0.18f, 0.10f, 0.15f, false, L"Back"},
+    {45,  0.77f, 0.18f, 0.05f, 0.15f, false, L"Ins"}, {36,  0.83f, 0.18f, 0.05f, 0.15f, false, L"Hm"}, {33, 0.89f, 0.18f, 0.05f, 0.15f, false, L"Up"},
 
-    // Row 2
-    {65,  0.10f, 0.4f, 0.06f, 0.2f, L"", L""}, {83,  0.16f, 0.4f, 0.06f, 0.2f, L"", L""}, {68,  0.22f, 0.4f, 0.06f, 0.2f, L"", L""},
-    {70,  0.28f, 0.4f, 0.06f, 0.2f, L"", L""}, {71,  0.34f, 0.4f, 0.06f, 0.2f, L"", L""}, {72,  0.40f, 0.4f, 0.06f, 0.2f, L"", L""},
-    {74,  0.46f, 0.4f, 0.06f, 0.2f, L"", L""}, {75,  0.52f, 0.4f, 0.06f, 0.2f, L"", L""}, {76,  0.58f, 0.4f, 0.06f, 0.2f, L"", L""},
-    {186, 0.64f, 0.4f, 0.06f, 0.2f, L"", L""}, {222, 0.70f, 0.4f, 0.06f, 0.2f, L"", L""}, {220, 0.76f, 0.4f, 0.06f, 0.2f, L"", L""},
+    // QWERTY Row (Row 2) (Y offset 0.36)
+    {9,   0.00f, 0.36f, 0.08f, 0.15f, false, L"Tab"}, {81,  0.08f, 0.36f, 0.05f, 0.15f, true, L"Q"}, {87,  0.13f, 0.36f, 0.05f, 0.15f, true, L"W"},
+    {69,  0.18f, 0.36f, 0.05f, 0.15f, true, L"E"}, {82,  0.23f, 0.36f, 0.05f, 0.15f, true, L"R"}, {84,  0.28f, 0.36f, 0.05f, 0.15f, true, L"T"},
+    {89,  0.33f, 0.36f, 0.05f, 0.15f, true, L"Y"}, {85,  0.38f, 0.36f, 0.05f, 0.15f, true, L"U"}, {73,  0.43f, 0.36f, 0.05f, 0.15f, true, L"I"},
+    {79,  0.48f, 0.36f, 0.05f, 0.15f, true, L"O"}, {80,  0.53f, 0.36f, 0.05f, 0.15f, true, L"P"}, {219, 0.58f, 0.36f, 0.05f, 0.15f, true, L"["},
+    {221, 0.63f, 0.36f, 0.05f, 0.15f, true, L"]"}, {220, 0.68f, 0.36f, 0.07f, 0.15f, true, L"\\"},
+    {46,  0.77f, 0.36f, 0.05f, 0.15f, false, L"Del"}, {35,  0.83f, 0.36f, 0.05f, 0.15f, false, L"End"}, {34, 0.89f, 0.36f, 0.05f, 0.15f, false, L"Dn"},
 
-    // Row 3
-    {90,  0.12f, 0.6f, 0.06f, 0.2f, L"", L""}, {88,  0.18f, 0.6f, 0.06f, 0.2f, L"", L""}, {67,  0.24f, 0.6f, 0.06f, 0.2f, L"", L""},
-    {86,  0.30f, 0.6f, 0.06f, 0.2f, L"", L""}, {66,  0.36f, 0.6f, 0.06f, 0.2f, L"", L""}, {78,  0.42f, 0.6f, 0.06f, 0.2f, L"", L""},
-    {77,  0.48f, 0.6f, 0.06f, 0.2f, L"", L""}, {188, 0.54f, 0.6f, 0.06f, 0.2f, L"", L""}, {190, 0.60f, 0.6f, 0.06f, 0.2f, L"", L""},
-    {191, 0.66f, 0.6f, 0.06f, 0.2f, L"", L""}
+    // ASDF Row (Row 3) (Y offset 0.54)
+    {20,  0.00f, 0.54f, 0.10f, 0.15f, false, L"Caps"}, {65,  0.10f, 0.54f, 0.05f, 0.15f, true, L"A"}, {83,  0.15f, 0.54f, 0.05f, 0.15f, true, L"S"},
+    {68,  0.20f, 0.54f, 0.05f, 0.15f, true, L"D"}, {70,  0.25f, 0.54f, 0.05f, 0.15f, true, L"F"}, {71,  0.30f, 0.54f, 0.05f, 0.15f, true, L"G"},
+    {72,  0.35f, 0.54f, 0.05f, 0.15f, true, L"H"}, {74,  0.40f, 0.54f, 0.05f, 0.15f, true, L"J"}, {75,  0.45f, 0.54f, 0.05f, 0.15f, true, L"K"},
+    {76,  0.50f, 0.54f, 0.05f, 0.15f, true, L"L"}, {186, 0.55f, 0.54f, 0.05f, 0.15f, true, L";"}, {222, 0.60f, 0.54f, 0.05f, 0.15f, true, L"'"},
+    {13,  0.65f, 0.54f, 0.10f, 0.15f, false, L"Enter"},
+
+    // ZXCV Row (Row 4) (Y offset 0.72)
+    {16,  0.00f, 0.72f, 0.13f, 0.15f, false, L"Shift"}, {90,  0.13f, 0.72f, 0.05f, 0.15f, true, L"Z"}, {88,  0.18f, 0.72f, 0.05f, 0.15f, true, L"X"},
+    {67,  0.23f, 0.72f, 0.05f, 0.15f, true, L"C"}, {86,  0.28f, 0.72f, 0.05f, 0.15f, true, L"V"}, {66,  0.33f, 0.72f, 0.05f, 0.15f, true, L"B"},
+    {78,  0.38f, 0.72f, 0.05f, 0.15f, true, L"N"}, {77,  0.43f, 0.72f, 0.05f, 0.15f, true, L"M"}, {188, 0.48f, 0.72f, 0.05f, 0.15f, true, L","},
+    {190, 0.53f, 0.72f, 0.05f, 0.15f, true, L"."}, {191, 0.58f, 0.72f, 0.05f, 0.15f, true, L"/"}, {16, 0.63f, 0.72f, 0.12f, 0.15f, false, L"Shift"},
+    {38,  0.83f, 0.72f, 0.05f, 0.15f, false, L"Up"},
+
+    // Space Row (Row 5) (Y offset 0.90)
+    {17,  0.00f, 0.90f, 0.06f, 0.10f, false, L"Ctrl"}, {91,  0.06f, 0.90f, 0.06f, 0.10f, false, L"Win"}, {18,  0.12f, 0.90f, 0.06f, 0.10f, false, L"Alt"},
+    {32,  0.18f, 0.90f, 0.39f, 0.10f, false, L"Space"}, {18,  0.57f, 0.90f, 0.06f, 0.10f, false, L"Alt"}, {92,  0.63f, 0.90f, 0.06f, 0.10f, false, L"Win"},
+    {93,  0.69f, 0.90f, 0.06f, 0.10f, false, L"Menu"}, {17,  0.75f, 0.90f, 0.06f, 0.10f, false, L"Ctrl"},
+    {37,  0.77f, 0.90f, 0.05f, 0.10f, false, L"Left"}, {40,  0.83f, 0.90f, 0.05f, 0.10f, false, L"Dn"}, {39, 0.89f, 0.90f, 0.05f, 0.10f, false, L"Rt"}
 };
 
 bool KeyboardView::Register(HINSTANCE hInstance) {
@@ -109,34 +127,53 @@ void KeyboardView::OnPaint(HWND hwnd) {
         RECT krc = { kx + 2, ky + 2, kx + kw - 2, ky + kh - 2 };
         Rectangle(hdc, krc.left, krc.top, krc.right, krc.bottom);
 
-        // Draw mapped layoyt characters
-        std::wstring normalText = L"";
-        std::wstring shiftText = L"";
-
-        if (layout) {
-            auto it = layout->key.find(k.keyCode);
-            if (it != layout->key.end()) {
-                normalText = it->second.normal;
-                shiftText = it->second.shift;
-            }
+        // Draw faint base label first
+        if (k.modifiable) {
+            SelectObject(hdc, hFontMain);
+            SetTextColor(hdc, RGB(220, 220, 220)); // Faint gray
+            RECT bgRect = krc;
+            bgRect.top += 5; // Slight offset from top
+            DrawTextW(hdc, k.label, -1, &bgRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
         }
 
-        SetTextColor(hdc, RGB(0, 0, 0));
-        SelectObject(hdc, hFontMain);
-        
-        // Draw normal character bottom left
-        RECT tRectNormal = krc;
-        tRectNormal.left += 5;
-        tRectNormal.top += 15;
-        DrawTextW(hdc, normalText.c_str(), -1, &tRectNormal, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+        // Draw mapped layoyt characters
+        if (k.modifiable) {
+            std::wstring normalText = L"";
+            std::wstring shiftText = L"";
 
-        // Draw shift character top left
-        SelectObject(hdc, hFontSmall);
-        SetTextColor(hdc, RGB(100, 100, 100));
-        RECT tRectShift = krc;
-        tRectShift.left += 5;
-        tRectShift.top += 2;
-        DrawTextW(hdc, shiftText.c_str(), -1, &tRectShift, DT_LEFT | DT_TOP | DT_SINGLELINE);
+            if (layout) {
+                auto it = layout->key.find(k.keyCode);
+                if (it != layout->key.end()) {
+                    normalText = it->second.normal;
+                    shiftText = it->second.shift;
+                }
+            }
+
+            SetTextColor(hdc, RGB(0, 0, 0));
+            SelectObject(hdc, hFontMain);
+            
+            // Draw normal character bottom left
+            if (!normalText.empty()) {
+                RECT tRectNormal = krc;
+                tRectNormal.left += 5;
+                tRectNormal.top += 15;
+                DrawTextW(hdc, normalText.c_str(), -1, &tRectNormal, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+            }
+
+            // Draw shift character top left
+            if (!shiftText.empty()) {
+                SelectObject(hdc, hFontSmall);
+                SetTextColor(hdc, RGB(100, 100, 100));
+                RECT tRectShift = krc;
+                tRectShift.left += 5;
+                tRectShift.top += 2;
+                DrawTextW(hdc, shiftText.c_str(), -1, &tRectShift, DT_LEFT | DT_TOP | DT_SINGLELINE);
+            }
+        } else {
+            SelectObject(hdc, hFontSmall);
+            SetTextColor(hdc, RGB(50, 50, 50));
+            DrawTextW(hdc, k.label, -1, &krc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+        }
     }
 
     SelectObject(hdc, GetStockObject(DEFAULT_GUI_FONT));
@@ -161,8 +198,11 @@ void KeyboardView::OnLButtonDown(HWND hwnd, int x, int y) {
         int kh = (int)(k.rh * h);
 
         if (x >= kx && x <= kx + kw && y >= ky && y <= ky + kh) {
-            // Found clicked key. Notify parent window.
-            SendMessageW(GetParent(hwnd), WM_COMMAND, MAKEWPARAM(GetDlgCtrlID(hwnd), k.keyCode), (LPARAM)hwnd);
+            // Found clicked key.
+            if (k.modifiable) {
+                // Notify parent window.
+                SendMessageW(GetParent(hwnd), WM_COMMAND, MAKEWPARAM(GetDlgCtrlID(hwnd), k.keyCode), (LPARAM)hwnd);
+            }
             break;
         }
     }

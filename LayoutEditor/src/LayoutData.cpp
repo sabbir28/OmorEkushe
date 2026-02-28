@@ -63,6 +63,23 @@ namespace {
         return result;
     }
 
+    std::wstring UnescapeXml(const std::wstring& text) {
+        std::wstring result = text;
+        auto replaceAll = [](std::wstring& str, const std::wstring& from, const std::wstring& to) {
+            size_t start_pos = 0;
+            while((start_pos = str.find(from, start_pos)) != std::wstring::npos) {
+                str.replace(start_pos, from.length(), to);
+                start_pos += to.length();
+            }
+        };
+        replaceAll(result, L"&lt;", L"<");
+        replaceAll(result, L"&gt;", L">");
+        replaceAll(result, L"&quot;", L"\"");
+        replaceAll(result, L"&apos;", L"'");
+        replaceAll(result, L"&amp;", L"&");
+        return result;
+    }
+
     std::wstring BoolToStr(bool value) {
         return value ? L"True" : L"False";
     }
@@ -144,14 +161,14 @@ namespace editor {
                 KeyMapping mapping;
                 mapping.normalOption = normalOpt;
                 mapping.shiftOption = shiftOpt;
-                mapping.normal = GetTagContent(getLine(), L"Normal");
-                mapping.shift = GetTagContent(getLine(), L"Shift");
+                mapping.normal = UnescapeXml(GetTagContent(getLine(), L"Normal"));
+                mapping.shift = UnescapeXml(GetTagContent(getLine(), L"Shift"));
                 key[keyCode] = mapping;
             } else if (line.find(L"<Juk>") != std::wstring::npos) {
                 const std::wstring seqValue = GetTagContent(getLine(), L"Seq");
                 const std::wstring outValue = GetTagContent(getLine(), L"Out");
                 if (!seqValue.empty() || !outValue.empty()) {
-                    juk[seqValue] = outValue;
+                    juk[UnescapeXml(seqValue)] = UnescapeXml(outValue);
                 }
             }
         }

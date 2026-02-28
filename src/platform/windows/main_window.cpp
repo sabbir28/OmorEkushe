@@ -634,7 +634,13 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
       }
 
       if (controlId == IDC_LAYOUT_EDITOR_BUTTON) {
-        MessageBoxW(hwnd, L"Layout Editor is not implemented yet.", L"Omor Ekushe", MB_OK | MB_ICONINFORMATION);
+        const std::wstring appDir = bijoy::core::GetAppDirectory();
+        const std::wstring editorPath = BuildPath(appDir, L"LayoutEditor.exe");
+
+        HINSTANCE result = ShellExecuteW(hwnd, L"open", editorPath.c_str(), nullptr, nullptr, SW_SHOW);
+        if (reinterpret_cast<INT_PTR>(result) <= 32) {
+          MessageBoxW(hwnd, L"Failed to open Layout Editor. Ensure LayoutEditor.exe is in the application folder.", L"Omor Ekushe", MB_OK | MB_ICONERROR);
+        }
         return 0;
       }
 
