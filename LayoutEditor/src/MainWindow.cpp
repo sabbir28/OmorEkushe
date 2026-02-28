@@ -4,11 +4,25 @@
 
 #include "MainWindow.h"
 #include "LayoutEditor.h"
+#include "KeyboardView.h"
+#include "KeyEditDialog.h"
 #include <commctrl.h>
 
 static HFONT g_hFont = nullptr;
 
+std::vector<editor::LayoutData> MainWindow::s_layouts;
+int MainWindow::s_currentLayoutIndex = -1;
+HWND MainWindow::s_hCombo = nullptr;
+HWND MainWindow::s_hKeyboardView = nullptr;
+HWND MainWindow::s_hEditName = nullptr;
+
+constexpr int IDC_KEYBOARD_VIEW = 2001;
+
 bool MainWindow::Register(HINSTANCE hInstance) {
+    if (!editor::KeyboardView::Register(hInstance)) {
+        return false;
+    }
+
     WNDCLASSEXW wc = {0};
     wc.cbSize = sizeof(WNDCLASSEXW);
     wc.lpfnWndProc = WindowProc;
@@ -65,8 +79,8 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
         hwnd, nullptr, hInstance, nullptr
     );
 
-    CreateWindowW(
-        L"EDIT", L"My New Layout",
+    s_hEditName = CreateWindowW(
+        L"EDIT", L"",
         WS_CHILD | WS_VISIBLE | WS_BORDER | ES_AUTOHSCROLL,
         150, 18, 300, 24,
         hwnd,
@@ -82,7 +96,7 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
         hwnd, nullptr, hInstance, nullptr
     );
 
-    HWND combo = CreateWindowW(
+    s_hCombo = CreateWindowW(
         L"COMBOBOX", nullptr,
         WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_VSCROLL,
         150, 68, 300, 200,
@@ -91,12 +105,6 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
         hInstance,
         nullptr
     );
-
-    SendMessageW(combo, CB_ADDSTRING, 0, (LPARAM)L"Bijoy Classic");
-    SendMessageW(combo, CB_ADDSTRING, 0, (LPARAM)L"Bijoy Unicode");
-    SendMessageW(combo, CB_ADDSTRING, 0, (LPARAM)L"Probhat");
-    SendMessageW(combo, CB_ADDSTRING, 0, (LPARAM)L"Avro");
-    SendMessageW(combo, CB_SETCURSEL, 0, 0);
 
     // Group Box for Keyboard View Placeholder
     CreateWindowW(
@@ -109,11 +117,10 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
         nullptr
     );
 
-    CreateWindowW(
-        L"STATIC", L"Visual preview will be rendered here...",
-        WS_CHILD | WS_VISIBLE | SS_CENTER,
-        150, 200, 280, 20,
-        hwnd, nullptr, hInstance, nullptr
+    s_hKeyboardView = editor::KeyboardView::Create(
+        hwnd, hInstance,
+        30, 130, 520, 190,
+        IDC_KEYBOARD_VIEW
     );
 
     int btnY = APP_HEIGHT - 80;
@@ -151,6 +158,27 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
     ApplySystemFont(hwnd);
 }
 
+void MainWindow::RefreshComboBox(HWND hwnd) {
+    SendMessageW(s_hCombo, CB_RESETCONTENT, 0, 0);
+    s_layouts = editor::FindLayouts();
+    for (const auto& layout : s_layouts) {
+        SendMessageW(s_hCombo, CB_ADDSTRING, 0, (LPARAM)layout.name.c_str());
+    }
+    if (!s_layouts.empty()) {
+        SendMessageW(s_hCombo, CB_SETCURSEL, 0, 0);
+        s_currentLayoutIndex = 0;
+        UpdateLayoutView(hwnd);
+    }
+}
+
+void MainWindow::UpdateLayoutView(HWND hwnd) {
+    if (s_currentLayoutIndex >= 0 && s_currentLayoutIndex < s_layouts.size()) {
+        const auto& layout = s_layouts[s_currentLayoutIndex];
+        SetWindowTextW(s_hEditName, layout.name.c_str());
+        editor::KeyboardView::SetLayout(s_hKeyboardView, &layout);
+    }
+}
+
 void MainWindow::OnDestroy(HWND hwnd) {
     if (g_hFont) {
         DeleteObject(g_hFont);
@@ -164,24 +192,57 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
         case WM_CREATE: {
             LPCREATESTRUCTW cs = reinterpret_cast<LPCREATESTRUCTW>(lParam);
             MainWindow::CreateControls(hwnd, cs->hInstance);
+            MainWindow::RefreshComboBox(hwnd);
             return 0;
         }
 
-        case WM_COMMAND:
-            switch (LOWORD(wParam)) {
+        case WM_COMMAND: {
+            int wmId = LOWORD(wParam);
+            int wmEvent = HIWORD(wParam);
+
+            if (wmId == IDC_COMBO_LAYOUT && wmEvent == CBN_SELCHANGE) {
+                s_currentLayoutIndex = SendMessageW(s_hCombo, CB_GETCURSEL, 0, 0);
+                UpdateLayoutView(hwnd);
+                return 0;
+            }
+
+            if (wmId == IDC_KEYBOARD_VIEW) {
+                int clickedKeyCode = HIWORD(wParam);
+                if (s_currentLayoutIndex >= 0 && s_currentLayoutIndex < s_layouts.size()) {
+                    auto& layout = s_layouts[s_currentLayoutIndex];
+                    if (editor::KeyEditDialog::Show(hwnd, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), clickedKeyCode, &layout)) {
+                        editor::KeyboardView::SetLayout(s_hKeyboardView, &layout); // Re-render
+                    }
+                }
+                return 0;
+            }
+
+            switch (wmId) {
                 case IDC_BTN_NEW:
                     MessageBoxW(hwnd, L"New layout initialized.", L"Keyboard Layout Editor", MB_ICONINFORMATION | MB_OK);
                     return 0;
 
-                case IDC_BTN_SAVE:
-                    MessageBoxW(hwnd, L"Persist layer not implemented yet.", L"Keyboard Layout Editor", MB_ICONINFORMATION | MB_OK);
+                case IDC_BTN_SAVE: {
+                    if (s_currentLayoutIndex >= 0 && s_currentLayoutIndex < s_layouts.size()) {
+                        wchar_t newName[256];
+                        GetWindowTextW(s_hEditName, newName, 256);
+                        
+                        s_layouts[s_currentLayoutIndex].name = newName;
+                        if (s_layouts[s_currentLayoutIndex].saveToFile(s_layouts[s_currentLayoutIndex].path.c_str())) {
+                            MessageBoxW(hwnd, L"Layout explicitly saved back to XML!", L"Success", MB_ICONINFORMATION | MB_OK);
+                        } else {
+                            MessageBoxW(hwnd, L"Failed to save to file!", L"Error", MB_ICONERROR | MB_OK);
+                        }
+                    }
                     return 0;
+                }
 
                 case IDC_BTN_CANCEL:
                     DestroyWindow(hwnd);
                     return 0;
             }
             break;
+        }
 
         case WM_DESTROY:
             MainWindow::OnDestroy(hwnd);

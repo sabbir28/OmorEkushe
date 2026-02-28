@@ -3,11 +3,14 @@ project(LayoutEditor LANGUAGES CXX)
 add_executable(LayoutEditor WIN32
         src/main.cpp
         src/MainWindow.cpp
+        src/LayoutData.cpp
+        src/KeyboardView.cpp
+        src/KeyEditDialog.cpp
 )
 
 target_include_directories(LayoutEditor PRIVATE include)
 target_compile_definitions(LayoutEditor PRIVATE UNICODE _UNICODE)
-target_link_libraries(LayoutEditor PRIVATE comctl32 user32 gdi32)
+target_link_libraries(LayoutEditor PRIVATE comctl32 user32 gdi32 shlwapi)
 
 set_target_properties(LayoutEditor PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}"
