@@ -1,3 +1,8 @@
+#include "platform/windows/main_window/main_window_types.h"
+#include "platform/windows/main_window/main_window_helpers.h"
+#include "platform/windows/main_window/main_window_background.h"
+#include "platform/windows/main_window/main_window_layout.h"
+#include "platform/windows/main_window/main_window_tray.h"
 #include "platform/windows/main_window.h"
 
 #include "core/app_state.h"
@@ -5,9 +10,6 @@
 #include "core/startup_options.h"
 #include "core/window_layout_binding.h"
 #include "platform/windows/resource.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "lib/stb_image.h"
 
 #include <algorithm>
 #include <commctrl.h>
@@ -21,383 +23,24 @@
 #ifdef _MSC_VER
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "shell32.lib")
-#endif
-
-#ifndef TPM_NONBLOCKING
-#define TPM_NONBLOCKING 0x0000L
+#pragma comment(lib, "msimg32.lib") // For AlphaBlend
 #endif
 
 namespace bijoy::platform::windows {
 
+HWND g_mainWindow = nullptr;
+
 namespace {
 
-constexpr UINT kTrayIconMessage = WM_USER + 1;
-HWND g_mainWindow = nullptr;
-HWND g_layoutCombo = nullptr;
-HWND g_layoutIcon = nullptr;
 HWND g_optionsButton = nullptr;
 HWND g_layoutEditorButton = nullptr;
 HWND g_minimizeButton = nullptr;
 HWND g_closeButton = nullptr;
 HWND g_tooltipWindow = nullptr;
 
-NOTIFYICONDATAW g_notifyIcon = {};
-HMENU g_trayMenu = nullptr;
-HICON g_defaultIcon = nullptr;
-HICON g_layoutDisplayIcon = nullptr;
 HICON g_windowClassIconLarge = nullptr;
 HICON g_windowClassIconSmall = nullptr;
 bool g_ownsDefaultIcon = false;
-int g_requestedWindowTop = 0;
-HBITMAP g_backgroundBitmap = nullptr;
-int g_backgroundOpacity = 72;
-
-constexpr int kForcedTopY = 0;
-
-void SnapWindowToTop(HWND hwnd) {
-  if (!hwnd) {
-    return;
-  }
-
-  RECT windowRect = {};
-  if (!GetWindowRect(hwnd, &windowRect)) {
-    return;
-  }
-
-  SetWindowPos(
-      hwnd,
-      nullptr,
-      windowRect.left,
-      kForcedTopY,
-      0,
-      0,
-      SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-}
-
-
-std::wstring BuildPath(const std::wstring& base, const wchar_t* relative) {
-  std::wstring path = base;
-  path += relative;
-  return path;
-}
-
-std::wstring BuildPath(const std::wstring& base, const std::wstring& relative) {
-  std::wstring path = base;
-  path += relative;
-  return path;
-}
-
-HICON LoadIconFromPath(const std::wstring& path, int width, int height) {
-  return static_cast<HICON>(LoadImageW(
-      nullptr,
-      path.c_str(),
-      IMAGE_ICON,
-      width,
-      height,
-      LR_LOADFROMFILE));
-}
-
-HICON LoadAppIconFromData(int width, int height) {
-  const std::wstring appDir = bijoy::core::GetAppDirectory();
-  const std::wstring candidates[] = {
-      BuildPath(appDir, L"data\\Icons\\Bijoy.ico"),
-      BuildPath(appDir, L"..\\data\\Icons\\Bijoy.ico"),
-      BuildPath(appDir, L"data\\Bijoy.ico"),
-      BuildPath(appDir, L"..\\data\\Bijoy.ico"),
-      BuildPath(appDir, L"Bijoy.ico")};
-
-  for (const auto& candidate : candidates) {
-    if (HICON icon = LoadIconFromPath(candidate, width, height)) {
-      return icon;
-    }
-  }
-
-  return nullptr;
-}
-
-HICON LoadLayoutIcon(const bijoy::core::Layout* layout) {
-  if (!layout || layout->iconName.empty()) {
-    return nullptr;
-  }
-
-  std::wstring iconName = layout->iconName;
-  const bool hasIcoExt =
-      iconName.size() > 4 &&
-      _wcsicmp(iconName.c_str() + iconName.size() - 4, L".ico") == 0;
-  if (!hasIcoExt) {
-    iconName += L".ico";
-  }
-
-  const std::wstring appDir = bijoy::core::GetAppDirectory();
-  const std::wstring iconPaths[] = {
-      BuildPath(appDir, std::wstring(L"Icons\\") + iconName),
-      BuildPath(appDir, std::wstring(L"..\\data\\Icons\\") + iconName),
-  };
-
-  for (const auto& iconPath : iconPaths) {
-    if (HICON icon = LoadIconFromPath(iconPath, 16, 16)) {
-      return icon;
-    }
-  }
-
-  return nullptr;
-}
-
-
-
-std::string WideToUtf8(const std::wstring& value) {
-  if (value.empty()) {
-    return {};
-  }
-
-  const int requiredSize = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, nullptr, 0, nullptr, nullptr);
-  if (requiredSize <= 0) {
-    return {};
-  }
-
-  std::string utf8(static_cast<size_t>(requiredSize - 1), '\0');
-  WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, utf8.data(), requiredSize, nullptr, nullptr);
-  return utf8;
-}
-
-void ReleaseBackgroundBitmap() {
-  if (g_backgroundBitmap) {
-    DeleteObject(g_backgroundBitmap);
-    g_backgroundBitmap = nullptr;
-  }
-}
-
-std::wstring ResolveBackgroundImagePath() {
-  const std::wstring appDir = bijoy::core::GetAppDirectory();
-  const std::wstring candidates[] = {
-      BuildPath(appDir, L"data\\Bann2011.jpg"),
-      BuildPath(appDir, L"..\\data\\Bann2011.jpg"),
-      BuildPath(appDir, L"Bann2011.jpg")};
-
-  for (const auto& candidate : candidates) {
-    if (GetFileAttributesW(candidate.c_str()) != INVALID_FILE_ATTRIBUTES) {
-      return candidate;
-    }
-  }
-
-  return L"";
-}
-
-void LoadBackgroundBitmapForWindow(HWND hwnd) {
-  if (!hwnd) {
-    return;
-  }
-
-  ReleaseBackgroundBitmap();
-
-  RECT clientRect = {};
-  if (!GetClientRect(hwnd, &clientRect)) {
-    return;
-  }
-
-  const LONG clientWidthLong = std::max<LONG>(1, clientRect.right - clientRect.left);
-  const LONG clientHeightLong = std::max<LONG>(1, clientRect.bottom - clientRect.top);
-  const int clientWidth = static_cast<int>(clientWidthLong);
-  const int clientHeight = static_cast<int>(clientHeightLong);
-
-  const std::wstring imagePath = ResolveBackgroundImagePath();
-  if (imagePath.empty()) {
-    return;
-  }
-
-  const std::string imagePathUtf8 = WideToUtf8(imagePath);
-  if (imagePathUtf8.empty()) {
-    return;
-  }
-
-  int sourceWidth = 0;
-  int sourceHeight = 0;
-  int sourceChannels = 0;
-  stbi_uc* sourcePixels = stbi_load(imagePathUtf8.c_str(), &sourceWidth, &sourceHeight, &sourceChannels, 4);
-  if (!sourcePixels || sourceWidth <= 0 || sourceHeight <= 0) {
-    stbi_image_free(sourcePixels);
-    return;
-  }
-
-  BITMAPINFO bitmapInfo = {};
-  bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-  bitmapInfo.bmiHeader.biWidth = clientWidth;
-  bitmapInfo.bmiHeader.biHeight = -clientHeight;
-  bitmapInfo.bmiHeader.biPlanes = 1;
-  bitmapInfo.bmiHeader.biBitCount = 32;
-  bitmapInfo.bmiHeader.biCompression = BI_RGB;
-
-  void* scaledPixels = nullptr;
-  HDC screenDc = GetDC(hwnd);
-  HBITMAP dib = CreateDIBSection(screenDc, &bitmapInfo, DIB_RGB_COLORS, &scaledPixels, nullptr, 0);
-
-  if (!screenDc || !dib || !scaledPixels) {
-    if (screenDc) {
-      ReleaseDC(hwnd, screenDc);
-    }
-    if (dib) {
-      DeleteObject(dib);
-    }
-    stbi_image_free(sourcePixels);
-    return;
-  }
-
-  HDC srcDc = CreateCompatibleDC(screenDc);
-  HDC dstDc = CreateCompatibleDC(screenDc);
-
-  BITMAPINFO srcInfo = {};
-  srcInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-  srcInfo.bmiHeader.biWidth = sourceWidth;
-  srcInfo.bmiHeader.biHeight = -sourceHeight;
-  srcInfo.bmiHeader.biPlanes = 1;
-  srcInfo.bmiHeader.biBitCount = 32;
-  srcInfo.bmiHeader.biCompression = BI_RGB;
-
-  void* srcDibPixels = nullptr;
-  HBITMAP srcBitmap = CreateDIBSection(screenDc, &srcInfo, DIB_RGB_COLORS, &srcDibPixels, nullptr, 0);
-
-  if (!srcDc || !dstDc || !srcBitmap || !srcDibPixels) {
-    if (srcBitmap) {
-      DeleteObject(srcBitmap);
-    }
-    if (srcDc) {
-      DeleteDC(srcDc);
-    }
-    if (dstDc) {
-      DeleteDC(dstDc);
-    }
-    DeleteObject(dib);
-    ReleaseDC(hwnd, screenDc);
-    stbi_image_free(sourcePixels);
-    return;
-  }
-
-  std::vector<unsigned char> srcBgra(static_cast<size_t>(sourceWidth) * static_cast<size_t>(sourceHeight) * 4);
-  for (int i = 0; i < sourceWidth * sourceHeight; ++i) {
-    srcBgra[i * 4 + 0] = sourcePixels[i * 4 + 2];
-    srcBgra[i * 4 + 1] = sourcePixels[i * 4 + 1];
-    srcBgra[i * 4 + 2] = sourcePixels[i * 4 + 0];
-    srcBgra[i * 4 + 3] = sourcePixels[i * 4 + 3];
-  }
-
-  std::memcpy(srcDibPixels, srcBgra.data(), srcBgra.size());
-
-  const HGDIOBJ oldSrc = SelectObject(srcDc, srcBitmap);
-  const HGDIOBJ oldDst = SelectObject(dstDc, dib);
-  SetStretchBltMode(dstDc, HALFTONE);
-  SetBrushOrgEx(dstDc, 0, 0, nullptr);
-  StretchBlt(dstDc, 0, 0, clientWidth, clientHeight, srcDc, 0, 0, sourceWidth, sourceHeight, SRCCOPY);
-  SelectObject(srcDc, oldSrc);
-  SelectObject(dstDc, oldDst);
-
-  DeleteObject(srcBitmap);
-  DeleteDC(srcDc);
-  DeleteDC(dstDc);
-  ReleaseDC(hwnd, screenDc);
-  stbi_image_free(sourcePixels);
-
-  g_backgroundBitmap = dib;
-}
-
-void DrawWindowBackground(HWND hwnd, HDC targetDc) {
-  RECT clientRect = {};
-  GetClientRect(hwnd, &clientRect);
-
-  if (!g_backgroundBitmap) {
-    FillRect(targetDc, &clientRect, reinterpret_cast<HBRUSH>(COLOR_BTNFACE + 1));
-    return;
-  }
-
-  HDC memDc = CreateCompatibleDC(targetDc);
-  if (!memDc) {
-    FillRect(targetDc, &clientRect, reinterpret_cast<HBRUSH>(COLOR_BTNFACE + 1));
-    return;
-  }
-
-  const HGDIOBJ oldBmp = SelectObject(memDc, g_backgroundBitmap);
-  BLENDFUNCTION blend = {};
-  blend.BlendOp = AC_SRC_OVER;
-  blend.SourceConstantAlpha = static_cast<BYTE>(g_backgroundOpacity);
-  blend.AlphaFormat = 0;
-
-  FillRect(targetDc, &clientRect, reinterpret_cast<HBRUSH>(COLOR_BTNFACE + 1));
-  AlphaBlend(
-      targetDc,
-      0,
-      0,
-      clientRect.right - clientRect.left,
-      clientRect.bottom - clientRect.top,
-      memDc,
-      0,
-      0,
-      clientRect.right - clientRect.left,
-      clientRect.bottom - clientRect.top,
-      blend);
-
-  SelectObject(memDc, oldBmp);
-  DeleteDC(memDc);
-}
-void SetMainWindowVisible(bool visible) {
-  if (!g_mainWindow) {
-    return;
-  }
-  ShowWindow(g_mainWindow, visible ? SW_SHOW : SW_HIDE);
-}
-
-void ReleaseLayoutDisplayIcon() {
-  if (g_layoutDisplayIcon && g_layoutDisplayIcon != g_defaultIcon) {
-    DestroyIcon(g_layoutDisplayIcon);
-  }
-  g_layoutDisplayIcon = nullptr;
-}
-
-void SelectLayout(int index) {
-  bijoy::core::SetCurrentLayout(index);
-
-  if (g_layoutCombo) {
-    const int count = static_cast<int>(SendMessageW(g_layoutCombo, CB_GETCOUNT, 0, 0));
-    for (int comboIndex = 0; comboIndex < count; ++comboIndex) {
-      const LRESULT itemData = SendMessageW(g_layoutCombo, CB_GETITEMDATA, static_cast<WPARAM>(comboIndex), 0);
-      if (static_cast<int>(itemData) == index) {
-        SendMessageW(g_layoutCombo, CB_SETCURSEL, static_cast<WPARAM>(comboIndex), 0);
-        break;
-      }
-    }
-  }
-
-  ReleaseLayoutDisplayIcon();
-  HICON icon = nullptr;
-  if (index >= 0) {
-    if (auto* layout = bijoy::core::GetLayoutByIndex(index)) {
-    icon = LoadLayoutIcon(layout);
-      bijoy::core::AddWindowLayoutBinding(GetForegroundWindow(), layout);
-    }
-  } else {
-    bijoy::core::RemoveWindowLayoutBinding(GetForegroundWindow());
-  }
-
-  if (!icon) {
-    icon = g_defaultIcon;
-  }
-
-  g_layoutDisplayIcon = icon;
-
-  if (g_layoutIcon) {
-    SendMessageW(g_layoutIcon, STM_SETIMAGE, IMAGE_ICON, reinterpret_cast<LPARAM>(icon));
-  }
-
-  g_notifyIcon.hIcon = icon;
-  Shell_NotifyIconW(NIM_MODIFY, &g_notifyIcon);
-
-  if (g_trayMenu) {
-    CheckMenuRadioItem(
-        g_trayMenu,
-        IDM_TRAY_LAYOUT_BASE,
-        IDM_TRAY_LAYOUT_BASE + bijoy::core::GetLayoutCount(),
-        IDM_TRAY_LAYOUT_BASE + (index + 1),
-        MF_BYCOMMAND);
-  }
-}
 
 void AddTooltip(HWND tool, const wchar_t* text) {
   if (!g_tooltipWindow || !tool || !text) {
@@ -413,87 +56,6 @@ void AddTooltip(HWND tool, const wchar_t* text) {
   toolInfo.rect = {};
 
   SendMessageW(g_tooltipWindow, TTM_ADDTOOLW, 0, reinterpret_cast<LPARAM>(&toolInfo));
-}
-
-void PopulateLayoutCombo() {
-  if (!g_layoutCombo) {
-    return;
-  }
-
-  SendMessageW(g_layoutCombo, CB_RESETCONTENT, 0, 0);
-
-  const LRESULT englishIndex = SendMessageW(g_layoutCombo, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(L"English"));
-  if (englishIndex >= 0) {
-    SendMessageW(g_layoutCombo, CB_SETITEMDATA, static_cast<WPARAM>(englishIndex), static_cast<LPARAM>(-1));
-  }
-
-  for (int i = 0; i < bijoy::core::GetLayoutCount(); ++i) {
-    if (const auto* layout = bijoy::core::GetLayoutByIndex(i)) {
-      const LRESULT comboIndex = SendMessageW(g_layoutCombo, CB_ADDSTRING, 0, reinterpret_cast<LPARAM>(layout->name.c_str()));
-      if (comboIndex >= 0) {
-        SendMessageW(g_layoutCombo, CB_SETITEMDATA, static_cast<WPARAM>(comboIndex), static_cast<LPARAM>(i));
-      }
-    }
-  }
-
-  int currentIndex = bijoy::core::GetCurrentLayoutIndex();
-  if (currentIndex >= bijoy::core::GetLayoutCount()) {
-    currentIndex = -1;
-  }
-  SelectLayout(currentIndex);
-}
-
-void CycleToNextLayout() {
-  const int count = bijoy::core::GetLayoutCount();
-  const int current = bijoy::core::GetCurrentLayoutIndex();
-  // Cycle: English (-1) -> Layout 0 -> Layout 1 ... -> English (-1)
-  int next = current + 1;
-  if (next >= count) {
-    next = -1;
-  }
-  SelectLayout(next);
-}
-
-void BuildTrayMenu() {
-  if (g_trayMenu) {
-    DestroyMenu(g_trayMenu);
-  }
-
-  g_trayMenu = CreatePopupMenu();
-
-  const bool isVisible = g_mainWindow && IsWindowVisible(g_mainWindow);
-  AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_SHOW, isVisible ? L"&Hide" : L"&Show");
-  AppendMenuW(g_trayMenu, MF_SEPARATOR, 0, nullptr);
-
-  AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_LAYOUT_BASE, L"English");
-
-  for (int i = 0; i < bijoy::core::GetLayoutCount(); ++i) {
-    if (const auto* layout = bijoy::core::GetLayoutByIndex(i)) {
-      AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_LAYOUT_BASE + i + 1, layout->name.c_str());
-    }
-  }
-
-  AppendMenuW(g_trayMenu, MF_SEPARATOR, 0, nullptr);
-  AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_EXIT, L"E&xit");
-}
-
-void OnTrayCommand(UINT id) {
-  if (id == IDM_TRAY_EXIT) {
-    if (g_mainWindow) {
-      DestroyWindow(g_mainWindow);
-    }
-    return;
-  }
-
-  if (id == IDM_TRAY_SHOW) {
-    const bool isVisible = g_mainWindow && IsWindowVisible(g_mainWindow);
-    SetMainWindowVisible(!isVisible);
-    return;
-  }
-
-  if (id >= IDM_TRAY_LAYOUT_BASE && id < IDM_TRAY_LAYOUT_BASE + 101) {
-    SelectLayout(static_cast<int>(id - IDM_TRAY_LAYOUT_BASE - 1));
-  }
 }
 
 LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -658,7 +220,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
       }
 
       if (controlId == IDC_MINIMIZE_BUTTON) {
-        SetMainWindowVisible(false);
+        ShowWindow(hwnd, SW_HIDE);
         return 0;
       }
 
@@ -693,7 +255,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
       } else if (lParam == WM_LBUTTONUP) {
         CycleToNextLayout();
       } else if (lParam == WM_LBUTTONDBLCLK) {
-        SetMainWindowVisible(true);
+        ShowWindow(hwnd, SW_SHOW);
       }
       return 0;
 
@@ -737,7 +299,7 @@ LRESULT CALLBACK MainWindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPara
     }
 
     case WM_CLOSE:
-      SetMainWindowVisible(false);
+      ShowWindow(hwnd, SW_HIDE);
       return 0;
 
     case WM_DESTROY: {
@@ -799,37 +361,35 @@ HWND CreateMainWindow(HINSTANCE hInstance) {
 
   RegisterClassExW(&windowClass);
 
+  bijoy::core::StartupOptions options = bijoy::core::LoadStartupOptions();
+
   g_mainWindow = CreateWindowExW(
-      WS_EX_TOOLWINDOW | WS_EX_TOPMOST,
+      WS_EX_TOPMOST | WS_EX_TOOLWINDOW,
       windowClass.lpszClassName,
       L"Omor Ekushe",
-      WS_POPUPWINDOW,
-      CW_USEDEFAULT,
-      g_requestedWindowTop,
-      440,
-      40,
+      WS_POPUP,
+      options.mainWindowLeft,
+      kForcedTopY,
+      436,
+      34,
       nullptr,
       nullptr,
       hInstance,
       nullptr);
 
+  if (g_mainWindow) {
+    ShowWindow(g_mainWindow, SW_SHOW);
+    UpdateWindow(g_mainWindow);
+  }
+
   return g_mainWindow;
 }
 
 void SetMainWindowInitialPosition(int left, int top) {
-  g_requestedWindowTop = (top <= 1) ? top : kForcedTopY;
-
-  if (g_mainWindow) {
-    const int targetLeft = left >= 0 ? left : 0;
-    SetWindowPos(
-        g_mainWindow,
-        nullptr,
-        targetLeft,
-        g_requestedWindowTop,
-        0,
-        0,
-        SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-  }
+    if (g_mainWindow) {
+        (void)top; // Suppress unused parameter warning as Y is forced to top
+        SetWindowPos(g_mainWindow, nullptr, left, kForcedTopY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+    }
 }
 
 } // namespace bijoy::platform::windows

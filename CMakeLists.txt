@@ -24,6 +24,10 @@ add_executable(OmorEkushe WIN32
         src/core/startup_options.cpp
         src/core/window_layout_binding.cpp
         src/platform/windows/main_window.cpp
+        src/platform/windows/main_window/main_window_background.cpp
+        src/platform/windows/main_window/main_window_helpers.cpp
+        src/platform/windows/main_window/main_window_layout.cpp
+        src/platform/windows/main_window/main_window_tray.cpp
         src/platform/windows/native_input.cpp
         src/platform/windows/registration_dialog.cpp
         src/platform/windows/splash_screen.cpp
