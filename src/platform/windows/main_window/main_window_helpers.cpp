@@ -2,6 +2,7 @@
 #include "platform/windows/main_window/main_window_types.h"
 #include "core/layout.h"
 #include "core/layout_discovery.h"
+#include "lib/stb_image.h"
 
 #include <algorithm>
 
@@ -88,6 +89,82 @@ std::string WideToUtf8(const std::wstring& value) {
   std::string utf8(static_cast<size_t>(requiredSize - 1), '\0');
   WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, utf8.data(), requiredSize, nullptr, nullptr);
   return utf8;
+}
+
+HBITMAP LoadPngAsBitmap(const std::wstring& path, int width, int height) {
+  const std::string pathUtf8 = WideToUtf8(path);
+  if (pathUtf8.empty()) {
+    return nullptr;
+  }
+
+  int srcWidth = 0, srcHeight = 0, srcChannels = 0;
+  stbi_uc* data = stbi_load(pathUtf8.c_str(), &srcWidth, &srcHeight, &srcChannels, 4);
+  if (!data) {
+    return nullptr;
+  }
+
+  BITMAPINFO bmi = {};
+  bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+  bmi.bmiHeader.biWidth = width;
+  bmi.bmiHeader.biHeight = -height; // Top-down
+  bmi.bmiHeader.biPlanes = 1;
+  bmi.bmiHeader.biBitCount = 32;
+  bmi.bmiHeader.biCompression = BI_RGB;
+
+  void* bits = nullptr;
+  HDC screenDc = GetDC(nullptr);
+  HBITMAP hBitmap = CreateDIBSection(screenDc, &bmi, DIB_RGB_COLORS, &bits, nullptr, 0);
+  
+  if (hBitmap && bits) {
+    HDC srcDc = CreateCompatibleDC(screenDc);
+    HDC dstDc = CreateCompatibleDC(screenDc);
+
+    BITMAPINFO srcBmi = {};
+    srcBmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    srcBmi.bmiHeader.biWidth = srcWidth;
+    srcBmi.bmiHeader.biHeight = -srcHeight;
+    srcBmi.bmiHeader.biPlanes = 1;
+    srcBmi.bmiHeader.biBitCount = 32;
+    srcBmi.bmiHeader.biCompression = BI_RGB;
+
+    void* srcBits = nullptr;
+    HBITMAP hSrcBitmap = CreateDIBSection(screenDc, &srcBmi, DIB_RGB_COLORS, &srcBits, nullptr, 0);
+    
+    if (hSrcBitmap && srcBits) {
+      // Convert RGBA to BGRA and Pre-multiply Alpha for the source
+      auto* srcPixels = static_cast<unsigned char*>(srcBits);
+      for (int i = 0; i < srcWidth * srcHeight; ++i) {
+        unsigned char r = data[i * 4 + 0];
+        unsigned char g = data[i * 4 + 1];
+        unsigned char b = data[i * 4 + 2];
+        unsigned char a = data[i * 4 + 3];
+
+        // BGRA order for DIB section and pre-multiplying alpha
+        srcPixels[i * 4 + 0] = static_cast<unsigned char>((b * a) / 255);
+        srcPixels[i * 4 + 1] = static_cast<unsigned char>((g * a) / 255);
+        srcPixels[i * 4 + 2] = static_cast<unsigned char>((r * a) / 255);
+        srcPixels[i * 4 + 3] = a;
+      }
+
+      const HGDIOBJ oldSrc = SelectObject(srcDc, hSrcBitmap);
+      const HGDIOBJ oldDst = SelectObject(dstDc, hBitmap);
+      
+      // Use AlphaBlend for resizing to properly handle pre-multiplied alpha channel
+      BLENDFUNCTION bf = {AC_SRC_OVER, 0, 255, AC_SRC_ALPHA};
+      AlphaBlend(dstDc, 0, 0, width, height, srcDc, 0, 0, srcWidth, srcHeight, bf);
+
+      SelectObject(srcDc, oldSrc);
+      SelectObject(dstDc, oldDst);
+      DeleteObject(hSrcBitmap);
+    }
+    
+    DeleteDC(srcDc);
+    DeleteDC(dstDc);
+  }
+
+  ReleaseDC(nullptr, screenDc);
+  stbi_image_free(data);
+  return hBitmap;
 }
 
 void SnapWindowToTop(HWND hwnd) {

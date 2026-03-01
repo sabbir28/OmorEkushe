@@ -13,7 +13,7 @@
 namespace bijoy::platform::windows {
 
 HBITMAP g_backgroundBitmap = nullptr;
-int g_backgroundOpacity = 72;
+int g_backgroundOpacity = 180;
 
 void ReleaseBackgroundBitmap() {
   if (g_backgroundBitmap) {
@@ -25,6 +25,9 @@ void ReleaseBackgroundBitmap() {
 std::wstring ResolveBackgroundImagePath() {
   const std::wstring appDir = bijoy::core::GetAppDirectory();
   const std::wstring candidates[] = {
+      BuildPath(appDir, L"data\\bg.bmp"),
+      BuildPath(appDir, L"..\\data\\bg.bmp"),
+      BuildPath(appDir, L"bg.bmp"),
       BuildPath(appDir, L"data\\Bann2011.jpg"),
       BuildPath(appDir, L"..\\data\\Bann2011.jpg"),
       BuildPath(appDir, L"Bann2011.jpg")};

@@ -15,14 +15,10 @@ file(MAKE_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}")
 file(MAKE_DIRECTORY "${BIJOY_DATA_DIR}")
 file(MAKE_DIRECTORY "${BIJOY_BUILD_ROOT}/temp")
 
-add_executable(OmorEkushe WIN32
-        src/app/main.cpp
-        src/core/app_state.cpp
-        src/core/keyboard_hook_service.cpp
-        src/core/layout.cpp
-        src/core/layout_discovery.cpp
-        src/core/startup_options.cpp
-        src/core/window_layout_binding.cpp
+add_executable(OmorEkushe WIN32)
+
+if(WIN32)
+    target_sources(OmorEkushe PRIVATE
         src/platform/windows/main_window.cpp
         src/platform/windows/main_window/main_window_background.cpp
         src/platform/windows/main_window/main_window_helpers.cpp
@@ -31,6 +27,25 @@ add_executable(OmorEkushe WIN32
         src/platform/windows/native_input.cpp
         src/platform/windows/registration_dialog.cpp
         src/platform/windows/splash_screen.cpp
+        src/platform/windows/options_overlay.cpp
+    )
+elseif(UNIX AND NOT APPLE)
+    target_sources(OmorEkushe PRIVATE
+        src/platform/linux/main_window.cpp
+        src/platform/linux/native_input.cpp
+        src/platform/linux/registration_dialog.cpp
+        src/platform/linux/splash_screen.cpp
+    )
+endif()
+
+target_sources(OmorEkushe PRIVATE
+        src/app/main.cpp
+        src/core/app_state.cpp
+        src/core/keyboard_hook_service.cpp
+        src/core/layout.cpp
+        src/core/layout_discovery.cpp
+        src/core/startup_options.cpp
+        src/core/window_layout_binding.cpp
         src/utils/system_utils.cpp
         )
 
@@ -99,5 +114,8 @@ add_custom_target(omorekushe_all
 if(BIJOY_BUILD_LAYOUT_EDITOR)
     add_subdirectory(LayoutEditor)
 endif()
+
+# Add the new Network Library
+add_subdirectory(NetClient)
 
 
