@@ -103,18 +103,21 @@ void KeyboardView::OnPaint(HWND hwnd) {
 
     const LayoutData* layout = GetLayout(hwnd);
 
-    // Draw background
-    HBRUSH bgBrush = CreateSolidBrush(RGB(240, 240, 240));
+    // Draw background - light gray gradient feel
+    HBRUSH bgBrush = CreateSolidBrush(RGB(245, 247, 250));
     FillRect(hdc, &rc, bgBrush);
     DeleteObject(bgBrush);
 
-    HBRUSH keyBrush = CreateSolidBrush(RGB(255, 255, 255));
-    HPEN keyPen = CreatePen(PS_SOLID, 1, RGB(150, 150, 150));
-    SelectObject(hdc, keyBrush);
-    SelectObject(hdc, keyPen);
+    // Modern color palette
+    COLORREF colorKeyNormal = RGB(255, 255, 255);
+    COLORREF colorKeyBorder = RGB(200, 205, 215);
+    COLORREF colorTextNormal = RGB(45, 55, 72);
+    COLORREF colorTextShift = RGB(113, 128, 150);
+    COLORREF colorLabelFaint = RGB(226, 232, 240);
+    COLORREF colorKeyNonMod = RGB(247, 250, 252);
 
-    HFONT hFontMain = CreateFontW(18, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
-    HFONT hFontSmall = CreateFontW(14, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
+    HFONT hFontMain = CreateFontW(18, 0, 0, 0, FW_SEMIBOLD, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
+    HFONT hFontSmall = CreateFontW(13, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Segoe UI");
     
     SetBkMode(hdc, TRANSPARENT);
 
@@ -125,18 +128,30 @@ void KeyboardView::OnPaint(HWND hwnd) {
         int kh = (int)(k.rh * h);
 
         RECT krc = { kx + 2, ky + 2, kx + kw - 2, ky + kh - 2 };
-        Rectangle(hdc, krc.left, krc.top, krc.right, krc.bottom);
+        
+        // Key shadow/depth effect (subtle)
+        HBRUSH shadowBrush = CreateSolidBrush(RGB(210, 215, 225));
+        RECT shadowRect = krc;
+        OffsetRect(&shadowRect, 0, 1);
+        RoundRect(hdc, shadowRect.left, shadowRect.top, shadowRect.right, shadowRect.bottom, 6, 6);
+        DeleteObject(shadowBrush);
 
-        // Draw faint base label first
+        HBRUSH keyBrush = CreateSolidBrush(k.modifiable ? colorKeyNormal : colorKeyNonMod);
+        HPEN keyPen = CreatePen(PS_SOLID, 1, colorKeyBorder);
+        SelectObject(hdc, keyBrush);
+        SelectObject(hdc, keyPen);
+
+        // Draw rounded rectangle for key
+        RoundRect(hdc, krc.left, krc.top, krc.right, krc.bottom, 6, 6);
+
+        // Draw faint base label (original US key)
         if (k.modifiable) {
             SelectObject(hdc, hFontMain);
-            SetTextColor(hdc, RGB(220, 220, 220)); // Faint gray
-            RECT bgRect = krc;
-            bgRect.top += 5; // Slight offset from top
-            DrawTextW(hdc, k.label, -1, &bgRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+            SetTextColor(hdc, colorLabelFaint);
+            DrawTextW(hdc, k.label, -1, &krc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
         }
 
-        // Draw mapped layoyt characters
+        // Draw mapped layout characters
         if (k.modifiable) {
             std::wstring normalText = L"";
             std::wstring shiftText = L"";
@@ -149,38 +164,39 @@ void KeyboardView::OnPaint(HWND hwnd) {
                 }
             }
 
-            SetTextColor(hdc, RGB(0, 0, 0));
-            SelectObject(hdc, hFontMain);
-            
-            // Draw normal character bottom left
+            // Normal character (bottom-right feel but center-left)
             if (!normalText.empty()) {
+                SelectObject(hdc, hFontMain);
+                SetTextColor(hdc, colorTextNormal);
                 RECT tRectNormal = krc;
-                tRectNormal.left += 5;
-                tRectNormal.top += 15;
-                DrawTextW(hdc, normalText.c_str(), -1, &tRectNormal, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+                tRectNormal.left += 6;
+                tRectNormal.top += 8;
+                DrawTextW(hdc, normalText.c_str(), -1, &tRectNormal, DT_LEFT | DT_TOP | DT_SINGLELINE);
             }
 
-            // Draw shift character top left
+            // Shift character (top-left)
             if (!shiftText.empty()) {
                 SelectObject(hdc, hFontSmall);
-                SetTextColor(hdc, RGB(100, 100, 100));
+                SetTextColor(hdc, colorTextShift);
                 RECT tRectShift = krc;
-                tRectShift.left += 5;
+                tRectShift.left += 6;
                 tRectShift.top += 2;
-                DrawTextW(hdc, shiftText.c_str(), -1, &tRectShift, DT_LEFT | DT_TOP | DT_SINGLELINE);
+                tRectShift.right -= 6;
+                DrawTextW(hdc, shiftText.c_str(), -1, &tRectShift, DT_RIGHT | DT_TOP | DT_SINGLELINE);
             }
         } else {
             SelectObject(hdc, hFontSmall);
-            SetTextColor(hdc, RGB(50, 50, 50));
+            SetTextColor(hdc, colorTextShift);
             DrawTextW(hdc, k.label, -1, &krc, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
         }
+
+        DeleteObject(keyBrush);
+        DeleteObject(keyPen);
     }
 
     SelectObject(hdc, GetStockObject(DEFAULT_GUI_FONT));
     DeleteObject(hFontMain);
     DeleteObject(hFontSmall);
-    DeleteObject(keyBrush);
-    DeleteObject(keyPen);
     
     EndPaint(hwnd, &ps);
 }

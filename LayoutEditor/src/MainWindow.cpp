@@ -23,6 +23,17 @@ HWND MainWindow::s_hEditName = nullptr;
 
 constexpr int IDC_KEYBOARD_VIEW = 2001;
 constexpr int IDC_BTN_ICON = 2002;
+constexpr int IDC_STATIC_LABEL1 = 2003;
+constexpr int IDC_STATIC_LABEL2 = 2004;
+constexpr int IDC_GROUP_KEYBOARD = 2005;
+
+static HWND s_hLabel1 = nullptr;
+static HWND s_hLabel2 = nullptr;
+static HWND s_hBtnIcon = nullptr;
+static HWND s_hBtnNew = nullptr;
+static HWND s_hBtnSave = nullptr;
+static HWND s_hBtnCancel = nullptr;
+static HWND s_hGroupBox = nullptr;
 
 bool MainWindow::Register(HINSTANCE hInstance) {
     if (!editor::KeyboardView::Register(hInstance)) {
@@ -78,11 +89,11 @@ void MainWindow::ApplySystemFont(HWND hwnd) {
 }
 
 void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
-    CreateWindowW(
+    s_hLabel1 = CreateWindowW(
         L"STATIC", L"Layout Name:",
         WS_CHILD | WS_VISIBLE,
         20, 20, 120, 20,
-        hwnd, nullptr, hInstance, nullptr
+        hwnd, reinterpret_cast<HMENU>(IDC_STATIC_LABEL1), hInstance, nullptr
     );
 
     s_hEditName = CreateWindowW(
@@ -95,7 +106,7 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
         nullptr
     );
     
-    CreateWindowW(
+    s_hBtnIcon = CreateWindowW(
         L"BUTTON", L"Icon...",
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
         380, 17, 70, 26,
@@ -105,11 +116,11 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
         nullptr
     );
 
-    CreateWindowW(
+    s_hLabel2 = CreateWindowW(
         L"STATIC", L"Base Layout:",
         WS_CHILD | WS_VISIBLE,
         20, 70, 120, 20,
-        hwnd, nullptr, hInstance, nullptr
+        hwnd, reinterpret_cast<HMENU>(IDC_STATIC_LABEL2), hInstance, nullptr
     );
 
     s_hCombo = CreateWindowW(
@@ -122,13 +133,13 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
         nullptr
     );
 
-    // Group Box for Keyboard View Placeholder
-    CreateWindowW(
+    // Group Box for Keyboard View
+    s_hGroupBox = CreateWindowW(
         L"BUTTON", L"Keyboard Layout Preview",
         WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
         20, 110, 540, 220,
         hwnd,
-        nullptr,
+        reinterpret_cast<HMENU>(IDC_GROUP_KEYBOARD),
         hInstance,
         nullptr
     );
@@ -139,32 +150,30 @@ void MainWindow::CreateControls(HWND hwnd, HINSTANCE hInstance) {
         IDC_KEYBOARD_VIEW
     );
 
-    int btnY = APP_HEIGHT - 80;
-
-    CreateWindowW(
+    s_hBtnNew = CreateWindowW(
         L"BUTTON", L"New Layout",
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-        40, btnY, 120, 30,
+        40, 370, 120, 30,
         hwnd,
         reinterpret_cast<HMENU>(IDC_BTN_NEW),
         hInstance,
         nullptr
     );
 
-    CreateWindowW(
+    s_hBtnSave = CreateWindowW(
         L"BUTTON", L"Save",
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-        180, btnY, 120, 30,
+        180, 370, 120, 30,
         hwnd,
         reinterpret_cast<HMENU>(IDC_BTN_SAVE),
         hInstance,
         nullptr
     );
 
-    CreateWindowW(
+    s_hBtnCancel = CreateWindowW(
         L"BUTTON", L"Cancel",
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-        320, btnY, 120, 30,
+        320, 370, 120, 30,
         hwnd,
         reinterpret_cast<HMENU>(IDC_BTN_CANCEL),
         hInstance,
@@ -209,6 +218,50 @@ LRESULT CALLBACK MainWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
             LPCREATESTRUCTW cs = reinterpret_cast<LPCREATESTRUCTW>(lParam);
             MainWindow::CreateControls(hwnd, cs->hInstance);
             MainWindow::RefreshComboBox(hwnd);
+            return 0;
+        }
+
+        case WM_SIZE: {
+            int width = LOWORD(lParam);
+            int height = HIWORD(lParam);
+
+            // Padding and margins
+            int margin = 20;
+            int labelWidth = 120;
+            int controlH = 24;
+            int btnNetW = 120;
+            int btnH = 32;
+
+            // Layout row 1: [Label] [Editbox] [IconBtn]
+            int iconBtnW = 80;
+            int editW = width - labelWidth - iconBtnW - (margin * 4);
+            if (editW < 100) editW = 100;
+            
+            MoveWindow(s_hLabel1, margin, margin + 2, labelWidth, controlH, TRUE);
+            MoveWindow(s_hEditName, margin + labelWidth + 10, margin, editW, controlH + 4, TRUE);
+            MoveWindow(s_hBtnIcon, width - margin - iconBtnW, margin - 1, iconBtnW, controlH + 6, TRUE);
+
+            // Layout row 2: [Label] [Combo]
+            int comboW = width - labelWidth - (margin * 3);
+            MoveWindow(s_hLabel2, margin, margin * 2 + controlH + 10, labelWidth, controlH, TRUE);
+            MoveWindow(s_hCombo, margin + labelWidth + 10, margin * 2 + controlH + 8, comboW, 200, TRUE);
+
+            // Bottom Buttons: [New] [Save] [Cancel]
+            int btnY = height - margin - btnH;
+            int btnSpacing = 10;
+            MoveWindow(s_hBtnNew, margin, btnY, btnNetW, btnH, TRUE);
+            MoveWindow(s_hBtnSave, margin + btnNetW + btnSpacing, btnY, btnNetW, btnH, TRUE);
+            MoveWindow(s_hBtnCancel, width - margin - btnNetW, btnY, btnNetW, btnH, TRUE);
+
+            // Keyboard View Area
+            int kbY = margin * 2 + controlH * 2 + 40;
+            int kbH = btnY - kbY - margin - 10;
+            if (kbH < 100) kbH = 100;
+
+            MoveWindow(s_hGroupBox, margin, kbY, width - (margin * 2), kbH, TRUE);
+            // Keyboard view inside group box with small padding
+            MoveWindow(s_hKeyboardView, margin + 10, kbY + 20, width - (margin * 2) - 20, kbH - 30, TRUE);
+
             return 0;
         }
 
