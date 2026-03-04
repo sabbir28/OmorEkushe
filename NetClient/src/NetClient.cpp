@@ -15,7 +15,7 @@ namespace NetClient {
     std::string Response::header(const std::string& name) const {
         std::string lower_name = name;
         std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
-        
+
         for (const auto& h : headers) {
             std::string h_name = h.first;
             std::transform(h_name.begin(), h_name.end(), h_name.begin(), ::tolower);
@@ -27,31 +27,31 @@ namespace NetClient {
     bool Response::is_json() const {
         std::string ct = header("Content-Type");
         if (ct.find("application/json") != std::string::npos) return true;
-        
+
         // Fallback: check if it looks like JSON
         std::string trimmed = text;
         trimmed.erase(0, trimmed.find_first_not_of(" \t\n\r\f\v"));
         trimmed.erase(trimmed.find_last_not_of(" \t\n\r\f\v") + 1);
-        
+
         if (trimmed.empty()) return false;
-        return (trimmed.front() == '{' && trimmed.back() == '}') || 
+        return (trimmed.front() == '{' && trimmed.back() == '}') ||
                (trimmed.front() == '[' && trimmed.back() == ']');
     }
 
 #ifdef _WIN32
     static Response internal_request(const std::string& method,
-                                    const std::string& url, 
-                                    const std::string& data,
-                                    const std::map<std::string, std::string>& headers) {
-        
+                                     const std::string& url,
+                                     const std::string& data,
+                                     const std::map<std::string, std::string>& headers) {
+
         Response resp;
         resp.url = url;
         resp.status_code = 0;
 
-        HINTERNET hSession = WinHttpOpen(L"NetClient/1.0", 
-                                        WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
-                                        WINHTTP_NO_PROXY_NAME, 
-                                        WINHTTP_NO_PROXY_BYPASS, 0);
+        HINTERNET hSession = WinHttpOpen(L"NetClient/1.0",
+                                         WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+                                         WINHTTP_NO_PROXY_NAME,
+                                         WINHTTP_NO_PROXY_BYPASS, 0);
 
         if (hSession) {
             URL_COMPONENTS urlComp = {0};
@@ -72,15 +72,15 @@ namespace NetClient {
                 if (hConnect) {
                     std::wstring wMethod(method.begin(), method.end());
                     DWORD dwFlags = (urlComp.nScheme == INTERNET_SCHEME_HTTPS) ? WINHTTP_FLAG_SECURE : 0;
-                    
+
                     HINTERNET hRequest = WinHttpOpenRequest(hConnect, wMethod.c_str(), urlComp.lpszUrlPath,
-                                                           NULL, WINHTTP_NO_REFERER, 
-                                                           WINHTTP_DEFAULT_ACCEPT_TYPES, dwFlags);
+                                                            NULL, WINHTTP_NO_REFERER,
+                                                            WINHTTP_DEFAULT_ACCEPT_TYPES, dwFlags);
 
                     if (hRequest) {
                         // Add headers
                         for (const auto& head : headers) {
-                            std::wstring wHeader = std::wstring(head.first.begin(), head.first.end()) + L": " + 
+                            std::wstring wHeader = std::wstring(head.first.begin(), head.first.end()) + L": " +
                                                    std::wstring(head.second.begin(), head.second.end());
                             WinHttpAddRequestHeaders(hRequest, wHeader.c_str(), (ULONG)-1L, WINHTTP_ADDREQ_FLAG_ADD);
                         }
@@ -88,25 +88,25 @@ namespace NetClient {
                         DWORD dwDataSize = (DWORD)data.size();
                         LPVOID lpOptional = dwDataSize > 0 ? (LPVOID)data.c_str() : WINHTTP_NO_REQUEST_DATA;
 
-                        if (WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, 
-                                             lpOptional, dwDataSize, dwDataSize, 0)) {
-                            
+                        if (WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0,
+                                               lpOptional, dwDataSize, dwDataSize, 0)) {
+
                             if (WinHttpReceiveResponse(hRequest, NULL)) {
                                 // Status Code
                                 DWORD dwStatusCode = 0;
                                 DWORD dwSize = sizeof(dwStatusCode);
                                 WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
-                                                   WINHTTP_HEADER_NAME_BY_INDEX, &dwStatusCode, &dwSize, WINHTTP_NO_HEADER_INDEX);
+                                                    WINHTTP_HEADER_NAME_BY_INDEX, &dwStatusCode, &dwSize, WINHTTP_NO_HEADER_INDEX);
                                 resp.status_code = (int)dwStatusCode;
 
                                 // Headers
                                 dwSize = 0;
                                 WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF,
-                                                   WINHTTP_HEADER_NAME_BY_INDEX, NULL, &dwSize, WINHTTP_NO_HEADER_INDEX);
+                                                    WINHTTP_HEADER_NAME_BY_INDEX, NULL, &dwSize, WINHTTP_NO_HEADER_INDEX);
                                 if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
                                     wchar_t* lpHeaders = new wchar_t[dwSize / sizeof(wchar_t)];
                                     if (WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF,
-                                                           WINHTTP_HEADER_NAME_BY_INDEX, lpHeaders, &dwSize, WINHTTP_NO_HEADER_INDEX)) {
+                                                            WINHTTP_HEADER_NAME_BY_INDEX, lpHeaders, &dwSize, WINHTTP_NO_HEADER_INDEX)) {
                                         std::wstring wAllHeaders(lpHeaders);
                                         std::wstringstream ss(wAllHeaders);
                                         std::wstring line;
@@ -152,9 +152,9 @@ namespace NetClient {
         return resp;
     }
 
-    Response get(const std::string& url, 
-                const std::map<std::string, std::string>& params,
-                const std::map<std::string, std::string>& headers) {
+    Response get(const std::string& url,
+                 const std::map<std::string, std::string>& params,
+                 const std::map<std::string, std::string>& headers) {
         std::string full_url = url;
         if (!params.empty()) {
             full_url += (url.find('?') == std::string::npos) ? "?" : "&";

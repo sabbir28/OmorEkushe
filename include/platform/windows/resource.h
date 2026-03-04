@@ -33,3 +33,4 @@
 #define IDM_ABOUT 4001
 #define IDM_LICENSE 4002
 #define IDM_WEBSITE 4003
+#define IDM_UPDATE 4004

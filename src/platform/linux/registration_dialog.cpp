@@ -2,8 +2,8 @@
 
 namespace bijoy::platform::linux {
 
-void ShowRegistrationDialog() {
-    // TODO: Implement Linux registration dialog
-}
+    void ShowRegistrationDialog() {
+        // TODO: Implement Linux registration dialog
+    }
 
 } // namespace bijoy::platform::linux

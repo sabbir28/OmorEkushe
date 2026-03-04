@@ -46,9 +46,9 @@ namespace bijoy::core {
 
     bool FindLayouts(std::vector<Layout>& layouts, const std::wstring& appDir) {
         const std::wstring layoutDirs[] = {
-            appDir + L"Layouts\\",
-            appDir + L"..\\data\\layout\\",
-            appDir + L"..\\data\\Layouts\\"
+                appDir + L"Layouts\\",
+                appDir + L"..\\data\\layout\\",
+                appDir + L"..\\data\\Layouts\\"
         };
 
         std::vector<std::wstring> files;

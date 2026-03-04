@@ -2,12 +2,12 @@
 
 namespace bijoy::platform::linux {
 
-void CreateMainWindow() {
-    // TODO: Implement Linux main window creation
-}
+    void CreateMainWindow() {
+        // TODO: Implement Linux main window creation
+    }
 
-void SetMainWindowInitialPosition(int left, int top) {
-    // TODO: Implement Linux window positioning
-}
+    void SetMainWindowInitialPosition(int left, int top) {
+        // TODO: Implement Linux window positioning
+    }
 
 } // namespace bijoy::platform::linux

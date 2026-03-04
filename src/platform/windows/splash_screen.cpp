@@ -151,9 +151,9 @@ namespace bijoy::platform::windows {
             void LoadBackgroundImage() {
                 const std::wstring appDir = bijoy::core::GetAppDirectory();
                 const std::wstring candidates[] = {
-                    appDir + L"data\\splash.png",
-                    appDir + L"..\\data\\splash.png",
-                    appDir + L"splash.png"
+                        appDir + L"data\\splash.png",
+                        appDir + L"..\\data\\splash.png",
+                        appDir + L"splash.png"
                 };
 
                 std::wstring resolvedPath;

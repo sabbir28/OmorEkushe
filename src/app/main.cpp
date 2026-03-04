@@ -119,8 +119,7 @@ int WINAPI wWinMain(
     // Startup options are shared across splash callbacks
     // Loaded asynchronously during splash screen display
     // ---------------------------------------------------------------------------
-    auto startupOptions =
-            std::make_shared<bijoy::core::StartupOptions>();
+    auto startupOptions = std::make_shared<bijoy::core::StartupOptions>();
 
     splashWindow = bijoy::platform::windows::ShowSplashScreen(
             hInstance,
