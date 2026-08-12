@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     char font_path[512] = "";
 #ifdef _WIN32
     GetWindowsDirectoryA(font_path, 512);
-    strcat(font_path, "\\Fonts\\Nirmala.ttf");
+    strcat_s(font_path, sizeof(font_path), "\\Fonts\\Nirmala.ttf");
 #endif
     
     ImFontConfig font_config;
@@ -136,3 +136,11 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
+#if defined(_WIN32) && defined(_MSC_VER)
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) {
+    (void)hInstance; (void)hPrevInstance; (void)lpCmdLine; (void)nCmdShow;
+    return main(__argc, __argv);
+}
+#endif
+

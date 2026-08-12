@@ -139,7 +139,7 @@ bool WriteMiniDump(EXCEPTION_POINTERS* pExcPtrs, const std::wstring& dumpPath) {
     }
 
     auto pfnMiniDumpWriteDump = reinterpret_cast<MiniDumpWriteDumpFn>(
-        GetProcAddress(hDbgHelp, "MiniDumpWriteDump"));
+        reinterpret_cast<void*>(GetProcAddress(hDbgHelp, "MiniDumpWriteDump")));
     if (!pfnMiniDumpWriteDump) {
         FreeLibrary(hDbgHelp);
         return false;

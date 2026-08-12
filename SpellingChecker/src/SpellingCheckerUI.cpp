@@ -137,7 +137,6 @@ void SpellingCheckerUI::RenderResultsPanel() {
         if (s_totalWrong == 0 && s_totalChecked > 0) {
             ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "All words are correctly spelled! (%d checked)", s_totalChecked);
         } else {
-            ImGuiWindowFlags pwindow_flags = ImGuiWindowFlags_None;
             for (auto& res : s_results) {
                 if (res.isCorrect) continue; // Only show wrong words
                 
@@ -226,7 +225,7 @@ void SpellingCheckerUI::RenderSuggestionPopup() {
     std::string currentLineText = (lastNewline == std::string::npos) ? textToCursor : textToCursor.substr(lastNewline + 1);
     
     // Y offset based on number of newlines
-    int newlines = std::count(textToCursor.begin(), textToCursor.end(), '\n');
+    int newlines = static_cast<int>(std::count(textToCursor.begin(), textToCursor.end(), '\n'));
     
     ImVec2 caretOffset = ImGui::CalcTextSize(currentLineText.c_str());
     caretOffset.y = (newlines + 1) * ImGui::GetTextLineHeightWithSpacing();
@@ -288,8 +287,8 @@ void SpellingCheckerUI::ProcessText() {
             WordResult wr;
             wr.word = word;
             wr.isCorrect = ok;
-            wr.startByte = pos;
-            wr.endByte = end;
+            wr.startByte = static_cast<int>(pos);
+            wr.endByte = static_cast<int>(end);
             
             if (ok) {
                 s_totalCorrect++;
