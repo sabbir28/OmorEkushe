@@ -20,7 +20,7 @@
 
   --dark-emerald: #04241b;
   --dark-emerald-card: #093327;
-  
+
   --body-bg: #f7faf8;
   --card-bg: #ffffff;
   --text-dark: #0f2b22;
@@ -45,7 +45,12 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   color: var(--dark-emerald);
   letter-spacing: -0.02em;
@@ -110,7 +115,8 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.2s ease;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   color: var(--bd-green) !important;
   background: var(--bd-green-subtle);
 }
@@ -148,6 +154,7 @@ h1, h2, h3, h4, h5, h6 {
 .text-gradient-bd {
   background: linear-gradient(135deg, var(--bd-green) 0%, var(--bd-green-dark) 50%, var(--bd-red) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -188,10 +195,12 @@ h1, h2, h3, h4, h5, h6 {
     transform: scale(0.95);
     box-shadow: 0 0 0 0 rgba(244, 42, 65, 0.7);
   }
+
   70% {
     transform: scale(1);
     box-shadow: 0 0 0 6px rgba(244, 42, 65, 0);
   }
+
   100% {
     transform: scale(0.95);
     box-shadow: 0 0 0 0 rgba(244, 42, 65, 0);
@@ -307,7 +316,7 @@ kbd.hotkey-cap.gold {
   overflow: hidden;
 }
 
-.section-dark-emerald h2, 
+.section-dark-emerald h2,
 .section-dark-emerald h3,
 .section-dark-emerald h4 {
   color: #ffffff;
@@ -359,7 +368,8 @@ kbd.hotkey-cap.gold {
   transition: all 0.2s ease;
 }
 
-.layout-pill-btn.active, .layout-pill-btn:hover {
+.layout-pill-btn.active,
+.layout-pill-btn:hover {
   background: var(--bd-green);
   color: #ffffff;
   border-color: var(--bd-gold);
@@ -392,9 +402,18 @@ kbd.hotkey-cap.gold {
   height: 10px;
   border-radius: 50%;
 }
-.dot-red { background: var(--bd-red); }
-.dot-yellow { background: var(--bd-gold); }
-.dot-green { background: var(--bd-green); }
+
+.dot-red {
+  background: var(--bd-red);
+}
+
+.dot-yellow {
+  background: var(--bd-gold);
+}
+
+.dot-green {
+  background: var(--bd-green);
+}
 
 .code-body {
   padding: 1.25rem;
@@ -485,15 +504,72 @@ kbd.hotkey-cap.gold {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #04241b;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--bd-green);
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--bd-green-light);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Floating Back to Top Button */
+.btn-back-to-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--bd-green);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(0, 106, 78, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  z-index: 999;
+}
+
+.btn-back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.btn-back-to-top:hover {
+  background: var(--bd-red);
+  color: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(244, 42, 65, 0.4);
+}
+
+/* Scrollbar for table responsiveness */
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: rgba(0, 106, 78, 0.05);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--bd-green);
+  border-radius: 3px;
 }
 
 /* Responsive adjustments */
@@ -501,7 +577,66 @@ kbd.hotkey-cap.gold {
   .hero-title {
     font-size: 2.4rem;
   }
+
   .hero-section {
     padding: 3rem 0;
+  }
+
+  .navbar-collapse {
+    background: rgba(4, 36, 27, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 1.25rem;
+    border-radius: 16px;
+    margin-top: 0.75rem;
+    border: 1px solid rgba(0, 106, 78, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .navbar-collapse .nav-link {
+    color: #e2f5ee !important;
+    padding: 0.65rem 1rem !important;
+  }
+
+  .navbar-collapse .nav-link:hover,
+  .navbar-collapse .nav-link.active {
+    color: #ffffff !important;
+    background: rgba(0, 106, 78, 0.4);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-title {
+    font-size: 1.85rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .btn-bd-primary,
+  .btn-bd-outline {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .simulator-box {
+    padding: 1rem;
+  }
+
+  .layout-pill-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .card-feature,
+  .card-download,
+  .glass-card-dark {
+    padding: 1.25rem;
+  }
+
+  .code-body {
+    font-size: 0.8rem;
+    padding: 1rem;
   }
 }

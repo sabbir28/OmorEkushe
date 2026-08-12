@@ -4,14 +4,19 @@ baseurl: "" # set baseurl if hosted under subpath, e.g. /OmorEkushe
 url: "https://sabbir28.github.io"
 github_username: sabbir28
 github_repo: OmorEkushe
+author: "Sabbir"
+lang: "bn-BD"
+keywords: "Bengali Keyboard, Win32, Bangla Keyboard, Bijoy, Unijoy, C++17, Windows Keyboard Layout Engine"
 
 markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+  auto_ids: true
 
 permalink: pretty
 exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules
+
