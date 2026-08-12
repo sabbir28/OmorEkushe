@@ -49,6 +49,8 @@ int WINAPI WinMain(
     return wWinMain(hInstance, hPrevInstance, GetCommandLineW(), nCmdShow);
 }
 
+#include <exception>
+
 // -----------------------------------------------------------------------------
 // Primary application entry point (Unicode)
 // Ultra-level exception barrier surrounding Application Lifecycle Manager
@@ -62,10 +64,22 @@ int WINAPI wWinMain(
     (void)lpCmdLine;
 
     // Guaranteed top-level process exception barrier
+#if defined(_MSC_VER)
     __try {
         return RunApplicationHelper(hInstance, nCmdShow);
     }
     __except (bijoy::error::GenerateCrashReport(GetExceptionInformation(), L"Top-Level Process SEH Violation"), EXCEPTION_EXECUTE_HANDLER) {
         return 1;
     }
+#else
+    try {
+        return RunApplicationHelper(hInstance, nCmdShow);
+    }
+    catch (const std::exception&) {
+        return 1;
+    }
+    catch (...) {
+        return 1;
+    }
+#endif
 }
