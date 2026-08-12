@@ -8,6 +8,13 @@ author: "Sabbir"
 lang: "bn-BD"
 keywords: "Bengali Keyboard, Win32, Bangla Keyboard, Bijoy, Unijoy, C++17, Windows Keyboard Layout Engine"
 
+theme: null
+
+include:
+  - _includes
+  - _layouts
+  - assets
+
 markdown: kramdown
 kramdown:
   input: GFM
@@ -21,4 +28,5 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules
+
 

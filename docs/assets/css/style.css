@@ -1,3 +1,4 @@
+--- ---
 /* ==========================================================================
    Omor Ekushe - Modern Bangladesh Themed CSS System
    Colors: Deep Bottle Green (#006A4E), Crimson Red (#F42A41), Gold (#FFC72C)
@@ -639,4 +640,82 @@ html {
     font-size: 0.8rem;
     padding: 1rem;
   }
+}
+
+/* GitHub Live Stats & Contributor UI Components */
+.github-stat-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.25s ease;
+}
+
+.github-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--bd-green);
+  box-shadow: var(--shadow-sm);
+}
+
+.github-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.github-stat-icon.green {
+  background: var(--bd-green-subtle);
+  color: var(--bd-green);
+}
+
+.github-stat-icon.red {
+  background: var(--bd-red-subtle);
+  color: var(--bd-red);
+}
+
+.github-stat-icon.gold {
+  background: var(--bd-gold-subtle);
+  color: var(--bd-gold-dark);
+}
+
+.github-stat-icon.dark {
+  background: rgba(0, 106, 78, 0.1);
+  color: var(--dark-emerald);
+}
+
+.contributor-chip {
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.contributor-chip:hover {
+  background: var(--bd-green-subtle) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.github-star-badge {
+  background: rgba(255, 199, 44, 0.15);
+  color: #996e00;
+  border: 1px solid rgba(255, 199, 44, 0.4);
+  border-radius: 50rem;
+  padding: 0.25rem 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.commit-feed-card {
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
 }
