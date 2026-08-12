@@ -1,866 +1,113 @@
-<nav class="navbar navbar-expand-lg sticky-top navbar-glass">
+<nav class="navbar navbar-expand-lg sticky-top navbar-glass py-2">
   <div class="container">
 
-    <!-- =========================================
-         BRAND
-         ========================================= -->
+    <!-- Brand Logo & Title -->
     <a class="navbar-brand-logo d-flex align-items-center text-decoration-none" href="{{ '/' | relative_url }}"
       aria-label="Omor Ekushe Home">
-
-      <div class="brand-circle">
+      <div class="brand-circle me-2">
         <img src="{{ '/assets/favicon.ico' | relative_url }}" alt="Omor Ekushe" width="24" height="24">
       </div>
-
       <div class="brand-text">
         <div class="brand-title">
           Omor Ekushe
-          <span class="brand-bangla">(অমর একুশে)</span>
+          <span class="brand-bangla font-bangla me-1">(অমর একুশে)</span>
         </div>
-
         <div class="brand-subtitle">
           Win32 Layout Engine
         </div>
       </div>
-
     </a>
 
-
-    <!-- =========================================
-         MOBILE MENU BUTTON
-         ========================================= -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
-      aria-controls="navbarMain" aria-expanded="false" aria-label="Open navigation menu">
+    <!-- Mobile Menu Button -->
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Open navigation menu">
       <span class="menu-icon">
-        <i class="fas fa-bars"></i>
+        <i class="fas fa-bars fs-5" style="color: var(--text-heading);"></i>
       </span>
     </button>
 
-
-    <!-- =========================================
-         NAVIGATION
-         ========================================= -->
+    <!-- Navigation Menu & Links -->
     <div class="collapse navbar-collapse" id="navbarMain">
-
-      <ul class="navbar-nav ms-auto align-items-lg-center">
-
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
 
         <!-- HOME -->
         <li class="nav-item">
           <a class="nav-link {% if page.url == '/index.html' or page.url == '/' %}active{% endif %}"
             href="{{ '/' | relative_url }}">
-            <i class="fas fa-house"></i>
+            <i class="fas fa-house me-1"></i>
             <span>Home</span>
           </a>
         </li>
-
 
         <!-- FEATURES -->
         <li class="nav-item">
           <a class="nav-link {% if page.url contains 'features' %}active{% endif %}"
             href="{{ '/features.html' | relative_url }}">
-            <i class="fas fa-cubes"></i>
+            <i class="fas fa-cubes me-1"></i>
             <span>Features</span>
           </a>
         </li>
-
 
         <!-- DOWNLOAD -->
         <li class="nav-item">
           <a class="nav-link {% if page.url contains 'download' %}active{% endif %}"
             href="{{ '/download.html' | relative_url }}">
-            <i class="fas fa-download"></i>
+            <i class="fas fa-download me-1"></i>
             <span>Download</span>
           </a>
         </li>
-
 
         <!-- MANUAL -->
         <li class="nav-item">
           <a class="nav-link {% if page.url contains 'documentation' %}active{% endif %}"
             href="{{ '/documentation.html' | relative_url }}">
-            <i class="fas fa-book-open"></i>
+            <i class="fas fa-book-open me-1"></i>
             <span>Manual</span>
           </a>
         </li>
-
 
         <!-- CODEBASE -->
         <li class="nav-item">
           <a class="nav-link {% if page.url contains 'codebase' %}active{% endif %}"
             href="{{ '/codebase.html' | relative_url }}">
-            <i class="fas fa-code-branch"></i>
+            <i class="fas fa-code-branch me-1"></i>
             <span>Codebase</span>
           </a>
         </li>
 
+        <!-- DIVIDER -->
+        <li class="nav-divider d-none d-lg-block mx-2"></li>
 
-        <!-- =========================================
-             MOBILE/DESKTOP DIVIDER
-             ========================================= -->
-        <li class="nav-divider"></li>
-
-
-        <!-- =========================================
-             THEME BUTTON
-             ========================================= -->
-        <li class="nav-item nav-action">
-
-          <button id="theme-toggle-btn" class="theme-toggle" type="button" title="Toggle Light / Dark Mode"
-            aria-label="Toggle Light / Dark Mode">
+        <!-- THEME BUTTON -->
+        <li class="nav-item nav-action mt-2 mt-lg-0">
+          <button id="theme-toggle-btn" class="theme-toggle btn-theme-toggle" type="button"
+            title="Toggle Light / Dark Mode" aria-label="Toggle Light / Dark Mode">
             <i class="fas fa-moon"></i>
-            <span class="mobile-action-text">
-              Theme
-            </span>
+            <span class="mobile-action-text d-lg-none ms-2">Toggle Theme</span>
           </button>
-
         </li>
 
-
-        <!-- =========================================
-             GITHUB
-             ========================================= -->
-        <li class="nav-item nav-action">
-
-          <a class="github-button" href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}"
-            target="_blank" rel="noopener noreferrer">
-
-            <i class="fab fa-github"></i>
-
-            <span>
-              GitHub
-            </span>
-
-            <span class="github-stars-count">
-              ★ 1
-            </span>
-
+        <!-- GITHUB BUTTON -->
+        <li class="nav-item nav-action ms-lg-1 mt-2 mt-lg-0">
+          <a class="github-button btn-github-nav"
+            href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}" target="_blank"
+            rel="noopener noreferrer">
+            <i class="fab fa-github me-1"></i>
+            <span>GitHub</span>
+            <span class="github-stars-count badge bg-amber-500/20 text-amber ms-1">★ 1</span>
           </a>
-
         </li>
 
-
-        <!-- =========================================
-             INSTALLER CTA
-             ========================================= -->
-        <li class="nav-item nav-action">
-
-          <a class="installer-button" href="{{ '/download.html' | relative_url }}">
-
-            <i class="fas fa-download"></i>
-
-            <span>
-              Get Installer
-            </span>
-
+        <!-- INSTALLER CTA -->
+        <li class="nav-item nav-action ms-lg-1 mt-2 mt-lg-0">
+          <a class="installer-button btn-nav-cta" href="{{ '/download.html' | relative_url }}">
+            <i class="fas fa-download me-1"></i>
+            <span>Get Installer</span>
           </a>
-
         </li>
 
       </ul>
-
     </div>
 
   </div>
 </nav>
-<style></style>
-/* =========================================================
-OMOR EKUSHE
-RESPONSIVE WINDOWS-STYLE NAVBAR
-Desktop + Tablet + Mobile
-========================================================= */
-
-
-/* =========================================================
-NAVBAR
-========================================================= */
-
-.navbar-glass {
-position: sticky;
-top: 0;
-
-width: 100%;
-
-z-index: 1030;
-
-background: var(--navbar-bg, rgba(255, 255, 255, 0.88));
-
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
-
-border-bottom: 1px solid
-var(--navbar-border, rgba(0, 0, 0, 0.08));
-
-transition:
-background-color 0.25s ease,
-border-color 0.25s ease;
-}
-
-
-/* =========================================================
-CONTAINER
-========================================================= */
-
-.navbar-glass > .container {
-min-height: 68px;
-
-display: flex;
-align-items: center;
-}
-
-
-/* =========================================================
-BRAND
-========================================================= */
-
-.navbar-brand-logo {
-min-width: 0;
-
-gap: 12px;
-
-flex-shrink: 1;
-
-color: var(--text-heading);
-
-transition: opacity 0.2s ease;
-}
-
-.navbar-brand-logo:hover {
-color: var(--text-heading);
-opacity: 0.9;
-}
-
-
-/* Brand icon */
-
-.brand-circle {
-width: 42px;
-height: 42px;
-
-min-width: 42px;
-
-display: flex;
-align-items: center;
-justify-content: center;
-
-border-radius: 12px;
-
-overflow: hidden;
-
-background: var(--brand-bg, rgba(16, 185, 129, 0.08));
-
-border: 1px solid
-var(--brand-border, rgba(16, 185, 129, 0.18));
-
-transition:
-transform 0.2s ease,
-box-shadow 0.2s ease;
-}
-
-.navbar-brand-logo:hover .brand-circle {
-transform: scale(1.04);
-}
-
-
-/* Brand text */
-
-.brand-text {
-min-width: 0;
-}
-
-.brand-title {
-color: var(--text-heading);
-
-font-family: "Outfit", sans-serif;
-
-font-size: 1.08rem;
-
-font-weight: 800;
-
-line-height: 1.1;
-
-letter-spacing: -0.02em;
-
-white-space: nowrap;
-}
-
-.brand-bangla {
-margin-left: 4px;
-
-color: var(--bd-red, #e11d48);
-
-font-family: "Noto Sans Bengali", sans-serif;
-
-font-size: 0.72rem;
-
-font-weight: 700;
-}
-
-.brand-subtitle {
-margin-top: 4px;
-
-color: var(--bd-green, #008f4c);
-
-font-family: monospace;
-
-font-size: 0.53rem;
-
-font-weight: 600;
-
-letter-spacing: 0.13em;
-
-line-height: 1;
-
-text-transform: uppercase;
-
-white-space: nowrap;
-}
-
-
-/* =========================================================
-MOBILE MENU BUTTON
-========================================================= */
-
-.navbar-toggler {
-width: 44px;
-height: 44px;
-
-margin-left: auto;
-
-padding: 0;
-
-display: flex;
-align-items: center;
-justify-content: center;
-
-border: 1px solid
-var(--navbar-border, rgba(0, 0, 0, 0.08));
-
-border-radius: 10px;
-
-background: transparent;
-
-color: var(--text-heading);
-
-transition:
-background-color 0.2s ease,
-border-color 0.2s ease;
-}
-
-.navbar-toggler:hover {
-background: rgba(127, 127, 127, 0.08);
-}
-
-.navbar-toggler:focus {
-box-shadow: none;
-}
-
-.menu-icon {
-display: flex;
-
-align-items: center;
-justify-content: center;
-}
-
-.menu-icon i {
-font-size: 1.15rem;
-}
-
-
-/* =========================================================
-NAVIGATION
-========================================================= */
-
-.navbar-collapse {
-flex-grow: 0;
-}
-
-.navbar-nav {
-gap: 3px;
-}
-
-
-/* =========================================================
-NAV LINKS
-========================================================= */
-
-.nav-link {
-min-height: 42px;
-
-display: flex;
-align-items: center;
-
-gap: 7px;
-
-padding: 8px 11px !important;
-
-border-radius: 9px;
-
-color: var(--text-heading);
-
-font-size: 0.9rem;
-
-font-weight: 500;
-
-white-space: nowrap;
-
-transition:
-background-color 0.18s ease,
-color 0.18s ease,
-transform 0.18s ease;
-}
-
-.nav-link i {
-width: 17px;
-
-text-align: center;
-
-font-size: 0.85rem;
-
-opacity: 0.78;
-}
-
-.nav-link:hover {
-color: var(--bd-green, #008f4c);
-
-background: rgba(127, 127, 127, 0.08);
-}
-
-.nav-link.active {
-color: var(--bd-green, #008f4c);
-
-background: rgba(16, 185, 129, 0.10);
-}
-
-
-/* =========================================================
-DIVIDER
-========================================================= */
-
-.nav-divider {
-width: 1px;
-
-height: 25px;
-
-margin: 0 7px;
-
-background: var(
---navbar-border,
-rgba(127, 127, 127, 0.20)
-);
-}
-
-
-/* =========================================================
-THEME BUTTON
-========================================================= */
-
-.theme-toggle {
-width: 42px;
-height: 42px;
-
-padding: 0;
-
-display: flex;
-align-items: center;
-justify-content: center;
-
-border: 1px solid
-var(--navbar-border, rgba(127, 127, 127, 0.18));
-
-border-radius: 9px;
-
-background: transparent;
-
-color: var(--text-heading);
-
-cursor: pointer;
-
-transition:
-background-color 0.2s ease,
-transform 0.2s ease;
-}
-
-.theme-toggle:hover {
-background: rgba(127, 127, 127, 0.08);
-
-transform: translateY(-1px);
-}
-
-.mobile-action-text {
-display: none;
-}
-
-
-/* =========================================================
-GITHUB BUTTON
-========================================================= */
-
-.github-button {
-min-height: 42px;
-
-display: flex;
-align-items: center;
-
-gap: 8px;
-
-padding: 8px 11px;
-
-border-radius: 9px;
-
-border: 1px solid
-var(--navbar-border, rgba(127, 127, 127, 0.18));
-
-color: var(--text-heading);
-
-text-decoration: none;
-
-font-size: 0.88rem;
-
-font-weight: 600;
-
-white-space: nowrap;
-
-transition:
-background-color 0.2s ease,
-transform 0.2s ease;
-}
-
-.github-button:hover {
-color: var(--text-heading);
-
-background: rgba(127, 127, 127, 0.08);
-
-transform: translateY(-1px);
-}
-
-.github-button > i {
-font-size: 1.05rem;
-}
-
-.github-stars-count {
-padding: 4px 7px;
-
-border-radius: 999px;
-
-background: rgba(245, 158, 11, 0.12);
-
-color: #d97706;
-
-font-size: 0.7rem;
-
-line-height: 1;
-}
-
-
-/* =========================================================
-INSTALLER BUTTON
-========================================================= */
-
-.installer-button {
-min-height: 42px;
-
-display: flex;
-align-items: center;
-justify-content: center;
-
-gap: 7px;
-
-padding: 8px 14px;
-
-border-radius: 9px;
-
-background: var(--bd-green, #008f4c);
-
-color: white;
-
-text-decoration: none;
-
-font-size: 0.88rem;
-
-font-weight: 700;
-
-white-space: nowrap;
-
-box-shadow:
-0 4px 12px rgba(0, 143, 76, 0.18);
-
-transition:
-transform 0.2s ease,
-box-shadow 0.2s ease;
-}
-
-.installer-button:hover {
-color: white;
-
-transform: translateY(-1px);
-
-box-shadow:
-0 6px 18px rgba(0, 143, 76, 0.25);
-}
-
-
-/* =========================================================
-DESKTOP
-========================================================= */
-
-@media (min-width: 992px) {
-
-.navbar-collapse {
-margin-left: 18px;
-}
-
-.nav-action {
-margin-left: 5px;
-}
-
-}
-
-
-/* =========================================================
-TABLET + MOBILE
-========================================================= */
-
-@media (max-width: 991.98px) {
-
-.navbar-glass > .container {
-min-height: 62px;
-}
-
-
-/* Mobile menu panel */
-
-.navbar-collapse {
-width: 100%;
-
-margin-top: 10px;
-
-padding: 8px;
-
-border-radius: 14px;
-
-background: var(
---mobile-menu-bg,
-rgba(255, 255, 255, 0.97)
-);
-
-border: 1px solid
-var(--navbar-border, rgba(127, 127, 127, 0.14));
-
-box-shadow:
-0 12px 35px rgba(0, 0, 0, 0.10);
-}
-
-
-.navbar-nav {
-width: 100%;
-
-gap: 2px;
-}
-
-
-.nav-item {
-width: 100%;
-}
-
-
-/* Full-width touch links */
-
-.nav-link {
-width: 100%;
-
-min-height: 46px;
-
-padding: 11px 12px !important;
-
-border-radius: 9px;
-}
-
-
-/* Divider becomes horizontal */
-
-.nav-divider {
-width: 100%;
-
-height: 1px;
-
-margin: 7px 0;
-
-background: var(
---navbar-border,
-rgba(127, 127, 127, 0.15)
-);
-}
-
-
-/* Theme */
-
-.nav-action {
-margin-top: 2px;
-}
-
-.theme-toggle {
-width: 100%;
-
-height: 46px;
-
-padding: 0 12px;
-
-justify-content: flex-start;
-
-gap: 10px;
-}
-
-.mobile-action-text {
-display: inline;
-}
-
-
-/* GitHub */
-
-.github-button {
-width: 100%;
-
-min-height: 46px;
-
-padding: 11px 12px;
-
-justify-content: flex-start;
-}
-
-.github-stars-count {
-margin-left: auto;
-}
-
-
-/* Installer */
-
-.installer-button {
-width: 100%;
-
-min-height: 46px;
-
-margin-bottom: 2px;
-}
-
-}
-
-
-/* =========================================================
-SMALL PHONES
-========================================================= */
-
-@media (max-width: 575.98px) {
-
-.navbar-glass > .container {
-padding-left: 10px;
-padding-right: 10px;
-}
-
-
-.brand-circle {
-width: 38px;
-height: 38px;
-
-min-width: 38px;
-
-border-radius: 10px;
-}
-
-
-.brand-title {
-font-size: 0.94rem;
-}
-
-
-.brand-bangla {
-font-size: 0.67rem;
-}
-
-
-.brand-subtitle {
-font-size: 0.46rem;
-
-letter-spacing: 0.08em;
-}
-
-
-.navbar-toggler {
-width: 42px;
-height: 42px;
-}
-
-}
-
-
-/* =========================================================
-VERY SMALL PHONES
-Example: 320px / 360px screens
-========================================================= */
-
-@media (max-width: 380px) {
-
-.navbar-glass > .container {
-padding-left: 7px;
-padding-right: 7px;
-}
-
-
-.brand-circle {
-width: 36px;
-height: 36px;
-
-min-width: 36px;
-}
-
-
-.brand-title {
-font-size: 0.86rem;
-}
-
-
-.brand-bangla {
-display: none;
-}
-
-
-.brand-subtitle {
-font-size: 0.42rem;
-
-letter-spacing: 0.06em;
-}
-
-}
-
-
-/* =========================================================
-DARK MODE
-========================================================= */
-
-[data-theme="dark"] .navbar-glass {
-
---navbar-bg:
-rgba(17, 20, 24, 0.88);
-
---mobile-menu-bg:
-rgba(20, 24, 29, 0.98);
-
---navbar-border:
-rgba(255, 255, 255, 0.10);
-}
-
-
-/* =========================================================
-REDUCED MOTION
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-.navbar-glass *,
-.navbar-glass *::before,
-.navbar-glass *::after {
-transition: none !important;
-}
-
-}
-
-</style>
