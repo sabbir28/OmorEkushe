@@ -7,65 +7,71 @@ permalink: /index.html
 ---
 
 <!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
+<section class="hero-section py-5 py-lg-6 position-relative overflow-hidden">
+    <div class="hero-bg-glow"></div>
+    <div class="container py-3 position-relative z-10">
         <div class="row align-items-center g-5">
             <div class="col-lg-7">
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-                    <div class="badge-bd-pill">
-                        <span class="badge-red-pulse"></span>
-                        <span>100% Native Win32 C++17 Core</span>
-                        <span class="ms-1 text-danger font-weight-bold">• অমর একুশে</span>
-                    </div>
+                    <span class="badge-bd-pill-pulse">
+                        <span class="pulse-dot"></span>
+                        <span>100% Native Win32 C++17</span>
+                        <span class="text-bdRed font-bangla font-bold ms-1">• অমর একুশে</span>
+                    </span>
                     <span
-                        class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill font-weight-bold">
+                        class="badge bg-emerald-950 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-full text-xs font-semibold">
                         <i class="fas fa-tag me-1"></i> Release: <span class="github-release-tag">v1.0.0</span>
                     </span>
                     <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/stargazers"
-                        target="_blank" class="github-star-badge text-decoration-none">
-                        <i class="fas fa-star text-warning"></i> Stars: <span class="github-stars-count">1</span>
+                        target="_blank"
+                        class="badge bg-amber-500/10 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-full text-xs font-semibold text-decoration-none hover:bg-amber-500/20 transition-all">
+                        <i class="fas fa-star text-amber-400 me-1"></i> Stars: <span class="github-stars-count">1</span>
                     </a>
                 </div>
-                <h1 class="hero-title mb-3">
-                    High-Speed Bengali Typing Engine for <span class="text-gradient-bd">Windows</span>
+
+                <h1 class="display-4 font-outfit font-extrabold text-white tracking-tight mb-3 leading-tight">
+                    High-Speed Bengali Typing Engine for <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500">Windows</span>
                 </h1>
-                <p class="hero-subtitle mb-4">
-                    Effortless layout switching powered by Windows low-level hooks, dynamic XML layout maps, per-window
-                    layout memory, and built-in Bengali spellchecking.
+
+                <p class="lead text-slate-300 font-light mb-4 max-w-2xl leading-relaxed">
+                    Effortless layout switching powered by Windows low-level kernel hooks, dynamic XML layout maps,
+                    per-window layout memory, and built-in Bengali spellchecking.
                 </p>
 
                 <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-                    <a href="{{ '/download.html' | relative_url }}"
-                        class="btn btn-bd-primary btn-lg github-download-setup">
-                        <i class="fas fa-download me-2"></i> Download Setup (.exe)
+                    <a href="{{ '/download.html' | relative_url }}" class="btn-emerald-primary github-download-setup">
+                        <i class="fas fa-download me-1.5"></i> Download Setup (.exe)
                     </a>
-                    <a href="{{ '/features.html' | relative_url }}" class="btn btn-bd-outline btn-lg">
-                        <i class="fas fa-layer-group me-2"></i> Explore Features
+                    <a href="{{ '/features.html' | relative_url }}" class="btn-emerald-outline">
+                        <i class="fas fa-layer-group me-1.5"></i> Explore Features
                     </a>
                 </div>
 
-                <div class="d-flex align-items-center gap-3 text-muted small">
-                    <div>
-                        <i class="fas fa-keyboard text-success me-1"></i> Hotkey:
+                <div class="d-flex flex-wrap align-items-center gap-3 text-slate-400 text-xs font-mono">
+                    <div class="d-flex align-items-center gap-1.5">
+                        <i class="fas fa-keyboard text-emerald-400"></i> Hotkey:
                         <kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> + <kbd
                             class="hotkey-cap gold">B</kbd>
                     </div>
-                    <div>•</div>
-                    <div><i class="fas fa-microchip text-success me-1"></i> ~5 MB RAM</div>
-                    <div>•</div>
-                    <div><i class="fas fa-shield-alt text-success me-1"></i> MIT License</div>
+                    <span>•</span>
+                    <div><i class="fas fa-microchip text-emerald-400 me-1"></i> ~5 MB RAM</div>
+                    <span>•</span>
+                    <div><i class="fas fa-shield-halved text-emerald-400 me-1"></i> MIT License</div>
                 </div>
             </div>
 
             <div class="col-lg-5">
                 <!-- Live Layout Simulator Card -->
-                <div class="simulator-box shadow-lg position-relative">
+                <div class="simulator-box">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-danger rounded-circle p-1"></span>
-                            <span class="fw-bold text-white small">Try Live Simulator</span>
+                            <span class="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+                            <span class="font-outfit font-bold text-white text-sm">Try Live Simulator</span>
                         </div>
-                        <span class="badge bg-dark border border-success text-success small" id="active-hotkey-badge">
+                        <span
+                            class="badge bg-emerald-950 border border-emerald-500/30 text-emerald-400 text-xs font-mono"
+                            id="active-hotkey-badge">
                             Press Ctrl+Alt+B
                         </span>
                     </div>
@@ -77,16 +83,17 @@ permalink: /index.html
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label text-muted small mb-1">
-                            Active Layout: <strong class="text-warning" id="active-layout-name">Bijoy (বিজয়)</strong>
+                        <label class="form-label text-slate-400 text-xs mb-1">
+                            Active Layout: <strong class="text-amber-400 font-bangla" id="active-layout-name">Bijoy
+                                (বিজয়)</strong>
                         </label>
                         <textarea id="simulator-input" class="simulator-textarea"
                             placeholder="Type here or test layout sample...">আমার সোনার বাংলা, আমি তোমায় ভালোবাসি। অমর একুশে গ্রন্থমেলা।</textarea>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center text-muted small">
-                        <span><i class="fas fa-bolt text-warning me-1"></i> Low-latency Hook active</span>
-                        <span class="text-success"><i class="fas fa-check-circle me-1"></i> Win32 Ready</span>
+                    <div class="d-flex justify-content-between align-items-center text-xs font-mono text-slate-400">
+                        <span><i class="fas fa-bolt text-amber-400 me-1"></i> WH_KEYBOARD_LL Active</span>
+                        <span class="text-emerald-400"><i class="fas fa-check-circle me-1"></i> Win32 Ready</span>
                     </div>
                 </div>
             </div>
@@ -94,25 +101,25 @@ permalink: /index.html
     </div>
 </section>
 
-<!-- Stats / Highlights Bar -->
-<section class="py-4 border-top border-bottom bg-white">
+<!-- Highlights / Stats Bar -->
+<section class="py-4 border-y border-emerald-500/20 bg-slate-900/60">
     <div class="container">
         <div class="row g-4 text-center">
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-weight-bold text-success mb-0">&lt; 5MB</h3>
-                <p class="text-muted small mb-0 font-weight-600">Memory Footprint</p>
+                <h3 class="display-6 font-outfit font-extrabold text-emerald-400 mb-0">&lt; 5MB</h3>
+                <p class="text-slate-400 text-xs font-mono mt-1">Memory Footprint</p>
             </div>
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-weight-bold text-danger mb-0">100%</h3>
-                <p class="text-muted small mb-0 font-weight-600">Native Win32 C++17</p>
+                <h3 class="display-6 font-outfit font-extrabold text-bdRed mb-0">100%</h3>
+                <p class="text-slate-400 text-xs font-mono mt-1">Native Win32 C++17</p>
             </div>
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-weight-bold text-success mb-0">WH_HOOK</h3>
-                <p class="text-muted small mb-0 font-weight-600">Low-Level Interception</p>
+                <h3 class="display-6 font-outfit font-extrabold text-emerald-400 mb-0">WH_HOOK</h3>
+                <p class="text-slate-400 text-xs font-mono mt-1">Low-Level Interception</p>
             </div>
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-weight-bold text-warning mb-0">XML</h3>
-                <p class="text-muted small mb-0 font-weight-600">Dynamic Keymaps</p>
+                <h3 class="display-6 font-outfit font-extrabold text-amber-400 mb-0">XML</h3>
+                <p class="text-slate-400 text-xs font-mono mt-1">Dynamic Keymaps</p>
             </div>
         </div>
     </div>
@@ -121,37 +128,38 @@ permalink: /index.html
 <!-- Features Grid -->
 <section class="py-5">
     <div class="container py-4">
-        <div class="text-center max-width-700 mx-auto mb-5">
+        <div class="text-center max-w-2xl mx-auto mb-5">
             <span
-                class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill font-weight-bold mb-2">
+                class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-full text-xs font-bold font-mono tracking-wider uppercase mb-2">
                 WHY OMOR EKUSHE?
             </span>
-            <h2 class="display-6 font-weight-bold text-emerald">Engineered for Performance & Customization</h2>
-            <p class="text-muted lead">Everything you need for fluent Bengali desktop typing with minimal system impact.
-            </p>
+            <h2 class="display-6 font-outfit font-extrabold text-white mb-2">Engineered for Performance & Customization
+            </h2>
+            <p class="text-slate-300 font-light leading-relaxed">Everything you need for fluent Bengali desktop typing
+                with minimal system impact.</p>
         </div>
 
         <div class="row g-4">
             <div class="col-lg-4 col-md-6">
-                <div class="card-feature">
-                    <div class="feature-icon-wrapper">
+                <div class="glass-card">
+                    <div class="feature-icon-box">
                         <i class="fas fa-feather-alt"></i>
                     </div>
-                    <h4>Ultra-Lightweight Engine</h4>
-                    <p class="text-muted mb-0">
+                    <h4 class="font-outfit font-bold text-white text-xl mb-2">Ultra-Lightweight Engine</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
                         Built from scratch in pure C++17 using Win32 API without heavy web engines (Electron/Qt).
-                        Launches instantly with ~5MB RAM usage.
+                        Launches instantly with ~5MB RAM footprint.
                     </p>
                 </div>
             </div>
 
             <div class="col-lg-4 col-md-6">
-                <div class="card-feature">
-                    <div class="feature-icon-wrapper red">
+                <div class="glass-card">
+                    <div class="feature-icon-box red">
                         <i class="fas fa-file-code"></i>
                     </div>
-                    <h4>Dynamic XML Layout Maps</h4>
-                    <p class="text-muted mb-0">
+                    <h4 class="font-outfit font-bold text-white text-xl mb-2">Dynamic XML Layout Maps</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
                         Load layout definitions dynamically from simple XML files. Built-in support for Bijoy, Unijoy,
                         National, and custom layout keymaps.
                     </p>
@@ -159,12 +167,12 @@ permalink: /index.html
             </div>
 
             <div class="col-lg-4 col-md-6">
-                <div class="card-feature">
-                    <div class="feature-icon-wrapper gold">
+                <div class="glass-card">
+                    <div class="feature-icon-box gold">
                         <i class="fas fa-window-restore"></i>
                     </div>
-                    <h4>Per-Window Layout Memory</h4>
-                    <p class="text-muted mb-0">
+                    <h4 class="font-outfit font-bold text-white text-xl mb-2">Per-Window Layout Memory</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
                         Automatically remembers active typing mode (Bangla or English) on a per-application window basis
                         as you switch window focus.
                     </p>
@@ -172,25 +180,25 @@ permalink: /index.html
             </div>
 
             <div class="col-lg-4 col-md-6">
-                <div class="card-feature">
-                    <div class="feature-icon-wrapper gold">
+                <div class="glass-card">
+                    <div class="feature-icon-box gold">
                         <i class="fas fa-spell-check"></i>
                     </div>
-                    <h4>Integrated Spelling Checker</h4>
-                    <p class="text-muted mb-0">
+                    <h4 class="font-outfit font-bold text-white text-xl mb-2">Integrated Spelling Checker</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
                         Includes a dedicated `SpellingChecker` C++ core for real-time Bengali dictionary lookups and
-                        spell correction.
+                        spell correction candidate lookups.
                     </p>
                 </div>
             </div>
 
             <div class="col-lg-4 col-md-6">
-                <div class="card-feature">
-                    <div class="feature-icon-wrapper">
-                        <i class="fas fa-edit"></i>
+                <div class="glass-card">
+                    <div class="feature-icon-box">
+                        <i class="fas fa-pen-ruler"></i>
                     </div>
-                    <h4>Graphical Layout Editor</h4>
-                    <p class="text-muted mb-0">
+                    <h4 class="font-outfit font-bold text-white text-xl mb-2">Graphical Layout Editor</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
                         Optional standalone sub-module `LayoutEditor` built with GLFW and Dear ImGui for visual creation
                         and editing of keyboard layouts.
                     </p>
@@ -198,12 +206,12 @@ permalink: /index.html
             </div>
 
             <div class="col-lg-4 col-md-6">
-                <div class="card-feature">
-                    <div class="feature-icon-wrapper red">
-                        <i class="fas fa-glass-martini-alt"></i>
+                <div class="glass-card">
+                    <div class="feature-icon-box red">
+                        <i class="fas fa-glasses"></i>
                     </div>
-                    <h4>Acrylic Glassmorphism Bar</h4>
-                    <p class="text-muted mb-0">
+                    <h4 class="font-outfit font-bold text-white text-xl mb-2">Acrylic Glassmorphism Bar</h4>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
                         Sleek top bar control window with customizable opacity, background image support, and seamless
                         system tray minimization.
                     </p>
@@ -213,43 +221,47 @@ permalink: /index.html
     </div>
 </section>
 
-<!-- Custom XML Showcase (Dark Emerald Section) -->
-<section class="section-dark-emerald py-5">
+<!-- Custom XML Showcase Section -->
+<section class="py-5 bg-slate-900/80 border-y border-emerald-500/20">
     <div class="container py-4">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
-                <span class="badge bg-danger rounded-pill px-3 py-2 font-weight-bold mb-3">CUSTOM LAYOUT FORMAT</span>
-                <h2 class="display-6 font-weight-bold mb-3">Design Custom Keyboard Maps via XML</h2>
-                <p class="text-light opacity-90 lead mb-4">
-                    Omor Ekushe reads simple XML files in `data/`. Define virtual key mapping (`vk`), Normal, Shift, and
+                <span
+                    class="badge bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-full text-xs font-bold font-mono tracking-wider uppercase mb-3">CUSTOM
+                    LAYOUT FORMAT</span>
+                <h2 class="display-6 font-outfit font-extrabold text-white mb-3">Design Custom Keyboard Maps via XML
+                </h2>
+                <p class="text-slate-300 lead font-light mb-4">
+                    Omor Ekushe reads simple XML files in `data/Layouts/`. Define virtual key mapping (`vk`), Normal,
+                    Shift, and
                     AltGr character assignments effortlessly.
                 </p>
-                <ul class="list-unstyled text-light mb-4">
-                    <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> Standard virtual keycodes
-                        (`vk="0x41"` for 'A')</li>
-                    <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> Supports Normal, Shift, and
-                        AltGr modifier states</li>
-                    <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i> Live reload layout without
-                        restarting application</li>
+                <ul class="list-unstyled text-slate-300 space-y-2 mb-4">
+                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle text-amber-400"></i>
+                        Standard virtual keycodes (`vk="0x41"` for 'A')</li>
+                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle text-amber-400"></i>
+                        Supports Normal, Shift, and AltGr modifier states</li>
+                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle text-amber-400"></i> Live
+                        reload layout without restarting application</li>
                 </ul>
                 <a href="{{ '/features.html#xml-schema' | relative_url }}"
-                    class="btn btn-outline-light rounded-pill px-4 font-weight-bold">
+                    class="btn-emerald-outline rounded-full px-4">
                     <i class="fas fa-book-open me-2"></i> Read XML Schema Guide
                 </a>
             </div>
 
             <div class="col-lg-6">
-                <div class="code-window shadow-lg">
+                <div class="code-window shadow-2xl">
                     <div class="code-header">
                         <div class="code-dots">
                             <span class="code-dot dot-red"></span>
                             <span class="code-dot dot-yellow"></span>
                             <span class="code-dot dot-green"></span>
                         </div>
-                        <span class="small text-muted font-monospace">data/CustomBijoy.xml</span>
-                        <button class="btn btn-link text-muted btn-sm p-0 btn-copy-code" data-target="xml-code-block"
-                            title="Copy code">
-                            <i class="far fa-copy"></i>
+                        <span class="text-xs text-slate-400 font-mono">data/CustomBijoy.xml</span>
+                        <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
+                            data-target="xml-code-block" title="Copy code">
+                            <i class="far fa-copy"></i> Copy
                         </button>
                     </div>
                     <div class="code-body">
@@ -272,24 +284,25 @@ permalink: /index.html
     </div>
 </section>
 
-<!-- Quick Installation & Download Section -->
-<section class="py-5 bg-white">
+<!-- Download Call to Action Section -->
+<section class="py-5">
     <div class="container py-4">
-        <div class="glass-card-dark text-center py-5 px-4 my-3 position-relative overflow-hidden">
-            <div class="position-relative z-index-1 max-width-700 mx-auto">
-                <h2 class="display-5 font-weight-bold text-white mb-3">Ready for High-Speed Bangla Typing?</h2>
-                <p class="text-light opacity-90 lead mb-4">
+        <div class="glass-card text-center py-5 px-4 position-relative overflow-hidden border-emerald-400/40">
+            <div class="position-relative z-10 max-w-2xl mx-auto">
+                <h2 class="display-5 font-outfit font-extrabold text-white mb-3">Ready for High-Speed Bangla Typing?
+                </h2>
+                <p class="text-slate-300 lead font-light mb-4">
                     Download the standalone single-file setup installer for Windows 10/11 or compile directly from CMake
-                    source.
+                    source code.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
                     <a href="{{ '/download.html' | relative_url }}"
-                        class="btn btn-danger btn-lg rounded-pill px-5 shadow-lg font-weight-bold">
-                        <i class="fas fa-download me-2"></i> Download Omor Ekushe Setup
+                        class="btn-nav-cta text-lg px-5 py-3 shadow-xl shadow-red-900/40 font-bold github-download-setup">
+                        <i class="fas fa-download me-2"></i> Download Setup (.exe)
                     </a>
                     <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}" target="_blank"
-                        class="btn btn-outline-light btn-lg rounded-pill px-4">
-                        <i class="fab fa-github me-2"></i> Source Code
+                        class="btn-emerald-outline text-lg px-4 py-3 rounded-full">
+                        <i class="fab fa-github me-2"></i> View GitHub Source
                     </a>
                 </div>
             </div>

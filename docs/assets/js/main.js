@@ -1,22 +1,26 @@
 ---
   ---
   /**
-   * Omor Ekushe - Website Interactive Engine
-   * Responsive layout toggler, real-time Bangla typing simulator, copy-to-clipboard, and back-to-top service.
+   * Omor Ekushe - Interactive JS & jQuery Web Engine
+   * Features: Live Bangla Typing Simulator, Keyboard Layout Visualizer,
+   * Copy Code Snippets to Clipboard, Back to Top Floating Service,
+   * and GitHub Public REST API Integration.
    */
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // Live Typing & Layout Simulator
-    const layoutBtns = document.querySelectorAll('.layout-pill-btn');
-    const simTextarea = document.getElementById('simulator-input');
-    const currentLayoutLabel = document.getElementById('active-layout-name');
-    const hotkeyBadge = document.getElementById('active-hotkey-badge');
-    const backToTopBtn = document.getElementById('backToTop');
+  $(document).ready(function () {
+    // --------------------------------------------------------------------------
+    // 1. Live Typing & Layout Simulator (jQuery Engine)
+    // --------------------------------------------------------------------------
+    const $layoutBtns = $('.layout-pill-btn');
+    const $simTextarea = $('#simulator-input');
+    const $activeLayoutLabel = $('#active-layout-name');
+    const $activeHotkeyBadge = $('#active-hotkey-badge');
+    const $backToTopBtn = $('#backToTop');
 
     const sampleTexts = {
       'bijoy': 'আমার সোনার বাংলা, আমি তোমায় ভালোবাসি। অমর একুশে গ্রন্থমেলা।',
       'unijoy': 'মোদের গরব, মোদের আশা, আ-মরি বাংলা ভাষা! একুশে ফেব্রুয়ারি আন্তর্জাতিক মাতৃভাষা দিবস।',
-      'english': 'Omor Ekushe Bengali Keyboard Layout Manager & Engine for Windows.'
+      'english': 'Omor Ekushe Bengali Keyboard Layout Manager & Engine for Windows 10/11.'
     };
 
     const layoutNames = {
@@ -27,97 +31,100 @@
 
     let activeLayout = 'bijoy';
 
-    // Layout Button Selection
-    layoutBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        layoutBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    // Layout Selector Pill Button Click
+    $layoutBtns.on('click', function () {
+      $layoutBtns.removeClass('active');
+      $(this).addClass('active');
 
-        activeLayout = btn.getAttribute('data-layout') || 'bijoy';
-        if (currentLayoutLabel) {
-          currentLayoutLabel.textContent = layoutNames[activeLayout] || 'Bangla';
-        }
-        if (simTextarea && sampleTexts[activeLayout]) {
-          simTextarea.value = sampleTexts[activeLayout];
-        }
-      });
+      activeLayout = $(this).attr('data-layout') || 'bijoy';
+      if ($activeLayoutLabel.length) {
+        $activeLayoutLabel.text(layoutNames[activeLayout] || 'Bangla');
+      }
+      if ($simTextarea.length && sampleTexts[activeLayout]) {
+        $simTextarea.val(sampleTexts[activeLayout]);
+      }
     });
 
-    // Hotkey Simulator Keypress Simulation (Ctrl + Alt + B)
-    document.addEventListener('keydown', (e) => {
+    // Hotkey Simulator (Ctrl + Alt + B Keyboard Trigger)
+    $(document).on('keydown', function (e) {
       if (e.ctrlKey && e.altKey && (e.key === 'b' || e.key === 'B')) {
         e.preventDefault();
 
-        const activeBtn = document.querySelector('.layout-pill-btn.active');
-        let nextBtn;
-        if (!activeBtn || activeBtn.getAttribute('data-layout') === 'english') {
-          nextBtn = document.querySelector('.layout-pill-btn[data-layout="bijoy"]');
-        } else if (activeBtn.getAttribute('data-layout') === 'bijoy') {
-          nextBtn = document.querySelector('.layout-pill-btn[data-layout="unijoy"]');
-        } else {
-          nextBtn = document.querySelector('.layout-pill-btn[data-layout="english"]');
-        }
-        if (nextBtn) {
-          nextBtn.click();
+        const $activeBtn = $('.layout-pill-btn.active');
+        let $nextBtn;
+        const current = $activeBtn.attr('data-layout');
 
-          if (hotkeyBadge) {
-            hotkeyBadge.classList.add('bg-warning', 'text-dark');
-            setTimeout(() => hotkeyBadge.classList.remove('bg-warning', 'text-dark'), 600);
+        if (!current || current === 'english') {
+          $nextBtn = $('.layout-pill-btn[data-layout="bijoy"]');
+        } else if (current === 'bijoy') {
+          $nextBtn = $('.layout-pill-btn[data-layout="unijoy"]');
+        } else {
+          $nextBtn = $('.layout-pill-btn[data-layout="english"]');
+        }
+
+        if ($nextBtn && $nextBtn.length) {
+          $nextBtn.trigger('click');
+
+          if ($activeHotkeyBadge.length) {
+            $activeHotkeyBadge.addClass('bg-amber-400 text-slate-900').removeClass('bg-emerald-950 text-emerald-400');
+            setTimeout(() => {
+              $activeHotkeyBadge.removeClass('bg-amber-400 text-slate-900').addClass('bg-emerald-950 text-emerald-400');
+            }, 600);
           }
         }
       }
     });
 
-    // Copy Code Snippet Functionality with Fallback
-    const copyBtns = document.querySelectorAll('.btn-copy-code');
-    copyBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const codeElem = document.getElementById(targetId);
-        if (codeElem) {
-          const textToCopy = (codeElem.innerText || codeElem.textContent || '').trim();
-          if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(textToCopy).then(() => showCopiedFeedback(btn));
-          } else {
-            // Fallback for non-https local dev
-            const textArea = document.createElement('textarea');
-            textArea.value = textToCopy;
-            textArea.style.position = 'fixed';
-            textArea.style.opacity = '0';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-              document.execCommand('copy');
-              showCopiedFeedback(btn);
-            } catch (err) {
-              console.error('Copy fallback failed', err);
-            }
-            document.body.removeChild(textArea);
+    // --------------------------------------------------------------------------
+    // 2. Copy Code Snippet Handler with Toast Feedback
+    // --------------------------------------------------------------------------
+    $('.btn-copy-code').on('click', function () {
+      const $btn = $(this);
+      const targetId = $btn.attr('data-target');
+      const $codeElem = $('#' + targetId);
+
+      if ($codeElem.length) {
+        const textToCopy = ($codeElem.text() || '').trim();
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(textToCopy).then(() => showCopiedFeedback($btn));
+        } else {
+          // Fallback copy
+          const $tempText = $('<textarea>');
+          $('body').append($tempText);
+          $tempText.val(textToCopy).select();
+          try {
+            document.execCommand('copy');
+            showCopiedFeedback($btn);
+          } catch (err) {
+            console.error('Clipboard copy error:', err);
           }
+          $tempText.remove();
         }
-      });
+      }
     });
 
-    function showCopiedFeedback(btn) {
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-check text-success me-1"></i> Copied!';
+    function showCopiedFeedback($btn) {
+      const originalHtml = $btn.html();
+      $btn.html('<i class="fas fa-check text-emerald-400 me-1"></i> <span class="text-xs text-emerald-400 font-medium">Copied!</span>');
       setTimeout(() => {
-        btn.innerHTML = originalText;
+        $btn.html(originalHtml);
       }, 2000);
     }
 
-    // Floating Back to Top Button Logic
-    if (backToTopBtn) {
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-          backToTopBtn.classList.add('show');
+    // --------------------------------------------------------------------------
+    // 3. Floating Back to Top Button Logic
+    // --------------------------------------------------------------------------
+    if ($backToTopBtn.length) {
+      $(window).on('scroll', function () {
+        if ($(this).scrollTop() > 300) {
+          $backToTopBtn.addClass('show');
         } else {
-          backToTopBtn.classList.remove('show');
+          $backToTopBtn.removeClass('show');
         }
       });
 
-      backToTopBtn.addEventListener('click', () => {
+      $backToTopBtn.on('click', function () {
         window.scrollTo({
           top: 0,
           behavior: 'smooth'
@@ -125,140 +132,103 @@
       });
     }
 
-    // ==========================================================================
-    // GitHub Public REST API Integration Hub
-    // Dynamic Repository Stats, Releases, Download Counters, Commits & Contributors
-    // ==========================================================================
+    // --------------------------------------------------------------------------
+    // 4. GitHub REST API Hub Integration
+    // Repository Stats, Releases, Downloads, Commit Feed & Contributors
+    // --------------------------------------------------------------------------
     const REPO_OWNER = 'sabbir28';
     const REPO_NAME = 'OmorEkushe';
     const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`;
 
-    // 1. Fetch Repository Details (Stars, Forks, Issues, Size, Language)
-    async function fetchGitHubRepoDetails() {
+    // A. Fetch Repo Details (Stars, Forks, Open Issues, Lang)
+    async function fetchRepoDetails() {
       try {
         const res = await fetch(API_BASE);
         if (!res.ok) return;
         const repo = await res.json();
 
-        // Stars Count
-        const starElems = document.querySelectorAll('.github-stars-count');
-        starElems.forEach(el => {
-          el.textContent = repo.stargazers_count !== undefined ? repo.stargazers_count : '1+';
-        });
-
-        // Forks Count
-        const forkElems = document.querySelectorAll('.github-forks-count');
-        forkElems.forEach(el => {
-          el.textContent = repo.forks_count !== undefined ? repo.forks_count : '0';
-        });
-
+        // Stars
+        $('.github-stars-count').text(repo.stargazers_count !== undefined ? repo.stargazers_count : '1+');
+        // Forks
+        $('.github-forks-count').text(repo.forks_count !== undefined ? repo.forks_count : '0');
         // Open Issues
-        const issueElems = document.querySelectorAll('.github-issues-count');
-        issueElems.forEach(el => {
-          el.textContent = repo.open_issues_count !== undefined ? repo.open_issues_count : '0';
-        });
+        $('.github-issues-count').text(repo.open_issues_count !== undefined ? repo.open_issues_count : '0');
+        // Primary Language
+        $('.github-primary-lang').text(repo.language || 'C++');
 
-        // Repo Language & Size
-        const langElems = document.querySelectorAll('.github-primary-lang');
-        langElems.forEach(el => {
-          el.textContent = repo.language || 'C++';
-        });
-
-        const sizeElems = document.querySelectorAll('.github-repo-size');
-        sizeElems.forEach(el => {
-          if (repo.size) {
-            const mbSize = (repo.size / 1024).toFixed(1);
-            el.textContent = `${mbSize} MB`;
-          }
-        });
+        if (repo.size) {
+          const mbSize = (repo.size / 1024).toFixed(1);
+          $('.github-repo-size').text(`${mbSize} MB`);
+        }
       } catch (err) {
-        console.warn('GitHub Repo Details API fallback triggered:', err);
+        console.warn('GitHub Repo API fallback:', err);
       }
     }
 
-    // 2. Fetch Latest Release Data (Assets, Executable links, Download Count)
-    async function fetchLatestGitHubRelease() {
+    // B. Fetch Latest Release (Setup Download, Version Tag, Date, Asset Stats)
+    async function fetchLatestRelease() {
       try {
-        const response = await fetch(`${API_BASE}/releases/latest`);
-        if (!response.ok) return;
-        const releaseData = await response.json();
+        const res = await fetch(`${API_BASE}/releases/latest`);
+        if (!res.ok) return;
+        const release = await res.json();
 
         // Release Tag
-        const releaseBadges = document.querySelectorAll('.github-release-tag');
-        releaseBadges.forEach(el => {
-          el.textContent = releaseData.tag_name || 'v1.0.0';
-        });
+        $('.github-release-tag').text(release.tag_name || 'v1.0.0');
 
         // Published Date
-        const releaseDates = document.querySelectorAll('.github-release-date');
-        if (releaseData.published_at) {
-          const pubDate = new Date(releaseData.published_at).toLocaleDateString(undefined, {
+        if (release.published_at) {
+          const pubDate = new Date(release.published_at).toLocaleDateString(undefined, {
             year: 'numeric',
             month: 'short',
             day: 'numeric'
           });
-          releaseDates.forEach(el => {
-            el.textContent = pubDate;
-          });
+          $('.github-release-date').text(pubDate);
         }
 
-        // Assets & Download Counts
-        if (releaseData.assets && Array.isArray(releaseData.assets)) {
-          let totalDownloads = 0;
-          let setupAsset = releaseData.assets.find(a => a.name.toLowerCase().endsWith('.exe'));
-          let portableAsset = releaseData.assets.find(a => a.name.toLowerCase().endsWith('.zip'));
+        // Assets & Download Metrics
+        if (release.assets && Array.isArray(release.assets)) {
+          let totalDl = 0;
+          let setupAsset = release.assets.find(a => a.name.toLowerCase().endsWith('.exe'));
+          let portableAsset = release.assets.find(a => a.name.toLowerCase().endsWith('.zip'));
 
-          releaseData.assets.forEach(asset => {
-            totalDownloads += asset.download_count || 0;
+          release.assets.forEach(asset => {
+            totalDl += asset.download_count || 0;
           });
 
-          const dlCountElems = document.querySelectorAll('.github-total-downloads');
-          dlCountElems.forEach(el => {
-            el.textContent = totalDownloads > 0 ? `${totalDownloads} downloads` : 'Active Release';
-          });
+          $('.github-total-downloads').text(totalDl > 0 ? `${totalDl} downloads` : 'Active Release');
 
           if (setupAsset) {
-            document.querySelectorAll('.github-download-setup').forEach(el => {
-              el.href = setupAsset.browser_download_url;
-              el.setAttribute('download', setupAsset.name);
+            $('.github-download-setup').each(function () {
+              $(this).attr('href', setupAsset.browser_download_url).attr('download', setupAsset.name);
             });
-            document.querySelectorAll('.github-setup-size').forEach(el => {
-              el.textContent = `${(setupAsset.size / (1024 * 1024)).toFixed(1)} MB`;
-            });
-            document.querySelectorAll('.github-setup-downloads').forEach(el => {
-              el.textContent = `${setupAsset.download_count || 0} downloads`;
-            });
+            $('.github-setup-size').text(`${(setupAsset.size / (1024 * 1024)).toFixed(1)} MB`);
+            $('.github-setup-downloads').text(`${setupAsset.download_count || 0} downloads`);
           }
 
           if (portableAsset) {
-            document.querySelectorAll('.github-download-portable').forEach(el => {
-              el.href = portableAsset.browser_download_url;
-              el.setAttribute('download', portableAsset.name);
+            $('.github-download-portable').each(function () {
+              $(this).attr('href', portableAsset.browser_download_url).attr('download', portableAsset.name);
             });
-            document.querySelectorAll('.github-portable-size').forEach(el => {
-              el.textContent = `${(portableAsset.size / (1024 * 1024)).toFixed(1)} MB`;
-            });
-            document.querySelectorAll('.github-portable-downloads').forEach(el => {
-              el.textContent = `${portableAsset.download_count || 0} downloads`;
-            });
+            $('.github-portable-size').text(`${(portableAsset.size / (1024 * 1024)).toFixed(1)} MB`);
+            $('.github-portable-downloads').text(`${portableAsset.download_count || 0} downloads`);
           }
         }
       } catch (err) {
-        console.warn('GitHub Release API fallback triggered:', err);
+        console.warn('GitHub Release API fallback:', err);
       }
     }
 
-    // 3. Fetch Recent Commits Feed
-    async function fetchRecentGitHubCommits() {
-      const commitContainer = document.getElementById('github-commit-feed');
-      if (!commitContainer) return;
+    // C. Fetch Commit Feed
+    async function fetchRecentCommits() {
+      const $feedContainer = $('#github-commit-feed');
+      if (!$feedContainer.length) return;
 
       try {
         const res = await fetch(`${API_BASE}/commits?per_page=5`);
         if (!res.ok) return;
         const commits = await res.json();
 
-        let html = '<div class="list-group list-group-flush rounded-3 border overflow-hidden">';
+        let html = '<div class="space-y-3">';
         commits.forEach(item => {
           const msg = item.commit.message.split('\n')[0];
           const author = item.commit.author ? item.commit.author.name : 'Contributor';
@@ -273,59 +243,59 @@
           const avatar = item.author ? item.author.avatar_url : 'https://github.githubassets.com/favicons/favicon.png';
 
           html += `
-          <a href="${url}" target="_blank" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between py-3 px-3">
-            <div class="d-flex align-items-center gap-3">
-              <img src="${avatar}" width="32" height="32" class="rounded-circle border" alt="${author}">
-              <div>
-                <div class="fw-semibold text-dark mb-0 text-truncate" style="max-width: 420px;">${msg}</div>
-                <small class="text-muted"><i class="fas fa-user-edit me-1"></i> ${author} &bull; ${date}</small>
-              </div>
-            </div>
-            <span class="badge bg-dark font-monospace text-success px-2 py-1">${sha}</span>
-          </a>
-        `;
+                <a href="${url}" target="_blank" class="block p-3 bg-slate-900/80 border border-emerald-500/20 rounded-xl hover:border-emerald-400 hover:bg-slate-900 transition-all text-decoration-none group">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <img src="${avatar}" width="34" height="34" class="rounded-full border border-emerald-500/30" alt="${author}">
+                            <div class="min-w-0">
+                                <div class="text-sm font-semibold text-slate-100 truncate group-hover:text-emerald-400 transition-colors">${msg}</div>
+                                <div class="text-xs text-slate-400"><i class="fas fa-user-edit me-1 text-emerald-500"></i> ${author} &bull; ${date}</div>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 text-xs font-mono text-emerald-400 bg-emerald-950 border border-emerald-500/30 rounded-lg shrink-0">${sha}</span>
+                    </div>
+                </a>
+                `;
         });
         html += '</div>';
-        commitContainer.innerHTML = html;
+        $feedContainer.html(html);
       } catch (err) {
-        console.warn('GitHub Commits API fallback triggered:', err);
+        console.warn('GitHub Commits API error:', err);
       }
     }
 
-    // 4. Fetch Contributors
-    async function fetchGitHubContributors() {
-      const contribContainer = document.getElementById('github-contributors-list');
-      if (!contribContainer) return;
+    // D. Fetch Contributors
+    async function fetchContributors() {
+      const $contribContainer = $('#github-contributors-list');
+      if (!$contribContainer.length) return;
 
       try {
         const res = await fetch(`${API_BASE}/contributors`);
         if (!res.ok) return;
         const contributors = await res.json();
 
-        let html = '<div class="d-flex flex-wrap gap-3 align-items-center">';
+        let html = '<div class="flex flex-wrap gap-2.5 items-center">';
         contributors.forEach(user => {
           html += `
-          <a href="${user.html_url}" target="_blank" class="text-decoration-none" title="${user.login} (${user.contributions} contributions)">
-            <div class="d-flex align-items-center gap-2 bg-light border rounded-pill px-3 py-1 shadow-sm contributor-chip">
-              <img src="${user.avatar_url}" width="28" height="28" class="rounded-circle" alt="${user.login}">
-              <span class="fw-bold text-dark small">${user.login}</span>
-              <span class="badge bg-success rounded-pill small">${user.contributions}</span>
-            </div>
-          </a>
-        `;
+                <a href="${user.html_url}" target="_blank" class="text-decoration-none group" title="${user.login} (${user.contributions} contributions)">
+                    <div class="flex items-center gap-2 bg-slate-900/80 border border-emerald-500/20 hover:border-emerald-400 rounded-full px-3 py-1.5 transition-all">
+                        <img src="${user.avatar_url}" width="26" height="26" class="rounded-full" alt="${user.login}">
+                        <span class="text-xs font-semibold text-slate-200 group-hover:text-emerald-400 transition-colors">${user.login}</span>
+                        <span class="badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px]">${user.contributions}</span>
+                    </div>
+                </a>
+                `;
         });
         html += '</div>';
-        contribContainer.innerHTML = html;
+        $contribContainer.html(html);
       } catch (err) {
-        console.warn('GitHub Contributors API fallback triggered:', err);
+        console.warn('GitHub Contributors API error:', err);
       }
     }
 
-    // Trigger All API Calls concurrently
-    fetchGitHubRepoDetails();
-    fetchLatestGitHubRelease();
-    fetchRecentGitHubCommits();
-    fetchGitHubContributors();
+    // Initialize GitHub API Calls
+    fetchRepoDetails();
+    fetchLatestRelease();
+    fetchRecentCommits();
+    fetchContributors();
   });
-
-

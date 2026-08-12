@@ -1,49 +1,58 @@
 ---
 layout: page
 title: Omor Ekushe Documentation
-subtitle: Full user manual, keyboard shortcuts, CMake compilation guide, and troubleshooting.
+subtitle: Full user manual, default hotkeys, CMake build matrix guide, and codebase file breakdown.
 permalink: /documentation.html
 ---
 
 <div class="row g-4 mb-5">
-    <!-- Hotkey Reference Table -->
+    <!-- Hotkey Reference Table Card -->
     <div class="col-lg-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-success text-white p-3 rounded-top-4">
-                <h4 class="mb-0 font-weight-bold"><i class="fas fa-keyboard me-2"></i> Default Hotkeys & Shortcuts</h4>
+        <div class="glass-card h-100 p-0 overflow-hidden">
+            <div
+                class="p-4 bg-emerald-950 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
+                <h4 class="font-outfit font-bold text-white text-lg mb-0">
+                    <i class="fas fa-keyboard text-emerald-400 me-2"></i> Default Hotkeys & Shortcuts
+                </h4>
+                <span
+                    class="badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono">Win32
+                    Hook</span>
             </div>
-            <div class="card-body p-4">
+            <div class="p-4">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table table-dark table-hover align-middle mb-0 text-sm">
+                        <thead class="table-emerald text-emerald-300 font-mono text-xs uppercase">
                             <tr>
                                 <th>Action</th>
-                                <th>Shortcut</th>
-                                <th>Description</th>
+                                <th>Shortcut Keycap</th>
+                                <th>Behavior</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-emerald-500/10">
                             <tr>
-                                <td><strong>Toggle Layout</strong></td>
-                                <td><kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> +
+                                <td><strong class="text-white">Toggle Layout</strong></td>
+                                <td>
+                                    <kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> +
                                     <kbd class="hotkey-cap gold">B</kbd>
                                 </td>
-                                <td>Instantly switches between Bangla and English mode.</td>
+                                <td class="text-slate-300">Instantly switches between Bangla and English mode.</td>
                             </tr>
                             <tr>
-                                <td><strong>Minimize to Tray</strong></td>
+                                <td><strong class="text-white">Minimize to Tray</strong></td>
                                 <td><kbd class="hotkey-cap">Esc</kbd> or <kbd class="hotkey-cap">_</kbd> button</td>
-                                <td>Hides top control bar to system notification tray.</td>
+                                <td class="text-slate-300">Hides top acrylic control bar to system notification tray.
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>Restore Bar</strong></td>
+                                <td><strong class="text-white">Restore Overlay</strong></td>
                                 <td><kbd class="hotkey-cap">Double Click Tray Icon</kbd></td>
-                                <td>Restores top acrylic control overlay window.</td>
+                                <td class="text-slate-300">Restores top acrylic control window overlay.</td>
                             </tr>
                             <tr>
-                                <td><strong>Exit Application</strong></td>
+                                <td><strong class="text-white">Exit Application</strong></td>
                                 <td><kbd class="hotkey-cap">Right-Click Tray</kbd> &rarr; Exit</td>
-                                <td>Terminates background hook service and exits app.</td>
+                                <td class="text-slate-300">Terminates background hook service and exits app cleanly.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -54,29 +63,39 @@ permalink: /documentation.html
 
     <!-- Registry & Settings Cleanup -->
     <div class="col-lg-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-dark text-white p-3 rounded-top-4">
-                <h4 class="mb-0 font-weight-bold text-white"><i class="fas fa-tools me-2"></i> Registry Cleanup &
-                    Scripts</h4>
+        <div class="glass-card h-100 p-0 overflow-hidden">
+            <div
+                class="p-4 bg-slate-900 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
+                <h4 class="font-outfit font-bold text-white text-lg mb-0">
+                    <i class="fas fa-sliders text-amber-400 me-2"></i> Registry Configuration & Cleanup
+                </h4>
+                <span class="badge bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-mono">HKCU
+                    Registry</span>
             </div>
-            <div class="card-body p-4">
-                <p class="text-muted small">
-                    Omor Ekushe stores active layout choices and overlay opacity preferences under current user Windows
-                    Registry keys:
+            <div class="p-4">
+                <p class="text-slate-300 text-sm mb-3">
+                    Omor Ekushe stores active layout choices and overlay opacity preferences under Windows Registry
+                    Current User keys:
                 </p>
-                <div class="bg-light p-3 rounded border font-monospace small mb-3 text-dark">
+                <div
+                    class="p-3 bg-slate-950 rounded-xl border border-emerald-500/20 font-mono text-xs text-emerald-400 mb-3 select-all">
                     HKEY_CURRENT_USER\Software\OmorEkushe
                 </div>
-                <p class="text-muted small mb-3">
-                    To reset all settings to clean factory defaults or uninstall, run the included batch script in
-                    project root:
+                <p class="text-slate-300 text-sm mb-3">
+                    To reset all settings to clean factory defaults or clean registry entries, run the batch script
+                    command:
                 </p>
                 <div class="code-window">
                     <div class="code-header">
-                        <span class="small text-muted font-monospace">remove_registry.bat</span>
+                        <span class="text-xs text-slate-400 font-mono">remove_registry.bat</span>
+                        <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
+                            data-target="reg-code-block" title="Copy code">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
                     </div>
                     <div class="code-body py-2">
-                        <pre class="mb-0"><code>reg delete "HKCU\Software\OmorEkushe" /f</code></pre>
+                        <pre
+                            class="mb-0"><code id="reg-code-block">reg delete "HKCU\Software\OmorEkushe" /f</code></pre>
                     </div>
                 </div>
             </div>
@@ -85,34 +104,36 @@ permalink: /documentation.html
 </div>
 
 <!-- CMake Build Guide -->
-<div class="card border-0 shadow-sm rounded-4 mb-5">
-    <div class="card-header bg-dark text-white p-4 rounded-top-4">
-        <h3 class="mb-1 font-weight-bold text-white"><i class="fas fa-terminal text-success me-2"></i> Building from
-            Source with CMake</h3>
-        <p class="text-muted small mb-0">Follow these instructions to compile Omor Ekushe on Visual Studio (MSVC) or
-            MinGW-w64.</p>
+<div class="glass-card p-0 overflow-hidden mb-5">
+    <div class="p-4 bg-emerald-950 border-b border-emerald-500/20">
+        <h3 class="font-outfit font-bold text-white text-xl mb-1">
+            <i class="fas fa-terminal text-emerald-400 me-2"></i> Building from Source with CMake
+        </h3>
+        <p class="text-slate-300 text-sm mb-0">Follow these instructions to compile Omor Ekushe on Visual Studio (MSVC)
+            or MinGW-w64 toolchains.</p>
     </div>
-    <div class="card-body p-4">
-
-        <ul class="nav nav-pills mb-4" id="buildTabs" role="tablist">
+    <div class="p-4">
+        <!-- Build Tabs Navigation -->
+        <ul class="nav nav-pills mb-4 gap-2" id="buildTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active rounded-pill px-4" id="msvc-tab" data-bs-toggle="tab"
-                    data-bs-target="#msvc-pane" type="button" role="tab" aria-controls="msvc-pane" aria-selected="true">
-                    <i class="fab fa-windows me-1"></i> Visual Studio (MSVC)
+                <button class="nav-link active rounded-full px-4 text-sm font-semibold" id="msvc-tab"
+                    data-bs-toggle="tab" data-bs-target="#msvc-pane" type="button" role="tab" aria-controls="msvc-pane"
+                    aria-selected="true">
+                    <i class="fab fa-windows me-1.5 text-blue-400"></i> Visual Studio (MSVC)
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link rounded-pill px-4" id="mingw-tab" data-bs-toggle="tab"
+                <button class="nav-link rounded-full px-4 text-sm font-semibold" id="mingw-tab" data-bs-toggle="tab"
                     data-bs-target="#mingw-pane" type="button" role="tab" aria-controls="mingw-pane"
                     aria-selected="false">
-                    <i class="fas fa-terminal me-1"></i> MinGW-w64
+                    <i class="fas fa-terminal me-1.5 text-emerald-400"></i> MinGW-w64 GCC
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link rounded-pill px-4" id="editor-tab" data-bs-toggle="tab"
+                <button class="nav-link rounded-full px-4 text-sm font-semibold" id="editor-tab" data-bs-toggle="tab"
                     data-bs-target="#editor-pane" type="button" role="tab" aria-controls="editor-pane"
                     aria-selected="false">
-                    <i class="fas fa-edit me-1"></i> Layout Editor
+                    <i class="fas fa-pen-ruler me-1.5 text-amber-400"></i> Layout Editor (ImGui)
                 </button>
             </li>
         </ul>
@@ -122,14 +143,19 @@ permalink: /documentation.html
             <div class="tab-pane fade show active" id="msvc-pane" role="tabpanel" aria-labelledby="msvc-tab">
                 <div class="code-window">
                     <div class="code-header">
-                        <span class="small text-muted font-monospace">PowerShell / Command Prompt</span>
+                        <span class="text-xs text-slate-400 font-mono"><i class="fab fa-windows me-1 text-blue-400"></i>
+                            PowerShell / Visual Studio Developer Prompt</span>
+                        <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
+                            data-target="msvc-code" title="Copy code">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
                     </div>
                     <div class="code-body">
-                        <pre class="mb-0"><code># 1. Clone repository
+                        <pre class="mb-0"><code id="msvc-code"># 1. Clone Omor Ekushe repository
 git clone https://github.com/sabbir28/OmorEkushe.git
 cd OmorEkushe
 
-# 2. Generate build files for Visual Studio (x64)
+# 2. Generate CMake build configuration for Visual Studio (x64)
 cmake -B build -A x64
 
 # 3. Build Release executable
@@ -144,13 +170,18 @@ cmake --build build --config Release
             <div class="tab-pane fade" id="mingw-pane" role="tabpanel" aria-labelledby="mingw-tab">
                 <div class="code-window">
                     <div class="code-header">
-                        <span class="small text-muted font-monospace">Bash / MinGW Terminal</span>
+                        <span class="text-xs text-slate-400 font-mono"><i
+                                class="fas fa-terminal me-1 text-emerald-400"></i> Bash / MinGW Terminal</span>
+                        <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
+                            data-target="mingw-code" title="Copy code">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
                     </div>
                     <div class="code-body">
-                        <pre class="mb-0"><code># 1. Generate MinGW Makefiles
+                        <pre class="mb-0"><code id="mingw-code"># 1. Generate MinGW Makefiles
 cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
 
-# 2. Build executable
+# 2. Build executable target
 cmake --build build
 
 # Output binary generated in: build/bin/OmorEkushe.exe</code></pre>
@@ -162,14 +193,20 @@ cmake --build build
             <div class="tab-pane fade" id="editor-pane" role="tabpanel" aria-labelledby="editor-tab">
                 <div class="code-window">
                     <div class="code-header">
-                        <span class="small text-muted font-monospace">Build ImGui Graphical Layout Editor</span>
+                        <span class="text-xs text-slate-400 font-mono"><i
+                                class="fas fa-pen-ruler me-1 text-amber-400"></i> Build Dear ImGui Graphical Keymap
+                            Designer</span>
+                        <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
+                            data-target="editor-code" title="Copy code">
+                            <i class="far fa-copy"></i> Copy
+                        </button>
                     </div>
                     <div class="code-body">
-                        <pre class="mb-0"><code># Enable Layout Editor target
+                        <pre class="mb-0"><code id="editor-code"># Enable Layout Editor sub-module build flag
 cmake -B build -DBIJOY_BUILD_LAYOUT_EDITOR=ON
 cmake --build build --config Release
 
-# Output binary: build/bin/LayoutEditor.exe</code></pre>
+# Output binary target: build/bin/LayoutEditor.exe</code></pre>
                     </div>
                 </div>
             </div>
@@ -178,85 +215,86 @@ cmake --build build --config Release
     </div>
 </div>
 
-<!-- Comprehensive Codebase Architecture & File Breakdown -->
-<div class="card border-0 shadow-sm rounded-4 mb-5">
-    <div class="card-header bg-dark text-white p-4 rounded-top-4">
-        <h3 class="mb-1 font-weight-bold text-white"><i class="fas fa-sitemap text-danger me-2"></i> Codebase
-            Architecture & File Structure</h3>
-        <p class="text-muted small mb-0">Overview of project modules, source tree organization, build targets, and CI
-            pipelines.</p>
+<!-- Comprehensive Codebase File Breakdown -->
+<div class="glass-card p-0 overflow-hidden mb-5">
+    <div class="p-4 bg-slate-900 border-b border-emerald-500/20">
+        <h3 class="font-outfit font-bold text-white text-xl mb-1">
+            <i class="fas fa-sitemap text-bdRed me-2"></i> Source Tree Modules Breakdown
+        </h3>
+        <p class="text-slate-300 text-sm mb-0">Detailed breakdown of repository modules, source files, and build
+            configuration targets.</p>
     </div>
-    <div class="card-body p-4">
+    <div class="p-4">
         <div class="row g-4">
-
-            <!-- Core Engine Module -->
+            <!-- Core Module -->
             <div class="col-lg-6">
-                <div class="p-3 border rounded-3 bg-light h-100">
-                    <h5 class="fw-bold text-emerald mb-2"><i class="fas fa-microchip text-success me-2"></i> Core Engine
-                        (`src/core/`)</h5>
-                    <ul class="list-unstyled text-muted small mb-0">
-                        <li class="mb-2"><code>layout.cpp / layout.h</code>: XML keymap parser and in-memory keyboard
-                            mapping dictionary.</li>
-                        <li class="mb-2"><code>layout_discovery.cpp</code>: Dynamically scans <code>data/Layouts/</code>
-                            directory for XML layouts.</li>
-                        <li class="mb-2"><code>spelling_checker.cpp</code>: Native Bengali spellchecking and dictionary
-                            lookup engine.</li>
-                        <li class="mb-2"><code>net_client.cpp</code>: Lightweight IPC / socket networking module for
-                            remote layout sync.</li>
+                <div class="p-3.5 bg-slate-950 border border-emerald-500/20 rounded-2xl h-100">
+                    <h5 class="font-outfit font-bold text-emerald-400 text-base mb-2">
+                        <i class="fas fa-microchip me-2"></i> Core Engine (`src/core/`)
+                    </h5>
+                    <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
+                        <li><code class="text-emerald-300">layout.cpp / layout.h</code>: XML keymap parser and in-memory
+                            key mapping dictionary.</li>
+                        <li><code class="text-emerald-300">layout_discovery.cpp</code>: Dynamically scans
+                            <code>data/Layouts/</code> directory for XML layouts.</li>
+                        <li><code class="text-emerald-300">spelling_checker.cpp</code>: Native C++ Bengali spellchecker
+                            & dictionary lookup core.</li>
+                        <li><code class="text-emerald-300">net_client.cpp</code>: Lightweight IPC socket client module
+                            for remote layout sync.</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Platform & Win32 Integration Module -->
+            <!-- Platform Module -->
             <div class="col-lg-6">
-                <div class="p-3 border rounded-3 bg-light h-100">
-                    <h5 class="fw-bold text-emerald mb-2"><i class="fab fa-windows text-primary me-2"></i> Win32
-                        Platform (`src/platform/windows/`)</h5>
-                    <ul class="list-unstyled text-muted small mb-0">
-                        <li class="mb-2"><code>main_window.cpp</code>: Top acrylic control bar overlay & Win32 message
-                            loop handler.</li>
-                        <li class="mb-2"><code>native_input.cpp</code>: Low-level keyboard hook
-                            (<code>WH_KEYBOARD_LL</code>) for key interception.</li>
-                        <li class="mb-2"><code>registration_dialog.cpp</code>: Win32 registration UI dialog and setting
-                            persistence.</li>
-                        <li class="mb-2"><code>main_window_tray.cpp</code>: System tray notification icon and
-                            right-click context menu.</li>
+                <div class="p-3.5 bg-slate-950 border border-emerald-500/20 rounded-2xl h-100">
+                    <h5 class="font-outfit font-bold text-emerald-400 text-base mb-2">
+                        <i class="fab fa-windows me-2 text-blue-400"></i> Win32 Integration (`src/platform/windows/`)
+                    </h5>
+                    <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
+                        <li><code class="text-emerald-300">main_window.cpp</code>: Top acrylic control bar overlay &
+                            Win32 window message loop.</li>
+                        <li><code class="text-emerald-300">native_input.cpp</code>: Low-level system keyboard hook
+                            (<code>WH_KEYBOARD_LL</code>).</li>
+                        <li><code class="text-emerald-300">registration_dialog.cpp</code>: Win32 registry settings UI
+                            and persistence.</li>
+                        <li><code class="text-emerald-300">main_window_tray.cpp</code>: System tray notification icon &
+                            context menu.</li>
                     </ul>
                 </div>
             </div>
 
             <!-- Installer Module -->
             <div class="col-lg-6">
-                <div class="p-3 border rounded-3 bg-light h-100">
-                    <h5 class="fw-bold text-emerald mb-2"><i class="fas fa-box text-warning me-2"></i> Installer
-                        Sub-Module (`Installer/`)</h5>
-                    <ul class="list-unstyled text-muted small mb-0">
-                        <li class="mb-2"><code>InstallerLogic.cpp</code>: Unpacks embedded <code>bin/</code> and
-                            <code>data/</code> payload to target installation folder.</li>
-                        <li class="mb-2"><code>bundler.cpp</code>: Build tool that embeds application binaries and
-                            layout XMLs into single <code>OmorEkushe-Setup.exe</code>.</li>
+                <div class="p-3.5 bg-slate-950 border border-emerald-500/20 rounded-2xl h-100">
+                    <h5 class="font-outfit font-bold text-emerald-400 text-base mb-2">
+                        <i class="fas fa-box me-2 text-amber-400"></i> Installer Sub-Module (`Installer/`)
+                    </h5>
+                    <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
+                        <li><code class="text-emerald-300">InstallerLogic.cpp</code>: Unpacks embedded binary payload
+                            array to target disk directory.</li>
+                        <li><code class="text-emerald-300">bundler.cpp</code>: Build tool that embeds application
+                            binaries into single setup installer.</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Sub-modules & Workflows -->
+            <!-- Workflows Module -->
             <div class="col-lg-6">
-                <div class="p-3 border rounded-3 bg-light h-100">
-                    <h5 class="fw-bold text-emerald mb-2"><i class="fas fa-cogs text-danger me-2"></i> Workflows &
-                        Configs (`.github/`, `data/`)</h5>
-                    <ul class="list-unstyled text-muted small mb-0">
-                        <li class="mb-2"><code>data/Layouts/*.xml</code>: XML definitions for Bijoy, Unijoy, and
-                            National keymaps.</li>
-                        <li class="mb-2"><code>.github/workflows/build.yml</code>: CI build matrix verifying MSVC &
-                            MinGW targets.</li>
-                        <li class="mb-2"><code>.github/workflows/release.yml</code>: Automated release workflow
-                            publishing binaries on code push.</li>
-                        <li class="mb-2"><code>.github/workflows/jekyll-gh-pages.yml</code>: Automated GitHub Pages
-                            website deployment workflow.</li>
+                <div class="p-3.5 bg-slate-950 border border-emerald-500/20 rounded-2xl h-100">
+                    <h5 class="font-outfit font-bold text-emerald-400 text-base mb-2">
+                        <i class="fas fa-cogs me-2 text-bdRed"></i> GitHub Workflows (`.github/workflows/`)
+                    </h5>
+                    <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
+                        <li><code class="text-emerald-300">build.yml</code>: CI build matrix compiling MSVC & MinGW
+                            targets.</li>
+                        <li><code class="text-emerald-300">release.yml</code>: Automated GitHub Release publisher
+                            publishing versioned binaries.</li>
+                        <li><code class="text-emerald-300">jekyll-gh-pages.yml</code>: Automated GitHub Pages
+                            documentation deployment pipeline.</li>
                     </ul>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

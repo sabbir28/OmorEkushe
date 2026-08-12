@@ -2,33 +2,42 @@
 layout: default
 ---
 
-<div class="py-4 py-lg-5 text-white position-relative"
-    style="background: linear-gradient(135deg, #004d38 0%, #006A4E 60%, #04241b 100%); border-bottom: 3px solid var(--bd-red);">
-    <div class="container py-2">
+<div class="page-hero-banner py-4 py-lg-5 position-relative overflow-hidden">
+    <div class="hero-bg-glow"></div>
+    <div class="container py-2 position-relative z-10">
         <div class="row align-items-center">
             <div class="col-md-8">
                 <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-2 small opacity-75">
+                    <ol class="breadcrumb mb-2 small">
                         <li class="breadcrumb-item"><a href="{{ '/' | relative_url }}"
-                                class="text-white text-decoration-none">Home</a></li>
-                        <li class="breadcrumb-item active text-warning" aria-current="page">{{ page.title }}</li>
+                                class="text-emerald-300 hover:text-white transition-colors text-decoration-none"><i
+                                    class="fas fa-home me-1"></i> Home</a></li>
+                        <li class="breadcrumb-item active text-amber-400 font-semibold" aria-current="page">{{
+                            page.title }}</li>
                     </ol>
                 </nav>
-                <h1 class="h2 text-white font-weight-bold mb-1">{{ page.title }}</h1>
+                <h1 class="display-6 text-white font-extrabold tracking-tight mb-2 font-outfit">{{ page.title }}</h1>
                 {% if page.subtitle %}
-                <p class="lead text-light mb-0 opacity-90" style="font-size: 1.1rem;">{{ page.subtitle }}</p>
+                <p class="lead text-slate-300 mb-0 opacity-90 max-w-2xl font-light" style="font-size: 1.15rem;">{{
+                    page.subtitle }}</p>
                 {% endif %}
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0 d-none d-md-block">
-                <span class="badge bg-danger rounded-pill px-3 py-2 fs-6 shadow-sm">
-                    <i class="fas fa-flag me-1"></i> Win32 Native
-                </span>
+                <div class="d-inline-flex flex-column align-items-end gap-2">
+                    <span class="badge-bd-pill-pulse">
+                        <span class="pulse-dot"></span>
+                        <i class="fas fa-shield-halved me-1 text-emerald-400"></i> Win32 Native C++17
+                    </span>
+                    <span class="text-xs text-slate-400 font-mono">
+                        <i class="fas fa-code-branch text-emerald-400 me-1"></i> Omor Ekushe Engine
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="py-5">
+<div class="py-5 bg-slate-900/60">
     <div class="container">
         {{ content }}
     </div>

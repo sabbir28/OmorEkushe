@@ -1,77 +1,102 @@
-<footer class="footer-custom">
-    <div class="container">
+<footer class="footer-custom relative overflow-hidden">
+    <div class="footer-bg-glow"></div>
+    <div class="container relative z-10">
         <div class="row g-4">
+            <!-- Brand & Info Column -->
             <div class="col-lg-5 col-md-6">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <div class="brand-circle"
-                        style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
-                        <img src="{{ '/assets/favicon.ico' | relative_url }}" alt="Omor Ekushe App Icon" width="20"
-                            height="20" style="object-fit: contain;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="brand-circle shadow-lg shadow-emerald-900/50">
+                        <img src="{{ '/assets/favicon.ico' | relative_url }}" alt="Omor Ekushe App Icon" width="22"
+                            height="22" class="object-contain filter drop-shadow">
                     </div>
-                    <h4 class="text-white mb-0 font-weight-bold">Omor Ekushe <small class="text-danger"
-                            style="font-size: 0.85em;">(অমর একুশে)</small></h4>
+                    <h4 class="font-outfit font-extrabold text-white text-xl mb-0">
+                        Omor Ekushe <span class="text-bdRed text-sm font-bangla font-bold me-1">(অমর একুশে)</span>
+                    </h4>
                 </div>
-                <p class="small text-muted pe-lg-4 mb-3">
+                <p class="text-slate-300 text-sm pe-lg-4 mb-3 leading-relaxed">
                     A lightweight, high-performance, 100% native Win32 Bengali (Bangla) Keyboard Layout Manager & Engine
-                    for Windows. Engineered with zero runtime dependencies.
+                    for Windows. Engineered with zero external runtime DLL dependencies.
                 </p>
-                <p class="small text-warning mb-0">
-                    <i class="fas fa-heart text-danger me-1"></i> Dedicated in memory of the Language Movement Heroes of
-                    February 21, 1952.
-                </p>
-            </div>
-
-            <div class="col-lg-2 col-md-6 col-6">
-                <h5>Navigation</h5>
-                <ul class="footer-links">
-                    <li><a href="{{ '/' | relative_url }}">Home</a></li>
-                    <li><a href="{{ '/features.html' | relative_url }}">Features</a></li>
-                    <li><a href="{{ '/download.html' | relative_url }}">Download</a></li>
-                    <li><a href="{{ '/documentation.html' | relative_url }}">User Manual</a></li>
-                    <li><a href="{{ '/codebase.html' | relative_url }}">Codebase Guide</a></li>
-                </ul>
-            </div>
-
-            <div class="col-lg-2 col-md-6 col-6">
-                <h5>Key Modules</h5>
-                <ul class="footer-links">
-                    <li><a href="{{ '/features.html#hook-engine' | relative_url }}">Win32 Hook Core</a></li>
-                    <li><a href="{{ '/features.html#spelling-checker' | relative_url }}">Spelling Checker</a></li>
-                    <li><a href="{{ '/features.html#layout-editor' | relative_url }}">Layout Editor</a></li>
-                    <li><a href="{{ '/features.html#xml-schema' | relative_url }}">XML Layout Maps</a></li>
-                </ul>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <h5>Repository</h5>
-                <p class="small text-muted mb-2">Open source software under the MIT License.</p>
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                    <span class="badge bg-dark border border-secondary text-light small"><i
-                            class="fas fa-star text-warning me-1"></i> <span class="github-stars-count">1</span>
-                        Stars</span>
-                    <span class="badge bg-dark border border-secondary text-light small"><i
-                            class="fas fa-code-branch text-info me-1"></i> <span class="github-forks-count">0</span>
-                        Forks</span>
-                    <span class="badge bg-dark border border-secondary text-light small"><i
-                            class="fas fa-code text-success me-1"></i> <span
-                            class="github-primary-lang">C++</span></span>
+                <div class="tribute-pill d-inline-flex align-items-center gap-2 mb-3">
+                    <i class="fas fa-heart text-bdRed animate-pulse"></i>
+                    <span class="text-xs text-amber-300 font-medium">Dedicated to the 1952 Language Movement
+                        Heroes</span>
                 </div>
-                <a class="btn btn-outline-light btn-sm rounded-pill px-3"
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-2 col-md-6 col-6">
+                <h5 class="font-outfit text-white font-bold text-base mb-3">Navigation</h5>
+                <ul class="footer-links list-unstyled">
+                    <li><a href="{{ '/' | relative_url }}"><i
+                                class="fas fa-chevron-right text-xs me-1 text-emerald-400 opacity-60"></i> Home</a></li>
+                    <li><a href="{{ '/features.html' | relative_url }}"><i
+                                class="fas fa-chevron-right text-xs me-1 text-emerald-400 opacity-60"></i> Features</a>
+                    </li>
+                    <li><a href="{{ '/download.html' | relative_url }}"><i
+                                class="fas fa-chevron-right text-xs me-1 text-emerald-400 opacity-60"></i> Download</a>
+                    </li>
+                    <li><a href="{{ '/documentation.html' | relative_url }}"><i
+                                class="fas fa-chevron-right text-xs me-1 text-emerald-400 opacity-60"></i> User
+                            Manual</a></li>
+                    <li><a href="{{ '/codebase.html' | relative_url }}"><i
+                                class="fas fa-chevron-right text-xs me-1 text-emerald-400 opacity-60"></i> Codebase
+                            Guide</a></li>
+                </ul>
+            </div>
+
+            <!-- Submodules Links -->
+            <div class="col-lg-2 col-md-6 col-6">
+                <h5 class="font-outfit text-white font-bold text-base mb-3">Key Modules</h5>
+                <ul class="footer-links list-unstyled">
+                    <li><a href="{{ '/features.html#hook-engine' | relative_url }}"><i
+                                class="fas fa-microchip text-xs me-1 text-emerald-400 opacity-60"></i> Win32 Hook
+                            Core</a></li>
+                    <li><a href="{{ '/features.html#spelling-checker' | relative_url }}"><i
+                                class="fas fa-spell-check text-xs me-1 text-emerald-400 opacity-60"></i> Spelling
+                            Checker</a></li>
+                    <li><a href="{{ '/features.html#layout-editor' | relative_url }}"><i
+                                class="fas fa-pen-ruler text-xs me-1 text-emerald-400 opacity-60"></i> Layout Editor</a>
+                    </li>
+                    <li><a href="{{ '/features.html#xml-schema' | relative_url }}"><i
+                                class="fas fa-code text-xs me-1 text-emerald-400 opacity-60"></i> XML Keymaps</a></li>
+                </ul>
+            </div>
+
+            <!-- Repository & Stats Column -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="font-outfit text-white font-bold text-base mb-3">Repository</h5>
+                <p class="text-slate-400 text-xs mb-3">Open source desktop software licensed under MIT License.</p>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge-stat">
+                        <i class="fas fa-star text-amber-400 me-1"></i> <span class="github-stars-count">1</span> Stars
+                    </span>
+                    <span class="badge-stat">
+                        <i class="fas fa-code-branch text-sky-400 me-1"></i> <span class="github-forks-count">0</span>
+                        Forks
+                    </span>
+                    <span class="badge-stat">
+                        <i class="fas fa-code text-emerald-400 me-1"></i> <span class="github-primary-lang">C++</span>
+                    </span>
+                </div>
+                <a class="btn-github-star shadow-md group"
                     href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}" target="_blank"
                     rel="noopener">
-                    <i class="fab fa-github me-1"></i> Star on GitHub
+                    <i class="fab fa-github me-1.5 group-hover:scale-110 transition-transform"></i> Star on GitHub
                 </a>
             </div>
         </div>
 
+        <!-- Footer Bottom Bar -->
         <div
-            class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
-            <p class="mb-2 mb-md-0 text-muted">
+            class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start gap-2">
+            <p class="mb-0 text-slate-400 text-sm">
                 &copy; {{ 'now' | date: "%Y" }} Omor Ekushe Project. Maintained by <a href="https://github.com/sabbir28"
-                    target="_blank" class="text-success text-decoration-none fw-bold">Sabbir</a>.
+                    target="_blank"
+                    class="text-emerald-400 hover:text-emerald-300 font-semibold text-decoration-none">Sabbir</a>.
             </p>
-            <p class="mb-0 text-muted small">
-                Designed with <span class="text-danger">&hearts;</span> & Bangladesh Colors.
+            <p class="mb-0 text-slate-400 text-xs">
+                Designed with <span class="text-bdRed">&hearts;</span> & Cyber Glassmorphism.
             </p>
         </div>
     </div>

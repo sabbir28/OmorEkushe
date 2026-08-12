@@ -1,275 +1,167 @@
 ---
 layout: page
-title: Codebase Architecture & Directory Guide
-subtitle: Deep dive into project file organization, Win32 hooks, core engine modules, sub-modules, and CI/CD release
-pipelines.
+title: Codebase Architecture & GitHub Hub
+subtitle: Technical architectural design, C++17 Win32 module breakdown, and dynamic GitHub API metrics feed.
 permalink: /codebase.html
 ---
 
-<div class="row g-4 mb-5">
-    <!-- Overview & Directory Hierarchy -->
-    <div class="col-lg-12">
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-header bg-dark text-white p-4 rounded-top-4">
-                <h3 class="mb-1 font-weight-bold text-white"><i class="fas fa-folder-tree text-success me-2"></i>
-                    Project Directory Hierarchy</h3>
-                <p class="text-muted small mb-0">High-level overview of repository directory structure and source
-                    organization.</p>
+<!-- Live Repository Stats Bar -->
+<div class="row g-3 mb-5">
+    <div class="col-lg-3 col-md-6">
+        <div class="github-stat-card">
+            <div class="github-stat-icon green">
+                <i class="fas fa-star"></i>
             </div>
-            <div class="card-body p-4">
-                <div class="code-window">
-                    <div class="code-header">
-                        <span class="small text-muted font-monospace">Repository Structure</span>
-                    </div>
-                    <div class="code-body">
-                        <pre class="mb-0"><code>OmorEkushe/
-├── CMakeLists.txt              # Root CMake build configuration
-├── .github/
-│   └── workflows/
-│       ├── build.yml           # CI build matrix (MSVC & MinGW)
-│       ├── release.yml         # Automated GitHub Release publisher on push
-│       └── jekyll-gh-pages.yml # Automated GitHub Pages deployment workflow
-├── src/
-│   ├── core/                   # C++ Core Engine Modules
-│   │   ├── layout.cpp / .h     # XML Layout parser & dictionary map
-│   │   ├── layout_discovery.cpp# Dynamic XML layout scanner
-│   │   ├── spelling_checker.cpp# Native Bengali dictionary & spellcheck core
-│   │   └── net_client.cpp      # Sockets / IPC sync module
-│   └── platform/
-│       └── windows/            # Win32 Native Integration
-│           ├── main_window.cpp # Acrylic control bar overlay & window loop
-│           ├── native_input.cpp# WH_KEYBOARD_LL low-level keyboard hook
-│           ├── registration_dialog.cpp # Settings & registry UI
-│           ├── main_window_tray.cpp    # System tray icon & context menu
-│           └── app.ico         # Application icon asset
-├── Installer/                  # Standalone Setup Sub-Module
-│   ├── CMakeLists.txt
-│   ├── src/
-│   │   ├── InstallerLogic.cpp  # Unpacks embedded bin/ and data/ payload
-│   │   └── bundler.cpp         # Embeds executables into OmorEkushe-Setup.exe
-├── LayoutEditor/               # GLFW + Dear ImGui Sub-Module
-│   ├── CMakeLists.txt
-│   └── src/
-│       ├── main.cpp            # OpenGL / GLFW window initialization
-│       └── LayoutEditor.cpp    # Visual keymap editor UI
-├── data/                       # Application Data & Keymaps
-│   └── Layouts/
-│       ├── Bijoy.xml           # Bijoy Bangla layout definition
-│       ├── Unijoy.xml          # Unijoy layout map
-│       └── National.xml        # National keyboard format
-└── docs/                       # Jekyll Documentation Website
-    ├── _config.yml             # Jekyll site settings
-    ├── assets/                 # CSS styling & JS simulator engine
-    ├── _includes/              # Navbar and Footer partial templates
-    ├── index.html              # Home page
-    ├── features.html           # Features deep dive
-    ├── download.html           # Download portal & API links
-    ├── documentation.html      # User manual & shortcuts guide
-    └── codebase.html           # Codebase architecture documentation</code></pre>
-                    </div>
-                </div>
+            <div>
+                <h4 class="font-outfit font-extrabold text-white text-xl mb-0 github-stars-count">1</h4>
+                <span class="text-xs text-slate-400 font-mono">GitHub Stars</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="github-stat-card">
+            <div class="github-stat-icon gold">
+                <i class="fas fa-code-branch"></i>
+            </div>
+            <div>
+                <h4 class="font-outfit font-extrabold text-white text-xl mb-0 github-forks-count">0</h4>
+                <span class="text-xs text-slate-400 font-mono">Forks & Clones</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="github-stat-card">
+            <div class="github-stat-icon red">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div>
+                <h4 class="font-outfit font-extrabold text-white text-xl mb-0 github-issues-count">0</h4>
+                <span class="text-xs text-slate-400 font-mono">Open Issues</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="github-stat-card">
+            <div class="github-stat-icon dark border border-emerald-500/30">
+                <i class="fas fa-database text-emerald-400"></i>
+            </div>
+            <div>
+                <h4 class="font-outfit font-extrabold text-white text-xl mb-0 github-repo-size">~12 MB</h4>
+                <span class="text-xs text-slate-400 font-mono">Repository Size</span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- GitHub Live Repository Stats & Dynamic API Feed -->
-<div class="row g-3 mb-4">
-    <div class="col-md-3 col-6">
-        <div class="github-stat-card">
-            <div class="github-stat-icon green"><i class="fas fa-star"></i></div>
-            <div>
-                <h4 class="fw-bold mb-0 text-dark github-stars-count">1</h4>
-                <small class="text-muted">GitHub Stars</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="github-stat-card">
-            <div class="github-stat-icon red"><i class="fas fa-code-branch"></i></div>
-            <div>
-                <h4 class="fw-bold mb-0 text-dark github-forks-count">0</h4>
-                <small class="text-muted">Forks</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="github-stat-card">
-            <div class="github-stat-icon gold"><i class="fas fa-exclamation-circle"></i></div>
-            <div>
-                <h4 class="fw-bold mb-0 text-dark github-issues-count">0</h4>
-                <small class="text-muted">Open Issues</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="github-stat-card">
-            <div class="github-stat-icon dark"><i class="fas fa-download"></i></div>
-            <div>
-                <h4 class="fw-bold mb-0 text-dark github-total-downloads">Active</h4>
-                <small class="text-muted">Release Downloads</small>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Live Commit Activity & Contributors Grid -->
+<!-- Dynamic GitHub Commit Feed & Contributors Section -->
 <div class="row g-4 mb-5">
+    <!-- Live Commit Feed -->
     <div class="col-lg-7">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="glass-card p-0 overflow-hidden h-100">
             <div
-                class="card-header bg-dark text-white p-3 rounded-top-4 d-flex align-items-center justify-content-between">
-                <h5 class="mb-0 font-weight-bold text-white"><i class="fas fa-history text-success me-2"></i> Recent
-                    Commits Feed</h5>
-                <span class="badge bg-success rounded-pill small">Live API</span>
+                class="p-4 bg-emerald-950 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
+                <h4 class="font-outfit font-bold text-white text-lg mb-0">
+                    <i class="fas fa-history text-emerald-400 me-2"></i> Live Recent Commit Activity
+                </h4>
+                <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/commits" target="_blank"
+                    class="text-xs text-emerald-400 hover:text-emerald-300 font-mono text-decoration-none">
+                    View All &rarr;
+                </a>
             </div>
-            <div class="card-body p-3" id="github-commit-feed">
-                <div class="text-center py-4 text-muted">
-                    <div class="spinner-border spinner-border-sm text-success me-2" role="status"></div>
-                    Loading recent commits from GitHub...
+            <div class="p-4">
+                <div id="github-commit-feed">
+                    <div class="text-center py-4 text-slate-400">
+                        <i class="fas fa-circle-notch fa-spin text-emerald-400 fa-2x mb-2"></i>
+                        <p class="text-xs font-mono mb-0">Fetching latest commit activity from GitHub API...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Repository Contributors List -->
     <div class="col-lg-5">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="glass-card p-0 overflow-hidden h-100">
             <div
-                class="card-header bg-dark text-white p-3 rounded-top-4 d-flex align-items-center justify-content-between">
-                <h5 class="mb-0 font-weight-bold text-white"><i class="fas fa-users text-warning me-2"></i> Repository
-                    Contributors</h5>
-                <span class="badge bg-warning text-dark rounded-pill small">GitHub REST API</span>
+                class="p-4 bg-slate-900 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
+                <h4 class="font-outfit font-bold text-white text-lg mb-0">
+                    <i class="fas fa-users text-amber-400 me-2"></i> Project Contributors
+                </h4>
+                <span class="badge bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-mono">GitHub
+                    Team</span>
             </div>
-            <div class="card-body p-4" id="github-contributors-list">
-                <div class="text-center py-4 text-muted">
-                    <div class="spinner-border spinner-border-sm text-warning me-2" role="status"></div>
-                    Fetching contributors...
+            <div class="p-4">
+                <p class="text-slate-300 text-xs mb-3">Community developers contributing to Omor Ekushe core, layout
+                    maps, and documentation.</p>
+                <div id="github-contributors-list">
+                    <div class="text-center py-4 text-slate-400">
+                        <i class="fas fa-circle-notch fa-spin text-amber-400 fa-2x mb-2"></i>
+                        <p class="text-xs font-mono mb-0">Loading contributor profiles...</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Detailed Component Breakdown -->
-<div class="row g-4 mb-5">
-
-    <!-- Core Engine -->
-    <div class="col-lg-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-success text-white p-3 rounded-top-4">
-                <h4 class="mb-0 font-weight-bold"><i class="fas fa-microchip me-2"></i> Core Engine (`src/core/`)</h4>
+<!-- Architectural System Design -->
+<div class="glass-card p-0 overflow-hidden mb-5">
+    <div class="p-4 bg-emerald-950 border-b border-emerald-500/20">
+        <h3 class="font-outfit font-bold text-white text-xl mb-1">
+            <i class="fas fa-diagram-project text-emerald-400 me-2"></i> System Architecture & Execution Flow
+        </h3>
+        <p class="text-slate-300 text-sm mb-0">High-level architecture showing raw keypress intercept to UTF-16 Bengali
+            rendering.</p>
+    </div>
+    <div class="p-4">
+        <!-- Visual Architecture Diagram Box -->
+        <div
+            class="p-4 bg-slate-950 border border-emerald-500/20 rounded-2xl font-mono text-xs text-slate-300 overflow-x-auto mb-4 leading-relaxed">
+            <div class="d-flex align-items-center justify-content-between gap-3 text-center min-w-[650px]">
+                <div class="p-3 bg-emerald-950 border border-emerald-500/40 rounded-xl flex-1">
+                    <div class="text-emerald-400 font-bold mb-1"><i class="fas fa-keyboard mb-1"></i> Hardware Keyboard
+                    </div>
+                    <div class="text-[10px] text-slate-400">Raw Virtual Keycode (VK)</div>
+                </div>
+                <i class="fas fa-arrow-right text-emerald-400"></i>
+                <div class="p-3 bg-emerald-950 border border-emerald-500/40 rounded-xl flex-1">
+                    <div class="text-emerald-400 font-bold mb-1"><i class="fas fa-microchip mb-1"></i> Kernel Hook</div>
+                    <div class="text-[10px] text-slate-400">WH_KEYBOARD_LL</div>
+                </div>
+                <i class="fas fa-arrow-right text-emerald-400"></i>
+                <div class="p-3 bg-amber-950 border border-amber-500/40 rounded-xl flex-1">
+                    <div class="text-amber-300 font-bold mb-1"><i class="fas fa-map mb-1"></i> Layout Mapping</div>
+                    <div class="text-[10px] text-slate-400">data/Layouts/*.xml</div>
+                </div>
+                <i class="fas fa-arrow-right text-emerald-400"></i>
+                <div class="p-3 bg-red-950 border border-red-500/40 rounded-xl flex-1">
+                    <div class="text-red-400 font-bold mb-1"><i class="fas fa-desktop mb-1"></i> Win32 Target App</div>
+                    <div class="text-[10px] text-slate-400">SendInput UTF-16</div>
+                </div>
             </div>
-            <div class="card-body p-4">
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-3">
-                        <strong class="text-dark">layout.cpp / layout.h</strong>
-                        <p class="text-muted small mb-0">Parses layout XML definitions, builds in-memory character
-                            mappings (`KeyMap`), and resolves modifier key states (Normal, Shift, AltGr, Conjuncts/Juk).
-                        </p>
-                    </li>
-                    <li class="mb-3">
-                        <strong class="text-dark">layout_discovery.cpp</strong>
-                        <p class="text-muted small mb-0">Scans `data/Layouts/` relative path for available `.xml` layout
-                            definition files at runtime and populates available layout choices.</p>
-                    </li>
-                    <li class="mb-3">
-                        <strong class="text-dark">spelling_checker.cpp</strong>
-                        <p class="text-muted small mb-0">Fast C++ dictionary lookup engine for Bengali word validation
-                            and real-time spell suggestions.</p>
-                    </li>
-                    <li>
-                        <strong class="text-dark">net_client.cpp</strong>
-                        <p class="text-muted small mb-0">Socket networking client allowing remote layout updates and IPC
-                            messaging between modules.</p>
-                    </li>
-                </ul>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <h5 class="font-outfit font-bold text-white text-base mb-2">1. Interception & Hook Layer</h5>
+                <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                    `native_input.cpp` installs a low-level global Windows hook using `SetWindowsHookExW`. When Bangla
+                    mode is active,
+                    intercepted Virtual Keycodes (VK) are blocked from standard OS processing and forwarded to the
+                    layout mapper.
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h5 class="font-outfit font-bold text-white text-base mb-2">2. XML Mapper & Output</h5>
+                <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                    `layout.cpp` performs an $O(1)$ lookup in the active layout map table for the corresponding UTF-16
+                    character or conjunctive sequence,
+                    then emits keystrokes using Win32 API `SendInput` with `KEYEVENTF_UNICODE`.
+                </p>
             </div>
         </div>
     </div>
-
-    <!-- Win32 Platform -->
-    <div class="col-lg-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-dark text-white p-3 rounded-top-4">
-                <h4 class="mb-0 font-weight-bold text-white"><i class="fab fa-windows me-2"></i> Win32 Platform
-                    (`src/platform/windows/`)</h4>
-            </div>
-            <div class="card-body p-4">
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-3">
-                        <strong class="text-dark">main_window.cpp</strong>
-                        <p class="text-muted small mb-0">Manages top acrylic glass overlay window, transparency sliders,
-                            background rendering, and Win32 event dispatching loop.</p>
-                    </li>
-                    <li class="mb-3">
-                        <strong class="text-dark">native_input.cpp</strong>
-                        <p class="text-muted small mb-0">Installs low-level system keyboard hook
-                            (`SetWindowsHookExW(WH_KEYBOARD_LL)`) to capture physical keystrokes system-wide and inject
-                            unicode characters (`SendInput`).</p>
-                    </li>
-                    <li class="mb-3">
-                        <strong class="text-dark">registration_dialog.cpp</strong>
-                        <p class="text-muted small mb-0">Win32 registration dialog window and registry configuration
-                            loader/saver (`HKCU\Software\OmorEkushe`).</p>
-                    </li>
-                    <li>
-                        <strong class="text-dark">main_window_tray.cpp</strong>
-                        <p class="text-muted small mb-0">Creates system notification area icon (`NOTIFYICONDATA`),
-                            handles double-click restore, and right-click pop-up menu.</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sub-modules & Build System -->
-    <div class="col-lg-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-danger text-white p-3 rounded-top-4">
-                <h4 class="mb-0 font-weight-bold text-white"><i class="fas fa-box me-2"></i> Installer Setup
-                    (`Installer/`)</h4>
-            </div>
-            <div class="card-body p-4">
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-3">
-                        <strong class="text-dark">InstallerLogic.cpp</strong>
-                        <p class="text-muted small mb-0">Self-extracting Win32 installer engine. Iterates over embedded
-                            binary payload array and writes target `bin/` and `data/` files to destination disk
-                            directory.</p>
-                    </li>
-                    <li>
-                        <strong class="text-dark">bundler.cpp</strong>
-                        <p class="text-muted small mb-0">Build tool executed during compilation to compress executables
-                            (`OmorEkushe.exe`, `NetClient.exe`) and layout XML maps into C++ byte arrays inside
-                            `Installer.exe`.</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sub-modules & Build System -->
-    <div class="col-lg-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-warning text-dark p-3 rounded-top-4">
-                <h4 class="mb-0 font-weight-bold text-dark"><i class="fas fa-edit me-2"></i> Layout Editor
-                    (`LayoutEditor/`)</h4>
-            </div>
-            <div class="card-body p-4">
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-3">
-                        <strong class="text-dark">main.cpp</strong>
-                        <p class="text-muted small mb-0">Initializes GLFW OpenGL window context and sets up Dear ImGui
-                            render loop.</p>
-                    </li>
-                    <li>
-                        <strong class="text-dark">LayoutEditor.cpp</strong>
-                        <p class="text-muted small mb-0">Graphical keymap designer UI for visual key assignment, XML
-                            layout creation, and live testing.</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
 </div>
