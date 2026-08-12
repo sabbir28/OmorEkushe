@@ -1,0 +1,44 @@
+name: Build & Verify OmorEkushe
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-windows:
+    name: Build (MSVC & MinGW)
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [msvc, mingw]
+        build_type: [Release]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up MSVC
+      if: matrix.compiler == 'msvc'
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Configure CMake (MSVC)
+      if: matrix.compiler == 'msvc'
+      run: cmake -B build -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBIJOY_BUILD_LAYOUT_EDITOR=OFF
+
+    - name: Configure CMake (MinGW)
+      if: matrix.compiler == 'mingw'
+      run: cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBIJOY_BUILD_LAYOUT_EDITOR=OFF
+
+    - name: Build Executables
+      run: cmake --build build --config ${{ matrix.build_type }}
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: OmorEkushe-${{ matrix.compiler }}-${{ matrix.build_type }}
+        path: |
+          build/bin/*.exe
+          build/bin/*.dll

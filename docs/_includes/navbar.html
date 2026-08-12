@@ -1,0 +1,48 @@
+<div class="flag-accent-bar"></div>
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+  <div class="container">
+    <a class="navbar-brand-logo" href="{{ site.baseurl }}/index.html">
+      <div class="brand-circle">
+        <i class="fas fa-keyboard text-white" style="font-size: 0.8rem;"></i>
+      </div>
+      <span>Omor Ekushe <small class="text-bangla-highlight ms-1" style="font-size: 0.9rem;">(অমর একুশে)</small></span>
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fas fa-bars text-success"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link {% if page.url == '/index.html' or page.url == '/' %}active{% endif %}" href="{{ site.baseurl }}/index.html">
+            <i class="fas fa-home me-1 opacity-75"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if page.url == '/features.html' %}active{% endif %}" href="{{ site.baseurl }}/features.html">
+            <i class="fas fa-cubes me-1 opacity-75"></i> Features
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if page.url == '/download.html' %}active{% endif %}" href="{{ site.baseurl }}/download.html">
+            <i class="fas fa-download me-1 opacity-75"></i> Download
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if page.url == '/documentation.html' %}active{% endif %}" href="{{ site.baseurl }}/documentation.html">
+            <i class="fas fa-book me-1 opacity-75"></i> Documentation
+          </a>
+        </li>
+        <li class="nav-item ms-lg-2">
+          <a class="btn btn-outline-success btn-sm font-weight-bold px-3 py-2" href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}" target="_blank" rel="noopener">
+            <i class="fab fa-github me-1"></i> GitHub
+          </a>
+        </li>
+        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+          <a class="btn btn-nav-download" href="{{ site.baseurl }}/download.html">
+            <i class="fas fa-download me-1"></i> Get Installer
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,181 @@
+---
+layout: page
+title: Download Omor Ekushe
+subtitle: Single-file Windows setup installer, portable binaries, and CMake source build guide.
+---
+
+<div class="row g-4 mb-5">
+    <!-- Recommended Installer Card -->
+    <div class="col-lg-6">
+        <div class="card-download featured">
+            <div class="mb-3 text-success">
+                <i class="fas fa-file-download fa-3x"></i>
+            </div>
+            <h3 class="font-weight-bold text-dark mb-2">Windows Installer Setup</h3>
+            <p class="text-muted small mb-3">
+                Self-contained single-file installer setup (`Installer.exe`). Automatically registers registry settings,
+                shortcuts, and bundles core keymap XML files.
+            </p>
+
+            <div class="bg-light p-3 rounded mb-4 text-start small">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Target OS:</span>
+                    <span class="fw-bold text-dark">Windows 10 / 11 (64-bit)</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Package:</span>
+                    <span class="fw-bold text-dark">OmorEkushe-Setup.exe</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">License:</span>
+                    <span class="fw-bold text-success">MIT License (Free & Open Source)</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">RAM Usage:</span>
+                    <span class="fw-bold text-danger">~5 MB RAM</span>
+                </div>
+            </div>
+
+            <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/releases" target="_blank"
+                class="btn btn-bd-primary btn-lg w-100 mb-2">
+                <i class="fas fa-download me-2"></i> Download Setup (.exe)
+            </a>
+            <span class="small text-muted"><i class="fas fa-shield-alt text-success me-1"></i> Verified & Malware
+                Free</span>
+        </div>
+    </div>
+
+    <!-- Portable / Source Build Card -->
+    <div class="col-lg-6">
+        <div class="card-download">
+            <div class="mb-3 text-danger">
+                <i class="fas fa-box-open fa-3x"></i>
+            </div>
+            <h3 class="font-weight-bold text-dark mb-2">Portable Binary / Source</h3>
+            <p class="text-muted small mb-3">
+                No installation required. Unpack portable ZIP or compile directly from CMake C++17 source files using
+                Visual Studio or MinGW.
+            </p>
+
+            <div class="bg-light p-3 rounded mb-4 text-start small">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Compiler:</span>
+                    <span class="fw-bold text-dark">MSVC 2019/2022 or MinGW GCC 9+</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Build System:</span>
+                    <span class="fw-bold text-dark">CMake 3.14+</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Output Binary:</span>
+                    <span class="fw-bold text-dark">build/bin/OmorEkushe.exe</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Dependencies:</span>
+                    <span class="fw-bold text-success">Zero External DLLs Required</span>
+                </div>
+            </div>
+
+            <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}" target="_blank"
+                class="btn btn-bd-outline btn-lg w-100 mb-2">
+                <i class="fab fa-github me-2"></i> View Repository on GitHub
+            </a>
+            <span class="small text-muted"><i class="fas fa-code me-1"></i> Git Clone & CMake Ready</span>
+        </div>
+    </div>
+</div>
+
+<!-- System Requirements Table -->
+<div class="card border-0 shadow-sm rounded-4 mb-5">
+    <div class="card-header bg-success text-white p-3 rounded-top-4">
+        <h4 class="mb-0 font-weight-bold"><i class="fas fa-laptop-code me-2"></i> System Requirements & Compatibility
+        </h4>
+    </div>
+    <div class="card-body p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Component</th>
+                        <th>Minimum Requirement</th>
+                        <th>Recommended Specification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Operating System</strong></td>
+                        <td>Windows 7 / 8.1 (64-bit)</td>
+                        <td><span class="badge bg-success">Windows 10 / 11 (64-bit)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Processor</strong></td>
+                        <td>1.0 GHz x64 Intel/AMD</td>
+                        <td>Dual-Core or higher</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RAM Footprint</strong></td>
+                        <td>10 MB available RAM</td>
+                        <td><span class="badge bg-danger">~5 MB RAM (Native C++)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Disk Space</strong></td>
+                        <td>15 MB free space</td>
+                        <td>25 MB free space</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Display Overlay</strong></td>
+                        <td>DirectX / GDI standard display</td>
+                        <td>Acrylic glassmorphism semi-transparency display</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Step-by-Step Installation Walkthrough -->
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <h3 class="font-weight-bold text-emerald mb-4"><i class="fas fa-tasks me-2"></i> Installation Walkthrough</h3>
+    </div>
+
+    <div class="col-md-4">
+        <div class="p-4 bg-white border border-success border-2 rounded-4 h-100 shadow-sm position-relative">
+            <div class="badge bg-danger rounded-circle mb-3"
+                style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                1</div>
+            <h5 class="font-weight-bold">Run Setup Installer</h5>
+            <p class="text-muted small mb-0">
+                Execute `OmorEkushe-Setup.exe`. The embedded Win32 setup unpacks application binaries and XML layout
+                files to your system directory.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="p-4 bg-white border border-success border-2 rounded-4 h-100 shadow-sm position-relative">
+            <div class="badge bg-danger rounded-circle mb-3"
+                style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                2</div>
+            <h5 class="font-weight-bold">Control Bar & System Tray</h5>
+            <p class="text-muted small mb-0">
+                Omor Ekushe launches directly to your top display bar and minimizes cleanly into the Windows System Tray
+                notification area.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="p-4 bg-white border border-success border-2 rounded-4 h-100 shadow-sm position-relative">
+            <div class="badge bg-danger rounded-circle mb-3"
+                style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
+                3</div>
+            <h5 class="font-weight-bold">Toggle Bangla Hotkey</h5>
+            <p class="text-muted small mb-0">
+                Press <kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> + <kbd
+                    class="hotkey-cap gold">B</kbd> in any document, browser, or editor to switch between Bangla &
+                English typing.
+            </p>
+        </div>
+    </div>
+</div>

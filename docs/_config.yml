@@ -1,0 +1,17 @@
+title: "Omor Ekushe - Win32 Bengali Keyboard Engine"
+description: "A lightweight, high-performance, 100% native Win32 Bengali (Bangla) Keyboard Layout Manager & Engine for Windows."
+baseurl: "" # set baseurl if hosted under subpath, e.g. /OmorEkushe
+url: "https://sabbir28.github.io"
+github_username: sabbir28
+github_repo: OmorEkushe
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+permalink: pretty
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules

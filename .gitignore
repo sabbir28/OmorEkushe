@@ -1,0 +1,107 @@
+# =========================================================================
+# OmorEkushe Git Ignore File
+# =========================================================================
+
+# -------------------------------------------------
+# Build Output & CMake Directories
+# -------------------------------------------------
+build/
+bin/
+data/
+out/
+temp/
+cmake-build-*/
+_deps/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+compile_commands.json
+
+# -------------------------------------------------
+# Installer Build Staging & Generated Resources
+# -------------------------------------------------
+Installer/staging/
+Installer/include/Resources.h
+
+# -------------------------------------------------
+# Compiled Binaries & Build Artifacts
+# -------------------------------------------------
+*.exe
+*.dll
+*.lib
+*.a
+*.so
+*.dylib
+*.obj
+*.o
+*.pch
+*.res
+*.rc.res
+
+# -------------------------------------------------
+# Debugging & Symbol Files
+# -------------------------------------------------
+*.pdb
+*.idb
+*.ilk
+*.exp
+*.map
+
+# -------------------------------------------------
+# MSVC & Visual Studio Noise
+# -------------------------------------------------
+.vs/
+*.vcxproj.user
+*.vcxproj.filters.user
+*.suo
+*.user
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.opendb
+Debug/
+Release/
+x64/
+x86/
+ARM/
+ARM64/
+
+# -------------------------------------------------
+# JetBrains / CLion / IntelliJ IDE Noise
+# -------------------------------------------------
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# -------------------------------------------------
+# Visual Studio Code Noise
+# -------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# -------------------------------------------------
+# Operating System & Temporary Files
+# -------------------------------------------------
+[Tt]mp/
+*.tmp
+*.bak
+*.swp
+*~
+*.log
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes

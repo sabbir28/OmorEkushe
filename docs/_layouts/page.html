@@ -1,0 +1,35 @@
+---
+layout: default
+---
+
+<div class="py-4 py-lg-5 text-white position-relative"
+    style="background: linear-gradient(135deg, #004d38 0%, #006A4E 60%, #04241b 100%); border-bottom: 3px solid var(--bd-red);">
+    <div class="container py-2">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2 small opacity-75">
+                        <li class="breadcrumb-item"><a href="{{ site.baseurl }}/index.html"
+                                class="text-white text-decoration-none">Home</a></li>
+                        <li class="breadcrumb-item active text-warning" aria-current="page">{{ page.title }}</li>
+                    </ol>
+                </nav>
+                <h1 class="h2 text-white font-weight-bold mb-1">{{ page.title }}</h1>
+                {% if page.subtitle %}
+                <p class="lead text-light mb-0 opacity-90" style="font-size: 1.1rem;">{{ page.subtitle }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0 d-none d-md-block">
+                <span class="badge bg-danger rounded-pill px-3 py-2 fs-6 shadow-sm">
+                    <i class="fas fa-flag me-1"></i> Win32 Native
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="py-5">
+    <div class="container">
+        {{ content }}
+    </div>
+</div>
