@@ -28,6 +28,10 @@ permalink: /download.html
                     <span class="fw-bold text-dark">OmorEkushe-Setup.exe</span>
                 </div>
                 <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Latest Release:</span>
+                    <span class="badge bg-success github-release-tag">v1.0.0</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
                     <span class="text-muted">License:</span>
                     <span class="fw-bold text-success">MIT License (Free & Open Source)</span>
                 </div>
@@ -38,11 +42,11 @@ permalink: /download.html
             </div>
 
             <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/releases" target="_blank"
-                class="btn btn-bd-primary btn-lg w-100 mb-2">
+                class="btn btn-bd-primary btn-lg w-100 mb-2 github-download-setup">
                 <i class="fas fa-download me-2"></i> Download Setup (.exe)
             </a>
-            <span class="small text-muted"><i class="fas fa-shield-alt text-success me-1"></i> Verified & Malware
-                Free</span>
+            <span class="small text-muted"><i class="fas fa-shield-alt text-success me-1"></i> Direct Executable
+                Download</span>
         </div>
     </div>
 
@@ -52,10 +56,10 @@ permalink: /download.html
             <div class="mb-3 text-danger">
                 <i class="fas fa-box-open fa-3x"></i>
             </div>
-            <h3 class="font-weight-bold text-dark mb-2">Portable Binary / Source</h3>
+            <h3 class="font-weight-bold text-dark mb-2">Portable Zip Package</h3>
             <p class="text-muted small mb-3">
-                No installation required. Unpack portable ZIP or compile directly from CMake C++17 source files using
-                Visual Studio or MinGW.
+                No installation required. Unpack portable ZIP containing `bin/` and `data/` layout XML files, or compile
+                from CMake source.
             </p>
 
             <div class="bg-light p-3 rounded mb-4 text-start small">
@@ -64,8 +68,8 @@ permalink: /download.html
                     <span class="fw-bold text-dark">MSVC 2019/2022 or MinGW GCC 9+</span>
                 </div>
                 <div class="d-flex justify-content-between mb-1">
-                    <span class="text-muted">Build System:</span>
-                    <span class="fw-bold text-dark">CMake 3.14+</span>
+                    <span class="text-muted">Package:</span>
+                    <span class="fw-bold text-dark">OmorEkushe-Portable.zip</span>
                 </div>
                 <div class="d-flex justify-content-between mb-1">
                     <span class="text-muted">Output Binary:</span>
@@ -77,11 +81,11 @@ permalink: /download.html
                 </div>
             </div>
 
-            <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}" target="_blank"
-                class="btn btn-bd-outline btn-lg w-100 mb-2">
-                <i class="fab fa-github me-2"></i> View Repository on GitHub
+            <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/releases" target="_blank"
+                class="btn btn-bd-outline btn-lg w-100 mb-2 github-download-portable">
+                <i class="fas fa-file-archive me-2"></i> Download Portable (.zip)
             </a>
-            <span class="small text-muted"><i class="fas fa-code me-1"></i> Git Clone & CMake Ready</span>
+            <span class="small text-muted"><i class="fas fa-code me-1"></i> Standalone & Ready to Run</span>
         </div>
     </div>
 </div>

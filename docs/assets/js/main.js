@@ -122,5 +122,69 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // GitHub Public API Dynamic Release Integration
+  async function fetchLatestGitHubRelease() {
+    const repoOwner = 'sabbir28';
+    const repoName = 'OmorEkushe';
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`;
+
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        console.warn('GitHub API response not ok, falling back to release page.');
+        return;
+      }
+      const releaseData = await response.json();
+
+      // Update release version badges
+      const releaseBadges = document.querySelectorAll('.github-release-tag');
+      releaseBadges.forEach(el => {
+        el.textContent = releaseData.tag_name || 'latest';
+      });
+
+      const releaseDates = document.querySelectorAll('.github-release-date');
+      if (releaseData.published_at) {
+        const pubDate = new Date(releaseData.published_at).toLocaleDateString(undefined, {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+        releaseDates.forEach(el => {
+          el.textContent = pubDate;
+        });
+      }
+
+      // Parse assets
+      if (releaseData.assets && Array.isArray(releaseData.assets)) {
+        let setupAsset = releaseData.assets.find(a => a.name.toLowerCase().endsWith('.exe'));
+        let portableAsset = releaseData.assets.find(a => a.name.toLowerCase().endsWith('.zip'));
+
+        if (setupAsset) {
+          document.querySelectorAll('.github-download-setup').forEach(el => {
+            el.href = setupAsset.browser_download_url;
+            el.setAttribute('download', setupAsset.name);
+          });
+          document.querySelectorAll('.github-setup-size').forEach(el => {
+            el.textContent = (setupAsset.size / (1024 * 1024)).toFixed(1) + ' MB';
+          });
+        }
+
+        if (portableAsset) {
+          document.querySelectorAll('.github-download-portable').forEach(el => {
+            el.href = portableAsset.browser_download_url;
+            el.setAttribute('download', portableAsset.name);
+          });
+          document.querySelectorAll('.github-portable-size').forEach(el => {
+            el.textContent = (portableAsset.size / (1024 * 1024)).toFixed(1) + ' MB';
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching GitHub releases:', err);
+    }
+  }
+
+  fetchLatestGitHubRelease();
 });
 
