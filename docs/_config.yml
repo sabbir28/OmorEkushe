@@ -14,7 +14,9 @@ kramdown:
   syntax_highlighter: rouge
   auto_ids: true
 
-permalink: /:basename.html
+plugins:
+  - jekyll-seo-tag
+
 exclude:
   - Gemfile
   - Gemfile.lock
