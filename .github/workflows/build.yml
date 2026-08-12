@@ -26,11 +26,11 @@ jobs:
 
     - name: Configure CMake (MSVC)
       if: matrix.compiler == 'msvc'
-      run: cmake -B build -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBIJOY_BUILD_LAYOUT_EDITOR=OFF
+      run: cmake -B build -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBIJOY_BUILD_LAYOUT_EDITOR=ON
 
     - name: Configure CMake (MinGW)
       if: matrix.compiler == 'mingw'
-      run: cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBIJOY_BUILD_LAYOUT_EDITOR=OFF
+      run: cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBIJOY_BUILD_LAYOUT_EDITOR=ON
 
     - name: Build Executables
       run: cmake --build build --config ${{ matrix.build_type }}
@@ -42,3 +42,5 @@ jobs:
         path: |
           build/bin/*.exe
           build/bin/*.dll
+          build/data/**
+

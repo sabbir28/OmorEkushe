@@ -1,0 +1,74 @@
+name: Release OmorEkushe Executables
+
+on:
+  push:
+    tags:
+      - 'v*'
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release Version (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Publish Release Binaries
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Configure CMake
+      run: |
+        cmake -B build -A x64 -DCMAKE_BUILD_TYPE=Release -DBIJOY_BUILD_LAYOUT_EDITOR=ON
+
+    - name: Build All Executables
+      run: |
+        cmake --build build --config Release
+
+    - name: Prepare Release Artifacts
+      shell: powershell
+      run: |
+        New-Item -ItemType Directory -Force -Path release_stage
+        
+        # 1. Copy Standalone Setup Installer
+        if (Test-Path "build/bin/Installer.exe") {
+          Copy-Item "build/bin/Installer.exe" -Destination "release_stage/OmorEkushe-Setup.exe"
+        }
+        
+        # 2. Package Portable Distribution (containing bin and data folders)
+        New-Item -ItemType Directory -Force -Path portable_pack/bin
+        New-Item -ItemType Directory -Force -Path portable_pack/data
+        
+        Copy-Item -Recurse -Force build/bin/* portable_pack/bin/
+        if (Test-Path "build/data") {
+          Copy-Item -Recurse -Force build/data/* portable_pack/data/
+        }
+        
+        Compress-Archive -Path portable_pack/* -DestinationPath release_stage/OmorEkushe-Portable.zip -Force
+
+    - name: Create / Update GitHub Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+      with:
+        tag_name: ${{ github.ref_name || inputs.version }}
+        name: OmorEkushe Release ${{ github.ref_name || inputs.version }}
+        draft: false
+        prerelease: false
+        files: |
+          release_stage/OmorEkushe-Setup.exe
+          release_stage/OmorEkushe-Portable.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

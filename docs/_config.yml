@@ -14,7 +14,7 @@ kramdown:
   syntax_highlighter: rouge
   auto_ids: true
 
-permalink: pretty
+permalink: /:basename.html
 exclude:
   - Gemfile
   - Gemfile.lock

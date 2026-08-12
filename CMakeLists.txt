@@ -4,15 +4,21 @@ project(OmorEkushe LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor Win32 prototype" OFF)
+option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor Win32 prototype" ON)
 
 set(BIJOY_BUILD_ROOT "${CMAKE_SOURCE_DIR}/build")
 set(BIJOY_RUNTIME_OUTPUT_DIR "${BIJOY_BUILD_ROOT}/bin")
 set(BIJOY_DATA_DIR "${BIJOY_BUILD_ROOT}/data")
+set(FETCHCONTENT_BASE_DIR "${BIJOY_BUILD_ROOT}/_deps" CACHE PATH "Dependencies Base Directory")
 
 file(MAKE_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}")
 file(MAKE_DIRECTORY "${BIJOY_DATA_DIR}")
 file(MAKE_DIRECTORY "${BIJOY_BUILD_ROOT}/temp")
+file(MAKE_DIRECTORY "${BIJOY_BUILD_ROOT}/_deps")
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/data")
+    file(COPY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${BIJOY_DATA_DIR}")
+endif()
 
 # =========================================================
 # Main Executable: OmorEkushe (100% Pure Native Win32 API)
