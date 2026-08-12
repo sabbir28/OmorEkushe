@@ -13,7 +13,7 @@ permalink: /codebase.html
                 <i class="fas fa-star"></i>
             </div>
             <div>
-                <h4 class="font-outfit font-extrabold text-white text-xl mb-0 github-stars-count">1</h4>
+                <h4 class="font-outfit font-extrabold text-emerald-100 text-xl mb-0 github-stars-count">1</h4>
                 <span class="text-xs text-slate-400 font-mono">GitHub Stars</span>
             </div>
         </div>
@@ -25,7 +25,7 @@ permalink: /codebase.html
                 <i class="fas fa-code-branch"></i>
             </div>
             <div>
-                <h4 class="font-outfit font-extrabold text-white text-xl mb-0 github-forks-count">0</h4>
+                <h4 class="font-outfit font-extrabold text-emerald-100 text-xl mb-0 github-forks-count">0</h4>
                 <span class="text-xs text-slate-400 font-mono">Forks & Clones</span>
             </div>
         </div>
@@ -37,7 +37,7 @@ permalink: /codebase.html
                 <i class="fas fa-exclamation-circle"></i>
             </div>
             <div>
-                <h4 class="font-outfit font-extrabold text-white text-xl mb-0 github-issues-count">0</h4>
+                <h4 class="font-outfit font-extrabold text-emerald-100 text-xl mb-0 github-issues-count">0</h4>
                 <span class="text-xs text-slate-400 font-mono">Open Issues</span>
             </div>
         </div>
@@ -49,7 +49,7 @@ permalink: /codebase.html
                 <i class="fas fa-database text-emerald-400"></i>
             </div>
             <div>
-                <h4 class="font-outfit font-extrabold text-white text-xl mb-0 github-repo-size">~12 MB</h4>
+                <h4 class="font-outfit font-extrabold text-emerald-100 text-xl mb-0 github-repo-size">~12 MB</h4>
                 <span class="text-xs text-slate-400 font-mono">Repository Size</span>
             </div>
         </div>
@@ -63,7 +63,7 @@ permalink: /codebase.html
         <div class="glass-card p-0 overflow-hidden h-100">
             <div
                 class="p-4 bg-emerald-950 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
-                <h4 class="font-outfit font-bold text-white text-lg mb-0">
+                <h4 class="font-outfit font-bold text-emerald-100 text-lg mb-0">
                     <i class="fas fa-history text-emerald-400 me-2"></i> Live Recent Commit Activity
                 </h4>
                 <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/commits" target="_blank"
@@ -87,7 +87,7 @@ permalink: /codebase.html
         <div class="glass-card p-0 overflow-hidden h-100">
             <div
                 class="p-4 bg-slate-900 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
-                <h4 class="font-outfit font-bold text-white text-lg mb-0">
+                <h4 class="font-outfit font-bold text-emerald-100 text-lg mb-0">
                     <i class="fas fa-users text-amber-400 me-2"></i> Project Contributors
                 </h4>
                 <span class="badge bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-mono">GitHub
@@ -110,7 +110,7 @@ permalink: /codebase.html
 <!-- Architectural System Design -->
 <div class="glass-card p-0 overflow-hidden mb-5">
     <div class="p-4 bg-emerald-950 border-b border-emerald-500/20">
-        <h3 class="font-outfit font-bold text-white text-xl mb-1">
+        <h3 class="font-outfit font-bold text-emerald-100 text-xl mb-1">
             <i class="fas fa-diagram-project text-emerald-400 me-2"></i> System Architecture & Execution Flow
         </h3>
         <p class="text-slate-300 text-sm mb-0">High-level architecture showing raw keypress intercept to UTF-16 Bengali
@@ -146,7 +146,7 @@ permalink: /codebase.html
 
         <div class="row g-4">
             <div class="col-md-6">
-                <h5 class="font-outfit font-bold text-white text-base mb-2">1. Interception & Hook Layer</h5>
+                <h5 class="font-outfit font-bold text-emerald-100 text-base mb-2">1. Interception & Hook Layer</h5>
                 <p class="text-slate-300 text-sm leading-relaxed mb-0">
                     `native_input.cpp` installs a low-level global Windows hook using `SetWindowsHookExW`. When Bangla
                     mode is active,
@@ -155,7 +155,7 @@ permalink: /codebase.html
                 </p>
             </div>
             <div class="col-md-6">
-                <h5 class="font-outfit font-bold text-white text-base mb-2">2. XML Mapper & Output</h5>
+                <h5 class="font-outfit font-bold text-emerald-100 text-base mb-2">2. XML Mapper & Output</h5>
                 <p class="text-slate-300 text-sm leading-relaxed mb-0">
                     `layout.cpp` performs an $O(1)$ lookup in the active layout map table for the corresponding UTF-16
                     character or conjunctive sequence,
