@@ -192,6 +192,8 @@ set(INSTALLER_INC_DIR "${CMAKE_SOURCE_DIR}/Installer/include")
 add_custom_target(omor_bundle_resources
     COMMAND ${CMAKE_COMMAND} -E make_directory "${INSTALLER_STAGING_DIR}/bin"
     COMMAND ${CMAKE_COMMAND} -E make_directory "${INSTALLER_STAGING_DIR}/data"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:OmorEkushe>" "${INSTALLER_STAGING_DIR}/bin/"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:NetClient>" "${INSTALLER_STAGING_DIR}/bin/"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${BIJOY_RUNTIME_OUTPUT_DIR}" "${INSTALLER_STAGING_DIR}/bin"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${BIJOY_DATA_DIR}" "${INSTALLER_STAGING_DIR}/data"
     COMMAND $<TARGET_FILE:bundler> "${INSTALLER_STAGING_DIR}" "${INSTALLER_INC_DIR}/Resources.h"
