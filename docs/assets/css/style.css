@@ -130,6 +130,38 @@ h6 {
   z-index: 1030;
 }
 
+/* --------------------------------------------------------------------------
+   CRITICAL FIX: Tailwind CSS vs Bootstrap Navbar Collapse Conflict
+   Tailwind's .collapse utility sets visibility: collapse; which hides the
+   navbar container in browsers. We explicitly override it for navbar-collapse.
+   -------------------------------------------------------------------------- */
+.navbar-collapse,
+.navbar-collapse.collapse {
+  visibility: visible !important;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse.collapse:not(.show) {
+    display: none !important;
+  }
+
+  .navbar-collapse.collapse.show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+@media (min-width: 992px) {
+
+  .navbar-expand-lg .navbar-collapse,
+  .navbar-expand-lg .navbar-collapse.collapse {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
 /* Brand styling */
 .navbar-brand-logo {
   display: flex;
@@ -196,6 +228,7 @@ h6 {
   font-size: 0.92rem;
   display: inline-flex;
   align-items: center;
+  visibility: visible !important;
 }
 
 .nav-link:hover,
@@ -773,7 +806,6 @@ kbd.hotkey-cap.gold {
     border-radius: 12px;
     justify-content: flex-start;
     padding: 0.6rem 1rem;
-
   }
 
   .btn-github-nav,
