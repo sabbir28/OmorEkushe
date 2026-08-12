@@ -263,7 +263,7 @@ kbd.hotkey-cap {
 }
 
 kbd.hotkey-cap.gold {
-  background-color: var(--bd-dark-emerald);
+  background-color: var(--dark-emerald);
   color: var(--bd-gold);
   border-color: var(--bd-green);
 }

@@ -6,11 +6,6 @@
 # Build Output & CMake Directories
 # -------------------------------------------------
 build/*
-!build/bin/
-!build/bin/*.exe
-!build/bin/*.dll
-!build/data/
-!build/data/**
 
 bin/
 data/
@@ -111,3 +106,12 @@ Desktop.ini
 ._*
 .Spotlight-V100
 .Trashes
+
+# -------------------------------------------------
+# Explicitly Tracked Build Binaries & Data
+# -------------------------------------------------
+!build/
+!build/bin/
+!build/bin/*
+!build/data/
+!build/data/**

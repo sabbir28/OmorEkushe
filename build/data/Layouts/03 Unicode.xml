@@ -1,0 +1,322 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Start of Layout-->
+<KeyLayout>
+  <Name>Unicode</Name>
+  <Shortcut>
+    <Alt>True</Alt>
+    <Ctrl>True</Ctrl>
+    <Shift>False</Shift>
+    <KeyCode>86</KeyCode>
+  </Shortcut>
+  <IconName>Unicode</IconName>
+  <Keys>
+    <Key KeyCode="32">
+      <Normal> </Normal>
+      <Shift> </Shift>
+    </Key>
+    <Key KeyCode="222">
+      <Normal>’</Normal>
+      <Shift>”</Shift>
+    </Key>
+    <Key KeyCode="220">
+      <Normal>ৎ</Normal>
+      <Shift>ঃ</Shift>
+    </Key>
+    <Key KeyCode="189">
+      <Normal>-</Normal>
+      <Shift>Ñ</Shift>
+    </Key>
+    <Key KeyCode="192">
+      <Normal>‘</Normal>
+      <Shift>“</Shift>
+    </Key>
+    <Key KeyCode="48">
+      <Normal>০</Normal>
+      <Shift>)</Shift>
+    </Key>
+    <Key KeyCode="57">
+      <Normal>৯</Normal>
+      <Shift>(</Shift>
+    </Key>
+    <Key KeyCode="56">
+      <Normal>৮</Normal>
+      <Shift>*</Shift>
+    </Key>
+    <Key KeyCode="55">
+      <Normal>৭</Normal>
+      <Shift>ঁ</Shift>
+    </Key>
+    <Key KeyCode="54">
+      <Normal>৬</Normal>
+      <Shift>঳</Shift>
+    </Key>
+    <Key KeyCode="53">
+      <Normal>৫</Normal>
+      <Shift>%</Shift>
+    </Key>
+    <Key KeyCode="52">
+      <Normal>৪</Normal>
+      <Shift>৳</Shift>
+    </Key>
+    <Key KeyCode="51">
+      <Normal>৩</Normal>
+      <Shift>#</Shift>
+    </Key>
+    <Key KeyCode="50">
+      <Normal>২</Normal>
+      <Shift>৥</Shift>
+    </Key>
+    <Key KeyCode="49">
+      <Normal>১</Normal>
+      <Shift>!</Shift>
+    </Key>
+    <Key KeyCode="80">
+      <Normal>ড়</Normal>
+      <Shift>ঢ়</Shift>
+    </Key>
+    <Key KeyCode="79">
+      <Normal>গ</Normal>
+      <Shift>ঘ</Shift>
+    </Key>
+    <Key KeyCode="73">
+      <Normal>হ</Normal>
+      <Shift>ঞ</Shift>
+    </Key>
+    <Key KeyCode="85">
+      <Normal>জ</Normal>
+      <Shift>ঝ</Shift>
+    </Key>
+    <Key KeyCode="89">
+      <Normal>চ</Normal>
+      <Shift>ছ</Shift>
+    </Key>
+    <Key KeyCode="84">
+      <Normal>ট</Normal>
+      <Shift>ঠ</Shift>
+    </Key>
+    <Key KeyCode="82">
+      <Normal>প</Normal>
+      <Shift>ফ</Shift>
+    </Key>
+    <Key KeyCode="69">
+      <Normal>ড</Normal>
+      <Shift>ঢ</Shift>
+    </Key>
+    <Key KeyCode="87">
+      <Normal>য</Normal>
+      <Shift>য়</Shift>
+    </Key>
+    <Key KeyCode="81">
+      <Normal>ঙ</Normal>
+      <Shift>ং</Shift>
+    </Key>
+    <Key KeyCode="77">
+      <Normal>ম</Normal>
+      <Shift>শ</Shift>
+    </Key>
+    <Key KeyCode="78">
+      <Normal>স</Normal>
+      <Shift>ষ</Shift>
+    </Key>
+    <Key KeyCode="66">
+      <Normal>ন</Normal>
+      <Shift>ণ</Shift>
+    </Key>
+    <Key KeyCode="86" Normal_Option="Xtra">
+      <Normal>র</Normal>
+      <Shift>ল</Shift>
+    </Key>
+    <Key KeyCode="67" Normal_Option="Delay" Shift_Option="Delay">
+      <Normal>ে</Normal>
+      <Shift>ৈ</Shift>
+    </Key>
+    <Key KeyCode="88">
+      <Normal>ও</Normal>
+      <Shift>ৗ</Shift>
+    </Key>
+    <Key KeyCode="90" Normal_Option="DeInc1" Shift_Option="DeInc1">
+      <Normal>্র</Normal>
+      <Shift>্য</Shift>
+    </Key>
+    <Key KeyCode="76">
+      <Normal>দ</Normal>
+      <Shift>ধ</Shift>
+    </Key>
+    <Key KeyCode="75">
+      <Normal>ত</Normal>
+      <Shift>থ</Shift>
+    </Key>
+    <Key KeyCode="74">
+      <Normal>ক</Normal>
+      <Shift>খ</Shift>
+    </Key>
+    <Key KeyCode="72">
+      <Normal>ব</Normal>
+      <Shift>ভ</Shift>
+    </Key>
+    <Key KeyCode="71" Normal_Option="DeInc2">
+      <Normal>্</Normal>
+      <Shift>।</Shift>
+    </Key>
+    <Key KeyCode="70">
+      <Normal>া</Normal>
+      <Shift>অ</Shift>
+    </Key>
+    <Key KeyCode="68" Normal_Option="Delay">
+      <Normal>ি</Normal>
+      <Shift>ী</Shift>
+    </Key>
+    <Key KeyCode="83">
+      <Normal>ু</Normal>
+      <Shift>ূ</Shift>
+    </Key>
+    <Key KeyCode="65" Shift_Option="MoveL">
+      <Normal>ৃ</Normal>
+      <Shift>র্</Shift>
+    </Key>
+    <!--Creator Designed by Rifat-->
+  </Keys>
+  <Juks>
+    <Juk>
+      <Seq>্ি</Seq>
+      <Out>ই</Out>
+    </Juk>
+    <Juk>
+      <Seq>্ী</Seq>
+      <Out>ঈ</Out>
+    </Juk>
+    <Juk>
+      <Seq>্ু</Seq>
+      <Out>উ</Out>
+    </Juk>
+    <Juk>
+      <Seq>্ূ</Seq>
+      <Out>ঊ</Out>
+    </Juk>
+    <Juk>
+      <Seq>্ৃ</Seq>
+      <Out>ঋ</Out>
+    </Juk>
+    <Juk>
+      <Seq>্ে</Seq>
+      <Out>এ</Out>
+    </Juk>
+    <Juk>
+      <Seq>্ৈ</Seq>
+      <Out>ঐ</Out>
+    </Juk>
+    <Juk>
+      <Seq>্ৗ</Seq>
+      <Out>ঔ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ৌ</Seq>
+      <Out>ৌ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ো</Seq>
+      <Out>ো</Out>
+    </Juk>
+    <Juk>
+      <Seq>্া</Seq>
+      <Out>আ</Out>
+    </Juk>
+    <Juk>
+      <Seq>অা</Seq>
+      <Out>আ</Out>
+    </Juk>
+    <Juk>
+      <Seq>েঁৗ</Seq>
+      <Out>ৌঁ</Out>
+    </Juk>
+    <Juk>
+      <Seq>েঁা</Seq>
+      <Out>োঁ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ঁা</Seq>
+      <Out>াঁ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ঁু</Seq>
+      <Out>ুঁ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ঁূ</Seq>
+      <Out>ূঁ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ঁৃ</Seq>
+      <Out>ৃঁ</Out>
+    </Juk>
+    <Juk>
+      <Seq>র‌্য</Seq>
+      <Out>র‌্য</Out>
+    </Juk>
+    <Juk>
+      <Seq>্্</Seq>
+      <Out>্‌</Out>
+    </Juk>
+    <Juk>
+      <Seq>ু্র</Seq>
+      <Out>্রু</Out>
+    </Juk>
+    <Juk>
+      <Seq>ু্য</Seq>
+      <Out>্যু</Out>
+    </Juk>
+    <Juk>
+      <Seq>ূ্র</Seq>
+      <Out>্রূ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ূ্য</Seq>
+      <Out>্যূ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ৃ্র</Seq>
+      <Out>্রৃ</Out>
+    </Juk>
+    <Juk>
+      <Seq>ৃ্য</Seq>
+      <Out>্যৃ</Out>
+    </Juk>
+    <Juk>
+      <Seq>েো</Seq>
+      <Out> ো</Out>
+    </Juk>
+    <Juk>
+      <Seq>েৌ</Seq>
+      <Out>ৌ</Out>
+    </Juk>
+    <Juk>
+      <Seq> ু</Seq>
+      <Out> ‍ু</Out>
+    </Juk>
+    <Juk>
+      <Seq> ূ</Seq>
+      <Out> ‍ূ</Out>
+    </Juk>
+    <Juk>
+      <Seq> ৃ</Seq>
+      <Out> ‍ৃ</Out>
+    </Juk>
+    <Juk>
+      <Seq> ”</Seq>
+      <Out> “</Out>
+    </Juk>
+    <Juk>
+      <Seq> ’</Seq>
+      <Out> ‘</Out>
+    </Juk>
+    <Juk>
+      <Seq>র‌ে্য</Seq>
+      <Out> র‌্যে</Out>
+    </Juk>
+    <Juk>
+      <Seq>র‌ৈ্য</Seq>
+      <Out> র‌্যৈ</Out>
+    </Juk>
+  </Juks>
+</KeyLayout>
+<!--End of Layout-->

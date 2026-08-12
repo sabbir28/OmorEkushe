@@ -35,7 +35,13 @@
         <li class="nav-item">
           <a class="nav-link {% if page.url contains 'documentation' %}active{% endif %}"
             href="{{ '/documentation.html' | relative_url }}">
-            <i class="fas fa-book me-1 opacity-75"></i> Documentation
+            <i class="fas fa-book me-1 opacity-75"></i> Manual
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if page.url contains 'codebase' %}active{% endif %}"
+            href="{{ '/codebase.html' | relative_url }}">
+            <i class="fas fa-code-branch me-1 opacity-75"></i> Codebase
           </a>
         </li>
         <li class="nav-item ms-lg-2 mt-2 mt-lg-0">

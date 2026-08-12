@@ -1,0 +1,197 @@
+---
+layout: page
+title: Codebase Architecture & Directory Guide
+subtitle: Deep dive into project file organization, Win32 hooks, core engine modules, sub-modules, and CI/CD release
+pipelines.
+---
+
+<div class="row g-4 mb-5">
+    <!-- Overview & Directory Hierarchy -->
+    <div class="col-lg-12">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-dark text-white p-4 rounded-top-4">
+                <h3 class="mb-1 font-weight-bold text-white"><i class="fas fa-folder-tree text-success me-2"></i>
+                    Project Directory Hierarchy</h3>
+                <p class="text-muted small mb-0">High-level overview of repository directory structure and source
+                    organization.</p>
+            </div>
+            <div class="card-body p-4">
+                <div class="code-window">
+                    <div class="code-header">
+                        <span class="small text-muted font-monospace">Repository Structure</span>
+                    </div>
+                    <div class="code-body">
+                        <pre class="mb-0"><code>OmorEkushe/
+├── CMakeLists.txt              # Root CMake build configuration
+├── .github/
+│   └── workflows/
+│       ├── build.yml           # CI build matrix (MSVC & MinGW)
+│       ├── release.yml         # Automated GitHub Release publisher on push
+│       └── jekyll-gh-pages.yml # Automated GitHub Pages deployment workflow
+├── src/
+│   ├── core/                   # C++ Core Engine Modules
+│   │   ├── layout.cpp / .h     # XML Layout parser & dictionary map
+│   │   ├── layout_discovery.cpp# Dynamic XML layout scanner
+│   │   ├── spelling_checker.cpp# Native Bengali dictionary & spellcheck core
+│   │   └── net_client.cpp      # Sockets / IPC sync module
+│   └── platform/
+│       └── windows/            # Win32 Native Integration
+│           ├── main_window.cpp # Acrylic control bar overlay & window loop
+│           ├── native_input.cpp# WH_KEYBOARD_LL low-level keyboard hook
+│           ├── registration_dialog.cpp # Settings & registry UI
+│           ├── main_window_tray.cpp    # System tray icon & context menu
+│           └── app.ico         # Application icon asset
+├── Installer/                  # Standalone Setup Sub-Module
+│   ├── CMakeLists.txt
+│   ├── src/
+│   │   ├── InstallerLogic.cpp  # Unpacks embedded bin/ and data/ payload
+│   │   └── bundler.cpp         # Embeds executables into OmorEkushe-Setup.exe
+├── LayoutEditor/               # GLFW + Dear ImGui Sub-Module
+│   ├── CMakeLists.txt
+│   └── src/
+│       ├── main.cpp            # OpenGL / GLFW window initialization
+│       └── LayoutEditor.cpp    # Visual keymap editor UI
+├── data/                       # Application Data & Keymaps
+│   └── Layouts/
+│       ├── Bijoy.xml           # Bijoy Bangla layout definition
+│       ├── Unijoy.xml          # Unijoy layout map
+│       └── National.xml        # National keyboard format
+└── docs/                       # Jekyll Documentation Website
+    ├── _config.yml             # Jekyll site settings
+    ├── assets/                 # CSS styling & JS simulator engine
+    ├── _includes/              # Navbar and Footer partial templates
+    ├── index.html              # Home page
+    ├── features.html           # Features deep dive
+    ├── download.html           # Download portal & API links
+    ├── documentation.html      # User manual & shortcuts guide
+    └── codebase.html           # Codebase architecture documentation</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Component Breakdown -->
+<div class="row g-4 mb-5">
+
+    <!-- Core Engine -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-success text-white p-3 rounded-top-4">
+                <h4 class="mb-0 font-weight-bold"><i class="fas fa-microchip me-2"></i> Core Engine (`src/core/`)</h4>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3">
+                        <strong class="text-dark">layout.cpp / layout.h</strong>
+                        <p class="text-muted small mb-0">Parses layout XML definitions, builds in-memory character
+                            mappings (`KeyMap`), and resolves modifier key states (Normal, Shift, AltGr, Conjuncts/Juk).
+                        </p>
+                    </li>
+                    <li class="mb-3">
+                        <strong class="text-dark">layout_discovery.cpp</strong>
+                        <p class="text-muted small mb-0">Scans `data/Layouts/` relative path for available `.xml` layout
+                            definition files at runtime and populates available layout choices.</p>
+                    </li>
+                    <li class="mb-3">
+                        <strong class="text-dark">spelling_checker.cpp</strong>
+                        <p class="text-muted small mb-0">Fast C++ dictionary lookup engine for Bengali word validation
+                            and real-time spell suggestions.</p>
+                    </li>
+                    <li>
+                        <strong class="text-dark">net_client.cpp</strong>
+                        <p class="text-muted small mb-0">Socket networking client allowing remote layout updates and IPC
+                            messaging between modules.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Win32 Platform -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-dark text-white p-3 rounded-top-4">
+                <h4 class="mb-0 font-weight-bold text-white"><i class="fab fa-windows me-2"></i> Win32 Platform
+                    (`src/platform/windows/`)</h4>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3">
+                        <strong class="text-dark">main_window.cpp</strong>
+                        <p class="text-muted small mb-0">Manages top acrylic glass overlay window, transparency sliders,
+                            background rendering, and Win32 event dispatching loop.</p>
+                    </li>
+                    <li class="mb-3">
+                        <strong class="text-dark">native_input.cpp</strong>
+                        <p class="text-muted small mb-0">Installs low-level system keyboard hook
+                            (`SetWindowsHookExW(WH_KEYBOARD_LL)`) to capture physical keystrokes system-wide and inject
+                            unicode characters (`SendInput`).</p>
+                    </li>
+                    <li class="mb-3">
+                        <strong class="text-dark">registration_dialog.cpp</strong>
+                        <p class="text-muted small mb-0">Win32 registration dialog window and registry configuration
+                            loader/saver (`HKCU\Software\OmorEkushe`).</p>
+                    </li>
+                    <li>
+                        <strong class="text-dark">main_window_tray.cpp</strong>
+                        <p class="text-muted small mb-0">Creates system notification area icon (`NOTIFYICONDATA`),
+                            handles double-click restore, and right-click pop-up menu.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sub-modules & Build System -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-danger text-white p-3 rounded-top-4">
+                <h4 class="mb-0 font-weight-bold text-white"><i class="fas fa-box me-2"></i> Installer Setup
+                    (`Installer/`)</h4>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3">
+                        <strong class="text-dark">InstallerLogic.cpp</strong>
+                        <p class="text-muted small mb-0">Self-extracting Win32 installer engine. Iterates over embedded
+                            binary payload array and writes target `bin/` and `data/` files to destination disk
+                            directory.</p>
+                    </li>
+                    <li>
+                        <strong class="text-dark">bundler.cpp</strong>
+                        <p class="text-muted small mb-0">Build tool executed during compilation to compress executables
+                            (`OmorEkushe.exe`, `NetClient.exe`) and layout XML maps into C++ byte arrays inside
+                            `Installer.exe`.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sub-modules & Build System -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-warning text-dark p-3 rounded-top-4">
+                <h4 class="mb-0 font-weight-bold text-dark"><i class="fas fa-edit me-2"></i> Layout Editor
+                    (`LayoutEditor/`)</h4>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-3">
+                        <strong class="text-dark">main.cpp</strong>
+                        <p class="text-muted small mb-0">Initializes GLFW OpenGL window context and sets up Dear ImGui
+                            render loop.</p>
+                    </li>
+                    <li>
+                        <strong class="text-dark">LayoutEditor.cpp</strong>
+                        <p class="text-muted small mb-0">Graphical keymap designer UI for visual key assignment, XML
+                            layout creation, and live testing.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
