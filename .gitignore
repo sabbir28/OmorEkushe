@@ -5,7 +5,13 @@
 # -------------------------------------------------
 # Build Output & CMake Directories
 # -------------------------------------------------
-#build/
+build/*
+!build/bin/
+!build/bin/*.exe
+!build/bin/*.dll
+!build/data/
+!build/data/**
+
 bin/
 data/
 out/
