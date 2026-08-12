@@ -9,19 +9,19 @@ permalink: /documentation.html
     <!-- Hotkey Reference Table Card -->
     <div class="col-lg-6">
         <div class="glass-card h-100 p-0 overflow-hidden">
-            <div
-                class="p-4 bg-emerald-950 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
-                <h4 class="font-outfit font-bold text-emerald-100 text-lg mb-0">
-                    <i class="fas fa-keyboard text-emerald-400 me-2"></i> Default Hotkeys & Shortcuts
+            <div class="p-4 border-b d-flex align-items-center justify-content-between"
+                style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                <h4 class="font-outfit font-bold text-lg mb-0" style="color: var(--text-heading);">
+                    <i class="fas fa-keyboard me-2" style="color: var(--text-emerald);"></i> Default Hotkeys & Shortcuts
                 </h4>
-                <span
-                    class="badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono">Win32
+                <span class="badge bg-emerald-500/10 text-emerald border border-emerald-500/30 text-xs font-mono">Win32
                     Hook</span>
             </div>
             <div class="p-4">
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover align-middle mb-0 text-sm">
-                        <thead class="table-emerald text-emerald-300 font-mono text-xs uppercase">
+                    <table class="table align-middle mb-0 text-sm" style="color: var(--text-body);">
+                        <thead class="font-mono text-xs uppercase"
+                            style="color: var(--text-emerald); border-bottom: 2px solid var(--border-color);">
                             <tr>
                                 <th>Action</th>
                                 <th>Shortcut Keycap</th>
@@ -30,29 +30,30 @@ permalink: /documentation.html
                         </thead>
                         <tbody class="divide-y divide-emerald-500/10">
                             <tr>
-                                <td><strong class="text-emerald-100">Toggle Layout</strong></td>
+                                <td><strong style="color: var(--text-heading);">Toggle Layout</strong></td>
                                 <td>
                                     <kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> +
                                     <kbd class="hotkey-cap gold">B</kbd>
                                 </td>
-                                <td class="text-slate-300">Instantly switches between Bangla and English mode.</td>
+                                <td style="color: var(--text-muted);">Instantly switches between Bangla and English
+                                    mode.</td>
                             </tr>
                             <tr>
-                                <td><strong class="text-emerald-100">Minimize to Tray</strong></td>
+                                <td><strong style="color: var(--text-heading);">Minimize to Tray</strong></td>
                                 <td><kbd class="hotkey-cap">Esc</kbd> or <kbd class="hotkey-cap">_</kbd> button</td>
-                                <td class="text-slate-300">Hides top acrylic control bar to system notification tray.
-                                </td>
+                                <td style="color: var(--text-muted);">Hides top acrylic control bar to system
+                                    notification tray.</td>
                             </tr>
                             <tr>
-                                <td><strong class="text-emerald-100">Restore Overlay</strong></td>
+                                <td><strong style="color: var(--text-heading);">Restore Overlay</strong></td>
                                 <td><kbd class="hotkey-cap">Double Click Tray Icon</kbd></td>
-                                <td class="text-slate-300">Restores top acrylic control window overlay.</td>
+                                <td style="color: var(--text-muted);">Restores top acrylic control window overlay.</td>
                             </tr>
                             <tr>
-                                <td><strong class="text-emerald-100">Exit Application</strong></td>
+                                <td><strong style="color: var(--text-heading);">Exit Application</strong></td>
                                 <td><kbd class="hotkey-cap">Right-Click Tray</kbd> &rarr; Exit</td>
-                                <td class="text-slate-300">Terminates background hook service and exits app cleanly.
-                                </td>
+                                <td style="color: var(--text-muted);">Terminates background hook service and exits app
+                                    cleanly.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -64,24 +65,25 @@ permalink: /documentation.html
     <!-- Registry & Settings Cleanup -->
     <div class="col-lg-6">
         <div class="glass-card h-100 p-0 overflow-hidden">
-            <div
-                class="p-4 bg-slate-900 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
-                <h4 class="font-outfit font-bold text-emerald-100 text-lg mb-0">
-                    <i class="fas fa-sliders text-amber-400 me-2"></i> Registry Configuration & Cleanup
+            <div class="p-4 border-b d-flex align-items-center justify-content-between"
+                style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                <h4 class="font-outfit font-bold text-lg mb-0" style="color: var(--text-heading);">
+                    <i class="fas fa-sliders me-2" style="color: var(--text-gold);"></i> Registry Configuration &
+                    Cleanup
                 </h4>
-                <span class="badge bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-mono">HKCU
-                    Registry</span>
+                <span class="badge bg-amber-500/10 text-amber border border-amber-500/30 text-xs font-mono"
+                    style="color: var(--text-gold);">HKCU Registry</span>
             </div>
             <div class="p-4">
-                <p class="text-slate-300 text-sm mb-3">
+                <p class="text-sm mb-3" style="color: var(--text-muted);">
                     Omor Ekushe stores active layout choices and overlay opacity preferences under Windows Registry
                     Current User keys:
                 </p>
-                <div
-                    class="p-3 bg-slate-950 rounded-xl border border-emerald-500/20 font-mono text-xs text-emerald-400 mb-3 select-all">
+                <div class="p-3 rounded-xl border font-mono text-xs mb-3 select-all"
+                    style="background-color: var(--bg-surface-alt); border-color: var(--border-color); color: var(--text-emerald);">
                     HKEY_CURRENT_USER\Software\OmorEkushe
                 </div>
-                <p class="text-slate-300 text-sm mb-3">
+                <p class="text-sm mb-3" style="color: var(--text-muted);">
                     To reset all settings to clean factory defaults or clean registry entries, run the batch script
                     command:
                 </p>
@@ -105,12 +107,12 @@ permalink: /documentation.html
 
 <!-- CMake Build Guide -->
 <div class="glass-card p-0 overflow-hidden mb-5">
-    <div class="p-4 bg-emerald-950 border-b border-emerald-500/20">
-        <h3 class="font-outfit font-bold text-emerald-100 text-xl mb-1">
-            <i class="fas fa-terminal text-emerald-400 me-2"></i> Building from Source with CMake
+    <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+        <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
+            <i class="fas fa-terminal me-2" style="color: var(--text-emerald);"></i> Building from Source with CMake
         </h3>
-        <p class="text-slate-300 text-sm mb-0">Follow these instructions to compile Omor Ekushe on Visual Studio (MSVC)
-            or MinGW-w64 toolchains.</p>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">Follow these instructions to compile Omor Ekushe on
+            Visual Studio (MSVC) or MinGW-w64 toolchains.</p>
     </div>
     <div class="p-4">
         <!-- Build Tabs Navigation -->
@@ -119,21 +121,21 @@ permalink: /documentation.html
                 <button class="nav-link active rounded-full px-4 text-sm font-semibold" id="msvc-tab"
                     data-bs-toggle="tab" data-bs-target="#msvc-pane" type="button" role="tab" aria-controls="msvc-pane"
                     aria-selected="true">
-                    <i class="fab fa-windows me-1.5 text-blue-400"></i> Visual Studio (MSVC)
+                    <i class="fab fa-windows me-1.5 text-blue-500"></i> Visual Studio (MSVC)
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link rounded-full px-4 text-sm font-semibold" id="mingw-tab" data-bs-toggle="tab"
                     data-bs-target="#mingw-pane" type="button" role="tab" aria-controls="mingw-pane"
                     aria-selected="false">
-                    <i class="fas fa-terminal me-1.5 text-emerald-400"></i> MinGW-w64 GCC
+                    <i class="fas fa-terminal me-1.5" style="color: var(--text-emerald);"></i> MinGW-w64 GCC
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link rounded-full px-4 text-sm font-semibold" id="editor-tab" data-bs-toggle="tab"
                     data-bs-target="#editor-pane" type="button" role="tab" aria-controls="editor-pane"
                     aria-selected="false">
-                    <i class="fas fa-pen-ruler me-1.5 text-amber-400"></i> Layout Editor (ImGui)
+                    <i class="fas fa-pen-ruler me-1.5" style="color: var(--text-gold);"></i> Layout Editor (ImGui)
                 </button>
             </li>
         </ul>
@@ -217,80 +219,85 @@ cmake --build build --config Release
 
 <!-- Comprehensive Codebase File Breakdown -->
 <div class="glass-card p-0 overflow-hidden mb-5">
-    <div class="p-4 bg-slate-900 border-b border-emerald-500/20">
-        <h3 class="font-outfit font-bold text-emerald-100 text-xl mb-1">
+    <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+        <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
             <i class="fas fa-sitemap text-bdRed me-2"></i> Source Tree Modules Breakdown
         </h3>
-        <p class="text-slate-300 text-sm mb-0">Detailed breakdown of repository modules, source files, and build
-            configuration targets.</p>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">Detailed breakdown of repository modules, source
+            files, and build configuration targets.</p>
     </div>
     <div class="p-4">
         <div class="row g-4">
             <!-- Core Module -->
             <div class="col-lg-6">
-                <div class="p-3.5 bg-slate-950 border border-emerald-500/20 rounded-2xl h-100">
-                    <h5 class="font-outfit font-bold text-emerald-400 text-base mb-2">
+                <div class="p-3.5 border rounded-2xl h-100"
+                    style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                    <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-emerald);">
                         <i class="fas fa-microchip me-2"></i> Core Engine (`src/core/`)
                     </h5>
-                    <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
-                        <li><code class="text-emerald-300">layout.cpp / layout.h</code>: XML keymap parser and in-memory
-                            key mapping dictionary.</li>
-                        <li><code class="text-emerald-300">layout_discovery.cpp</code>: Dynamically scans
+                    <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-muted);">
+                        <li><code style="color: var(--text-heading);">layout.cpp / layout.h</code>: XML keymap parser
+                            and in-memory key mapping dictionary.</li>
+                        <li><code style="color: var(--text-heading);">layout_discovery.cpp</code>: Dynamically scans
                             <code>data/Layouts/</code> directory for XML layouts.</li>
-                        <li><code class="text-emerald-300">spelling_checker.cpp</code>: Native C++ Bengali spellchecker
-                            & dictionary lookup core.</li>
-                        <li><code class="text-emerald-300">net_client.cpp</code>: Lightweight IPC socket client module
-                            for remote layout sync.</li>
+                        <li><code style="color: var(--text-heading);">spelling_checker.cpp</code>: Native C++ Bengali
+                            spellchecker & dictionary lookup core.</li>
+                        <li><code style="color: var(--text-heading);">net_client.cpp</code>: Lightweight IPC socket
+                            client module for remote layout sync.</li>
                     </ul>
                 </div>
             </div>
 
             <!-- Platform Module -->
             <div class="col-lg-6">
-                <div class="p-3.5 bg-slate-950 border border-emerald-500/20 rounded-2xl h-100">
-                    <h5 class="font-outfit font-bold text-emerald-400 text-base mb-2">
-                        <i class="fab fa-windows me-2 text-blue-400"></i> Win32 Integration (`src/platform/windows/`)
+                <div class="p-3.5 border rounded-2xl h-100"
+                    style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                    <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-emerald);">
+                        <i class="fab fa-windows me-2 text-blue-500"></i> Win32 Integration (`src/platform/windows/`)
                     </h5>
-                    <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
-                        <li><code class="text-emerald-300">main_window.cpp</code>: Top acrylic control bar overlay &
-                            Win32 window message loop.</li>
-                        <li><code class="text-emerald-300">native_input.cpp</code>: Low-level system keyboard hook
-                            (<code>WH_KEYBOARD_LL</code>).</li>
-                        <li><code class="text-emerald-300">registration_dialog.cpp</code>: Win32 registry settings UI
-                            and persistence.</li>
-                        <li><code class="text-emerald-300">main_window_tray.cpp</code>: System tray notification icon &
-                            context menu.</li>
+                    <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-muted);">
+                        <li><code style="color: var(--text-heading);">main_window.cpp</code>: Top acrylic control bar
+                            overlay & Win32 window message loop.</li>
+                        <li><code style="color: var(--text-heading);">native_input.cpp</code>: Low-level system keyboard
+                            hook (<code>WH_KEYBOARD_LL</code>).</li>
+                        <li><code style="color: var(--text-heading);">registration_dialog.cpp</code>: Win32 registry
+                            settings UI and persistence.</li>
+                        <li><code style="color: var(--text-heading);">main_window_tray.cpp</code>: System tray
+                            notification icon & context menu.</li>
                     </ul>
                 </div>
             </div>
 
             <!-- Installer Module -->
             <div class="col-lg-6">
-                <div class="p-3.5 bg-slate-950 border border-emerald-500/20 rounded-2xl h-100">
-                    <h5 class="font-outfit font-bold text-emerald-400 text-base mb-2">
-                        <i class="fas fa-box me-2 text-amber-400"></i> Installer Sub-Module (`Installer/`)
+                <div class="p-3.5 border rounded-2xl h-100"
+                    style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                    <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-emerald);">
+                        <i class="fas fa-box me-2" style="color: var(--text-gold);"></i> Installer Sub-Module
+                        (`Installer/`)
                     </h5>
-                    <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
-                        <li><code class="text-emerald-300">InstallerLogic.cpp</code>: Unpacks embedded binary payload
-                            array to target disk directory.</li>
-                        <li><code class="text-emerald-300">bundler.cpp</code>: Build tool that embeds application
-                            binaries into single setup installer.</li>
+                    <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-muted);">
+                        <li><code style="color: var(--text-heading);">InstallerLogic.cpp</code>: Unpacks embedded binary
+                            payload array to target disk directory.</li>
+                        <li><code style="color: var(--text-heading);">bundler.cpp</code>: Build tool that embeds
+                            application binaries into single setup installer.</li>
                     </ul>
                 </div>
             </div>
 
             <!-- Workflows Module -->
             <div class="col-lg-6">
-                <div class="p-3.5 bg-slate-950 border border-emerald-500/20 rounded-2xl h-100">
-                    <h5 class="font-outfit font-bold text-emerald-400 text-base mb-2">
+                <div class="p-3.5 border rounded-2xl h-100"
+                    style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                    <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-emerald);">
                         <i class="fas fa-cogs me-2 text-bdRed"></i> GitHub Workflows (`.github/workflows/`)
                     </h5>
-                    <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
-                        <li><code class="text-emerald-300">build.yml</code>: CI build matrix compiling MSVC & MinGW
-                            targets.</li>
-                        <li><code class="text-emerald-300">release.yml</code>: Automated GitHub Release publisher
-                            publishing versioned binaries.</li>
-                        <li><code class="text-emerald-300">jekyll-gh-pages.yml</code>: Automated GitHub Pages
+                    <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-muted);">
+                        <li><code style="color: var(--text-heading);">build.yml</code>: CI build matrix compiling MSVC &
+                            MinGW targets.</li>
+                        <li><code style="color: var(--text-heading);">release.yml</code>: Automated GitHub Release
+                            publisher publishing versioned binaries.</li>
+                        <li><code style="color: var(--text-heading);">jekyll-gh-pages.yml</code>: Automated GitHub Pages
                             documentation deployment pipeline.</li>
                     </ul>
                 </div>

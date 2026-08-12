@@ -14,21 +14,22 @@ permalink: /features.html
                     <i class="fas fa-microchip"></i>
                 </div>
                 <div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-0">Low-Level Hook Service</h4>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Low-Level Hook
+                        Service</h4>
                     <span
-                        class="badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono">WH_KEYBOARD_LL</span>
+                        class="badge bg-emerald-500/20 text-emerald border border-emerald-500/30 text-xs font-mono">WH_KEYBOARD_LL</span>
                 </div>
             </div>
-            <p class="text-slate-300 text-sm leading-relaxed mb-3">
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
                 Omor Ekushe intercepts hardware keyboard events directly at the Windows kernel message layer using
                 `SetWindowsHookExW(WH_KEYBOARD_LL, ...)`. This delivers:
             </p>
-            <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Zero input
+            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> Zero input
                     latency across all Win32, UWP, WPF, and Chromium applications.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Clean
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> Clean
                     passthrough for system hotkeys like Alt+Tab, Win key, and Ctrl+C/V.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald-400"></i> Precise
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> Precise
                     keycode translation into UTF-16 Bengali glyphs (`SendInput`).</li>
             </ul>
         </div>
@@ -42,23 +43,23 @@ permalink: /features.html
                     <i class="fas fa-spell-check"></i>
                 </div>
                 <div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-0">Integrated Spelling Checker</h4>
-                    <span
-                        class="badge bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono">Sub-module:
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Integrated
+                        Spelling Checker</h4>
+                    <span class="badge bg-red-500/20 text-bdRed border border-red-500/30 text-xs font-mono">Sub-module:
                         SpellingChecker</span>
                 </div>
             </div>
-            <p class="text-slate-300 text-sm leading-relaxed mb-3">
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
                 Built-in C++ spelling verification sub-module located in `SpellingChecker/` engineered for
                 high-performance Bengali word verification.
             </p>
-            <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-red-400"></i> High-speed
+            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> High-speed
                     dictionary lookups for standard Bengali vocabulary.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-red-400"></i> Phonetic distance
-                    matching for real-time word suggestion candidates.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-red-400"></i> Extendable custom
-                    dictionary file support.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> Phonetic
+                    distance matching for real-time word suggestion candidates.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> Extendable
+                    custom dictionary file support.</li>
             </ul>
         </div>
     </div>
@@ -71,22 +72,25 @@ permalink: /features.html
                     <i class="fas fa-pen-ruler"></i>
                 </div>
                 <div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-0">Graphical Layout Editor</h4>
-                    <span
-                        class="badge bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-mono">Sub-module:
-                        LayoutEditor</span>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Graphical Layout
+                        Editor</h4>
+                    <span class="badge bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-mono"
+                        style="color: var(--text-gold);">Sub-module: LayoutEditor</span>
                 </div>
             </div>
-            <p class="text-slate-300 text-sm leading-relaxed mb-3">
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
                 A standalone graphical keymap designer built with GLFW, OpenGL 3.3, and Dear ImGui GUI framework.
             </p>
-            <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-amber-400"></i> Visual key
-                    mapping matrix display for all standard virtual keys.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-amber-400"></i> Real-time
-                    Unicode preview of Bengali character combinations.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-amber-400"></i> One-click export
-                    to Omor Ekushe standard XML keymap format.</li>
+            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1"
+                        style="color: var(--text-gold);"></i> Visual key mapping matrix display for all standard virtual
+                    keys.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1"
+                        style="color: var(--text-gold);"></i> Real-time Unicode preview of Bengali character
+                    combinations.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1"
+                        style="color: var(--text-gold);"></i> One-click export to Omor Ekushe standard XML keymap
+                    format.</li>
             </ul>
         </div>
     </div>
@@ -99,20 +103,21 @@ permalink: /features.html
                     <i class="fas fa-cloud-arrow-down"></i>
                 </div>
                 <div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-0">Cloud NetClient Sync</h4>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Cloud NetClient
+                        Sync</h4>
                     <span
-                        class="badge bg-blue-500/20 text-blue-400 border border-blue-500/30 text-xs font-mono">Sub-module:
+                        class="badge bg-blue-500/20 text-blue-500 border border-blue-500/30 text-xs font-mono">Sub-module:
                         NetClient</span>
                 </div>
             </div>
-            <p class="text-slate-300 text-sm leading-relaxed mb-3">
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
                 Network client sub-module in `NetClient/` enabling cloud layout synchronization and automatic
                 layout updates.
             </p>
-            <ul class="list-unstyled text-slate-300 text-xs space-y-2 mb-0">
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-blue-400"></i> Online checking
-                    for layout map & application updates.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-blue-400"></i> Download
+            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-blue-500 me-1"></i> Online
+                    checking for layout map & application updates.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-blue-500 me-1"></i> Download
                     community layout XML files directly into `data/Layouts/`.</li>
             </ul>
         </div>
@@ -121,14 +126,15 @@ permalink: /features.html
 
 <!-- XML Schema Specification Section -->
 <div class="glass-card p-0 overflow-hidden mb-5" id="xml-schema">
-    <div class="p-4 bg-slate-900 border-b border-emerald-500/20">
-        <h3 class="font-outfit font-bold text-emerald-100 text-xl mb-1">
-            <i class="fas fa-code text-amber-400 me-2"></i> Custom XML Layout Map Syntax
+    <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+        <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
+            <i class="fas fa-code me-2" style="color: var(--text-gold);"></i> Custom XML Layout Map Syntax
         </h3>
-        <p class="text-slate-300 text-sm mb-0">Learn how to construct custom layout keymap files for Omor Ekushe.</p>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">Learn how to construct custom layout keymap files for
+            Omor Ekushe.</p>
     </div>
     <div class="p-4">
-        <p class="text-slate-300 text-sm mb-3 leading-relaxed">
+        <p class="text-sm mb-3 leading-relaxed" style="color: var(--text-muted);">
             Omor Ekushe scans the <code>data/Layouts/</code> directory at application startup for any <code>.xml</code>
             layout definition file.
             Each layout is structured with root <code>&lt;Layout&gt;</code> and repeating <code>&lt;KeyMap&gt;</code>
@@ -137,8 +143,8 @@ permalink: /features.html
 
         <div class="code-window shadow-xl mb-4">
             <div class="code-header">
-                <span class="text-xs text-slate-400 font-mono"><i class="fas fa-file-code me-1 text-emerald-400"></i>
-                    XML Schema Structure Specification</span>
+                <span class="text-xs text-slate-400 font-mono"><i class="fas fa-file-code me-1 text-emerald"></i> XML
+                    Schema Structure Specification</span>
                 <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
                     data-target="schema-code" title="Copy code">
                     <i class="far fa-copy"></i> Copy
@@ -159,24 +165,27 @@ permalink: /features.html
 
         <div class="row g-3">
             <div class="col-md-4">
-                <div class="p-3 bg-slate-950 border border-emerald-500/20 rounded-xl">
-                    <h6 class="font-outfit font-bold text-emerald-400 text-sm mb-1">Normal Tag</h6>
-                    <p class="text-slate-300 text-xs mb-0">Defines the default character output without shift keys
-                        pressed.</p>
+                <div class="p-3 border rounded-xl"
+                    style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                    <h6 class="font-outfit font-bold text-sm mb-1" style="color: var(--text-emerald);">Normal Tag</h6>
+                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines the default character output
+                        without shift keys pressed.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-3 bg-slate-950 border border-red-500/20 rounded-xl">
-                    <h6 class="font-outfit font-bold text-red-400 text-sm mb-1">Shift Tag</h6>
-                    <p class="text-slate-300 text-xs mb-0">Defines character output when Shift modifier key is held
-                        down.</p>
+                <div class="p-3 border rounded-xl"
+                    style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                    <h6 class="font-outfit font-bold text-sm mb-1 text-bdRed">Shift Tag</h6>
+                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines character output when Shift
+                        modifier key is held down.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-3 bg-slate-950 border border-amber-500/20 rounded-xl">
-                    <h6 class="font-outfit font-bold text-amber-400 text-sm mb-1">AltGr Tag</h6>
-                    <p class="text-slate-300 text-xs mb-0">Defines optional third-tier character output for AltGr /
-                        Right-Alt combinations.</p>
+                <div class="p-3 border rounded-xl"
+                    style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                    <h6 class="font-outfit font-bold text-sm mb-1" style="color: var(--text-gold);">AltGr Tag</h6>
+                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines optional third-tier character
+                        output for AltGr / Right-Alt combinations.</p>
                 </div>
             </div>
         </div>

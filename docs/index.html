@@ -19,22 +19,24 @@ permalink: /index.html
                         <span class="text-bdRed font-bangla font-bold ms-1">• অমর একুশে</span>
                     </span>
                     <span
-                        class="badge bg-emerald-950 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-full text-xs font-semibold">
+                        class="badge bg-emerald-500/10 text-emerald border border-emerald-500/20 px-3 py-1.5 rounded-full text-xs font-semibold">
                         <i class="fas fa-tag me-1"></i> Release: <span class="github-release-tag">v1.0.0</span>
                     </span>
                     <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/stargazers"
                         target="_blank"
-                        class="badge bg-amber-500/10 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-full text-xs font-semibold text-decoration-none hover:bg-amber-500/20 transition-all">
-                        <i class="fas fa-star text-amber-400 me-1"></i> Stars: <span class="github-stars-count">1</span>
+                        class="badge bg-amber-500/10 text-amber border border-amber-500/30 px-3 py-1.5 rounded-full text-xs font-semibold text-decoration-none hover:opacity-80 transition-all">
+                        <i class="fas fa-star me-1" style="color: var(--bd-gold);"></i> Stars: <span
+                            class="github-stars-count">1</span>
                     </a>
                 </div>
 
-                <h1 class="display-4 font-outfit font-extrabold text-emerald-100 tracking-tight mb-3 leading-tight">
+                <h1 class="display-4 font-outfit font-extrabold tracking-tight mb-3 leading-tight"
+                    style="color: var(--text-heading);">
                     High-Speed Bengali Typing Engine for <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500">Windows</span>
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-500">Windows</span>
                 </h1>
 
-                <p class="lead text-slate-300 font-light mb-4 max-w-2xl leading-relaxed">
+                <p class="lead font-light mb-4 max-w-2xl leading-relaxed" style="color: var(--text-muted);">
                     Effortless layout switching powered by Windows low-level kernel hooks, dynamic XML layout maps,
                     per-window layout memory, and built-in Bengali spellchecking.
                 </p>
@@ -48,16 +50,17 @@ permalink: /index.html
                     </a>
                 </div>
 
-                <div class="d-flex flex-wrap align-items-center gap-3 text-slate-400 text-xs font-mono">
+                <div class="d-flex flex-wrap align-items-center gap-3 text-xs font-mono"
+                    style="color: var(--text-muted);">
                     <div class="d-flex align-items-center gap-1.5">
-                        <i class="fas fa-keyboard text-emerald-400"></i> Hotkey:
+                        <i class="fas fa-keyboard text-emerald me-1"></i> Hotkey:
                         <kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> + <kbd
                             class="hotkey-cap gold">B</kbd>
                     </div>
                     <span>•</span>
-                    <div><i class="fas fa-microchip text-emerald-400 me-1"></i> ~5 MB RAM</div>
+                    <div><i class="fas fa-microchip text-emerald me-1"></i> ~5 MB RAM</div>
                     <span>•</span>
-                    <div><i class="fas fa-shield-halved text-emerald-400 me-1"></i> MIT License</div>
+                    <div><i class="fas fa-shield-halved text-emerald me-1"></i> MIT License</div>
                 </div>
             </div>
 
@@ -67,10 +70,11 @@ permalink: /index.html
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <span class="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                            <span class="font-outfit font-bold text-emerald-100 text-sm">Try Live Simulator</span>
+                            <span class="font-outfit font-bold text-sm" style="color: var(--text-heading);">Try Live
+                                Simulator</span>
                         </div>
                         <span
-                            class="badge bg-emerald-950 border border-emerald-500/30 text-emerald-400 text-xs font-mono"
+                            class="badge bg-emerald-500/10 border border-emerald-500/30 text-emerald text-xs font-mono"
                             id="active-hotkey-badge">
                             Press Ctrl+Alt+B
                         </span>
@@ -83,17 +87,19 @@ permalink: /index.html
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label text-slate-400 text-xs mb-1">
-                            Active Layout: <strong class="text-amber-400 font-bangla" id="active-layout-name">Bijoy
-                                (বিজয়)</strong>
+                        <label class="form-label text-xs mb-1" style="color: var(--text-muted);">
+                            Active Layout: <strong class="font-bangla" id="active-layout-name"
+                                style="color: var(--text-gold);">Bijoy (বিজয়)</strong>
                         </label>
                         <textarea id="simulator-input" class="simulator-textarea"
                             placeholder="Type here or test layout sample...">আমার সোনার বাংলা, আমি তোমায় ভালোবাসি। অমর একুশে গ্রন্থমেলা।</textarea>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center text-xs font-mono text-slate-400">
-                        <span><i class="fas fa-bolt text-amber-400 me-1"></i> WH_KEYBOARD_LL Active</span>
-                        <span class="text-emerald-400"><i class="fas fa-check-circle me-1"></i> Win32 Ready</span>
+                    <div class="d-flex justify-content-between align-items-center text-xs font-mono"
+                        style="color: var(--text-muted);">
+                        <span><i class="fas fa-bolt me-1" style="color: var(--text-gold);"></i> WH_KEYBOARD_LL
+                            Active</span>
+                        <span class="text-emerald"><i class="fas fa-check-circle me-1"></i> Win32 Ready</span>
                     </div>
                 </div>
             </div>
@@ -102,24 +108,24 @@ permalink: /index.html
 </section>
 
 <!-- Highlights / Stats Bar -->
-<section class="py-4 border-y border-emerald-500/20 bg-slate-900/60">
+<section class="py-4 border-y" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
     <div class="container">
         <div class="row g-4 text-center">
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-outfit font-extrabold text-emerald-400 mb-0">&lt; 5MB</h3>
-                <p class="text-slate-400 text-xs font-mono mt-1">Memory Footprint</p>
+                <h3 class="display-6 font-outfit font-extrabold mb-0" style="color: var(--text-emerald);">&lt; 5MB</h3>
+                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Memory Footprint</p>
             </div>
             <div class="col-md-3 col-6">
                 <h3 class="display-6 font-outfit font-extrabold text-bdRed mb-0">100%</h3>
-                <p class="text-slate-400 text-xs font-mono mt-1">Native Win32 C++17</p>
+                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Native Win32 C++17</p>
             </div>
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-outfit font-extrabold text-emerald-400 mb-0">WH_HOOK</h3>
-                <p class="text-slate-400 text-xs font-mono mt-1">Low-Level Interception</p>
+                <h3 class="display-6 font-outfit font-extrabold mb-0" style="color: var(--text-emerald);">WH_HOOK</h3>
+                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Low-Level Interception</p>
             </div>
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-outfit font-extrabold text-amber-400 mb-0">XML</h3>
-                <p class="text-slate-400 text-xs font-mono mt-1">Dynamic Keymaps</p>
+                <h3 class="display-6 font-outfit font-extrabold mb-0" style="color: var(--text-gold);">XML</h3>
+                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Dynamic Keymaps</p>
             </div>
         </div>
     </div>
@@ -130,13 +136,13 @@ permalink: /index.html
     <div class="container py-4">
         <div class="text-center max-w-2xl mx-auto mb-5">
             <span
-                class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-full text-xs font-bold font-mono tracking-wider uppercase mb-2">
+                class="badge bg-emerald-500/10 text-emerald border border-emerald-500/30 px-3 py-1.5 rounded-full text-xs font-bold font-mono tracking-wider uppercase mb-2">
                 WHY OMOR EKUSHE?
             </span>
-            <h2 class="display-6 font-outfit font-extrabold text-emerald-100 mb-2">Engineered for Performance &
-                Customization</h2>
-            <p class="text-slate-300 font-light leading-relaxed">Everything you need for fluent Bengali desktop typing
-                with minimal system impact.</p>
+            <h2 class="display-6 font-outfit font-extrabold mb-2" style="color: var(--text-heading);">Engineered for
+                Performance & Customization</h2>
+            <p class="font-light leading-relaxed" style="color: var(--text-muted);">Everything you need for fluent
+                Bengali desktop typing with minimal system impact.</p>
         </div>
 
         <div class="row g-4">
@@ -145,8 +151,9 @@ permalink: /index.html
                     <div class="feature-icon-box">
                         <i class="fas fa-feather-alt"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-2">Ultra-Lightweight Engine</h4>
-                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Ultra-Lightweight
+                        Engine</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
                         Built from scratch in pure C++17 using Win32 API without heavy web engines (Electron/Qt).
                         Launches instantly with ~5MB RAM footprint.
                     </p>
@@ -158,8 +165,9 @@ permalink: /index.html
                     <div class="feature-icon-box red">
                         <i class="fas fa-file-code"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-2">Dynamic XML Layout Maps</h4>
-                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Dynamic XML
+                        Layout Maps</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
                         Load layout definitions dynamically from simple XML files. Built-in support for Bijoy, Unijoy,
                         National, and custom layout keymaps.
                     </p>
@@ -171,8 +179,9 @@ permalink: /index.html
                     <div class="feature-icon-box gold">
                         <i class="fas fa-window-restore"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-2">Per-Window Layout Memory</h4>
-                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Per-Window Layout
+                        Memory</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
                         Automatically remembers active typing mode (Bangla or English) on a per-application window basis
                         as you switch window focus.
                     </p>
@@ -184,8 +193,9 @@ permalink: /index.html
                     <div class="feature-icon-box gold">
                         <i class="fas fa-spell-check"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-2">Integrated Spelling Checker</h4>
-                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Integrated
+                        Spelling Checker</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
                         Includes a dedicated `SpellingChecker` C++ core for real-time Bengali dictionary lookups and
                         spell correction candidate lookups.
                     </p>
@@ -197,8 +207,9 @@ permalink: /index.html
                     <div class="feature-icon-box">
                         <i class="fas fa-pen-ruler"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-2">Graphical Layout Editor</h4>
-                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Graphical Layout
+                        Editor</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
                         Optional standalone sub-module `LayoutEditor` built with GLFW and Dear ImGui for visual creation
                         and editing of keyboard layouts.
                     </p>
@@ -210,8 +221,9 @@ permalink: /index.html
                     <div class="feature-icon-box red">
                         <i class="fas fa-glasses"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-emerald-100 text-xl mb-2">Acrylic Glassmorphism Bar</h4>
-                    <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Acrylic Control
+                        Overlay</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
                         Sleek top bar control window with customizable opacity, background image support, and seamless
                         system tray minimization.
                     </p>
@@ -222,27 +234,27 @@ permalink: /index.html
 </section>
 
 <!-- Custom XML Showcase Section -->
-<section class="py-5 bg-slate-900/80 border-y border-emerald-500/20">
+<section class="py-5 border-y" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
     <div class="container py-4">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
                 <span
-                    class="badge bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-full text-xs font-bold font-mono tracking-wider uppercase mb-3">CUSTOM
+                    class="badge bg-red-500/10 text-red-500 border border-red-500/30 px-3 py-1.5 rounded-full text-xs font-bold font-mono tracking-wider uppercase mb-3">CUSTOM
                     LAYOUT FORMAT</span>
-                <h2 class="display-6 font-outfit font-extrabold text-emerald-100 mb-3">Design Custom Keyboard Maps via
-                    XML</h2>
-                <p class="text-slate-300 lead font-light mb-4">
+                <h2 class="display-6 font-outfit font-extrabold mb-3" style="color: var(--text-heading);">Design Custom
+                    Keyboard Maps via XML</h2>
+                <p class="lead font-light mb-4" style="color: var(--text-muted);">
                     Omor Ekushe reads simple XML files in `data/Layouts/`. Define virtual key mapping (`vk`), Normal,
                     Shift, and
                     AltGr character assignments effortlessly.
                 </p>
-                <ul class="list-unstyled text-slate-300 space-y-2 mb-4">
-                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle text-amber-400"></i>
-                        Standard virtual keycodes (`vk="0x41"` for 'A')</li>
-                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle text-amber-400"></i>
-                        Supports Normal, Shift, and AltGr modifier states</li>
-                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle text-amber-400"></i> Live
-                        reload layout without restarting application</li>
+                <ul class="list-unstyled space-y-2 mb-4" style="color: var(--text-body);">
+                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle me-1"
+                            style="color: var(--text-gold);"></i> Standard virtual keycodes (`vk="0x41"` for 'A')</li>
+                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle me-1"
+                            style="color: var(--text-gold);"></i> Supports Normal, Shift, and AltGr modifier states</li>
+                    <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle me-1"
+                            style="color: var(--text-gold);"></i> Live reload layout without restarting application</li>
                 </ul>
                 <a href="{{ '/features.html#xml-schema' | relative_url }}"
                     class="btn-emerald-outline rounded-full px-4">
@@ -251,7 +263,7 @@ permalink: /index.html
             </div>
 
             <div class="col-lg-6">
-                <div class="code-window shadow-2xl">
+                <div class="code-window shadow-xl">
                     <div class="code-header">
                         <div class="code-dots">
                             <span class="code-dot dot-red"></span>
@@ -287,17 +299,17 @@ permalink: /index.html
 <!-- Download Call to Action Section -->
 <section class="py-5">
     <div class="container py-4">
-        <div class="glass-card text-center py-5 px-4 position-relative overflow-hidden border-emerald-400/40">
+        <div class="glass-card text-center py-5 px-4 position-relative overflow-hidden">
             <div class="position-relative z-10 max-w-2xl mx-auto">
-                <h2 class="display-5 font-outfit font-extrabold text-emerald-100 mb-3">Ready for High-Speed Bangla
-                    Typing?</h2>
-                <p class="text-slate-300 lead font-light mb-4">
+                <h2 class="display-5 font-outfit font-extrabold mb-3" style="color: var(--text-heading);">Ready for
+                    High-Speed Bangla Typing?</h2>
+                <p class="lead font-light mb-4" style="color: var(--text-muted);">
                     Download the standalone single-file setup installer for Windows 10/11 or compile directly from CMake
                     source code.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
                     <a href="{{ '/download.html' | relative_url }}"
-                        class="btn-nav-cta text-lg px-5 py-3 shadow-xl shadow-red-900/40 font-bold github-download-setup">
+                        class="btn-nav-cta text-lg px-5 py-3 shadow-xl font-bold github-download-setup">
                         <i class="fas fa-download me-2"></i> Download Setup (.exe)
                     </a>
                     <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}" target="_blank"

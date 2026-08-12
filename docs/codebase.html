@@ -13,8 +13,9 @@ permalink: /codebase.html
                 <i class="fas fa-star"></i>
             </div>
             <div>
-                <h4 class="font-outfit font-extrabold text-emerald-100 text-xl mb-0 github-stars-count">1</h4>
-                <span class="text-xs text-slate-400 font-mono">GitHub Stars</span>
+                <h4 class="font-outfit font-extrabold text-xl mb-0 github-stars-count"
+                    style="color: var(--text-heading);">1</h4>
+                <span class="text-xs font-mono" style="color: var(--text-muted);">GitHub Stars</span>
             </div>
         </div>
     </div>
@@ -25,8 +26,9 @@ permalink: /codebase.html
                 <i class="fas fa-code-branch"></i>
             </div>
             <div>
-                <h4 class="font-outfit font-extrabold text-emerald-100 text-xl mb-0 github-forks-count">0</h4>
-                <span class="text-xs text-slate-400 font-mono">Forks & Clones</span>
+                <h4 class="font-outfit font-extrabold text-xl mb-0 github-forks-count"
+                    style="color: var(--text-heading);">0</h4>
+                <span class="text-xs font-mono" style="color: var(--text-muted);">Forks & Clones</span>
             </div>
         </div>
     </div>
@@ -37,20 +39,22 @@ permalink: /codebase.html
                 <i class="fas fa-exclamation-circle"></i>
             </div>
             <div>
-                <h4 class="font-outfit font-extrabold text-emerald-100 text-xl mb-0 github-issues-count">0</h4>
-                <span class="text-xs text-slate-400 font-mono">Open Issues</span>
+                <h4 class="font-outfit font-extrabold text-xl mb-0 github-issues-count"
+                    style="color: var(--text-heading);">0</h4>
+                <span class="text-xs font-mono" style="color: var(--text-muted);">Open Issues</span>
             </div>
         </div>
     </div>
 
     <div class="col-lg-3 col-md-6">
         <div class="github-stat-card">
-            <div class="github-stat-icon dark border border-emerald-500/30">
-                <i class="fas fa-database text-emerald-400"></i>
+            <div class="github-stat-icon dark border" style="border-color: var(--border-color);">
+                <i class="fas fa-database text-emerald"></i>
             </div>
             <div>
-                <h4 class="font-outfit font-extrabold text-emerald-100 text-xl mb-0 github-repo-size">~12 MB</h4>
-                <span class="text-xs text-slate-400 font-mono">Repository Size</span>
+                <h4 class="font-outfit font-extrabold text-xl mb-0 github-repo-size"
+                    style="color: var(--text-heading);">~12 MB</h4>
+                <span class="text-xs font-mono" style="color: var(--text-muted);">Repository Size</span>
             </div>
         </div>
     </div>
@@ -61,20 +65,20 @@ permalink: /codebase.html
     <!-- Live Commit Feed -->
     <div class="col-lg-7">
         <div class="glass-card p-0 overflow-hidden h-100">
-            <div
-                class="p-4 bg-emerald-950 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
-                <h4 class="font-outfit font-bold text-emerald-100 text-lg mb-0">
-                    <i class="fas fa-history text-emerald-400 me-2"></i> Live Recent Commit Activity
+            <div class="p-4 border-b d-flex align-items-center justify-content-between"
+                style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                <h4 class="font-outfit font-bold text-lg mb-0" style="color: var(--text-heading);">
+                    <i class="fas fa-history text-emerald me-2"></i> Live Recent Commit Activity
                 </h4>
                 <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/commits" target="_blank"
-                    class="text-xs text-emerald-400 hover:text-emerald-300 font-mono text-decoration-none">
+                    class="text-xs text-emerald hover:underline font-mono text-decoration-none">
                     View All &rarr;
                 </a>
             </div>
             <div class="p-4">
                 <div id="github-commit-feed">
-                    <div class="text-center py-4 text-slate-400">
-                        <i class="fas fa-circle-notch fa-spin text-emerald-400 fa-2x mb-2"></i>
+                    <div class="text-center py-4" style="color: var(--text-muted);">
+                        <i class="fas fa-circle-notch fa-spin text-emerald fa-2x mb-2"></i>
                         <p class="text-xs font-mono mb-0">Fetching latest commit activity from GitHub API...</p>
                     </div>
                 </div>
@@ -85,20 +89,20 @@ permalink: /codebase.html
     <!-- Repository Contributors List -->
     <div class="col-lg-5">
         <div class="glass-card p-0 overflow-hidden h-100">
-            <div
-                class="p-4 bg-slate-900 border-b border-emerald-500/20 d-flex align-items-center justify-content-between">
-                <h4 class="font-outfit font-bold text-emerald-100 text-lg mb-0">
-                    <i class="fas fa-users text-amber-400 me-2"></i> Project Contributors
+            <div class="p-4 border-b d-flex align-items-center justify-content-between"
+                style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+                <h4 class="font-outfit font-bold text-lg mb-0" style="color: var(--text-heading);">
+                    <i class="fas fa-users me-2" style="color: var(--text-gold);"></i> Project Contributors
                 </h4>
-                <span class="badge bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-mono">GitHub
-                    Team</span>
+                <span class="badge bg-amber-500/20 border border-amber-500/30 text-xs font-mono"
+                    style="color: var(--text-gold);">GitHub Team</span>
             </div>
             <div class="p-4">
-                <p class="text-slate-300 text-xs mb-3">Community developers contributing to Omor Ekushe core, layout
-                    maps, and documentation.</p>
+                <p class="text-xs mb-3" style="color: var(--text-muted);">Community developers contributing to Omor
+                    Ekushe core, layout maps, and documentation.</p>
                 <div id="github-contributors-list">
-                    <div class="text-center py-4 text-slate-400">
-                        <i class="fas fa-circle-notch fa-spin text-amber-400 fa-2x mb-2"></i>
+                    <div class="text-center py-4" style="color: var(--text-muted);">
+                        <i class="fas fa-circle-notch fa-spin text-amber fa-2x mb-2"></i>
                         <p class="text-xs font-mono mb-0">Loading contributor profiles...</p>
                     </div>
                 </div>
@@ -109,45 +113,52 @@ permalink: /codebase.html
 
 <!-- Architectural System Design -->
 <div class="glass-card p-0 overflow-hidden mb-5">
-    <div class="p-4 bg-emerald-950 border-b border-emerald-500/20">
-        <h3 class="font-outfit font-bold text-emerald-100 text-xl mb-1">
-            <i class="fas fa-diagram-project text-emerald-400 me-2"></i> System Architecture & Execution Flow
+    <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+        <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
+            <i class="fas fa-diagram-project text-emerald me-2"></i> System Architecture & Execution Flow
         </h3>
-        <p class="text-slate-300 text-sm mb-0">High-level architecture showing raw keypress intercept to UTF-16 Bengali
-            rendering.</p>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">High-level architecture showing raw keypress intercept
+            to UTF-16 Bengali rendering.</p>
     </div>
     <div class="p-4">
         <!-- Visual Architecture Diagram Box -->
-        <div
-            class="p-4 bg-slate-950 border border-emerald-500/20 rounded-2xl font-mono text-xs text-slate-300 overflow-x-auto mb-4 leading-relaxed">
+        <div class="p-4 border rounded-2xl font-mono text-xs overflow-x-auto mb-4 leading-relaxed"
+            style="background-color: var(--bg-surface-alt); border-color: var(--border-color); color: var(--text-body);">
             <div class="d-flex align-items-center justify-content-between gap-3 text-center min-w-[650px]">
-                <div class="p-3 bg-emerald-950 border border-emerald-500/40 rounded-xl flex-1">
-                    <div class="text-emerald-400 font-bold mb-1"><i class="fas fa-keyboard mb-1"></i> Hardware Keyboard
-                    </div>
-                    <div class="text-[10px] text-slate-400">Raw Virtual Keycode (VK)</div>
+                <div class="p-3 border rounded-xl flex-1"
+                    style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="font-bold mb-1" style="color: var(--text-emerald);"><i class="fas fa-keyboard mb-1"></i>
+                        Hardware Keyboard</div>
+                    <div class="text-[10px]" style="color: var(--text-muted);">Raw Virtual Keycode (VK)</div>
                 </div>
-                <i class="fas fa-arrow-right text-emerald-400"></i>
-                <div class="p-3 bg-emerald-950 border border-emerald-500/40 rounded-xl flex-1">
-                    <div class="text-emerald-400 font-bold mb-1"><i class="fas fa-microchip mb-1"></i> Kernel Hook</div>
-                    <div class="text-[10px] text-slate-400">WH_KEYBOARD_LL</div>
+                <i class="fas fa-arrow-right text-emerald"></i>
+                <div class="p-3 border rounded-xl flex-1"
+                    style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="font-bold mb-1" style="color: var(--text-emerald);"><i
+                            class="fas fa-microchip mb-1"></i> Kernel Hook</div>
+                    <div class="text-[10px]" style="color: var(--text-muted);">WH_KEYBOARD_LL</div>
                 </div>
-                <i class="fas fa-arrow-right text-emerald-400"></i>
-                <div class="p-3 bg-amber-950 border border-amber-500/40 rounded-xl flex-1">
-                    <div class="text-amber-300 font-bold mb-1"><i class="fas fa-map mb-1"></i> Layout Mapping</div>
-                    <div class="text-[10px] text-slate-400">data/Layouts/*.xml</div>
+                <i class="fas fa-arrow-right text-emerald"></i>
+                <div class="p-3 border rounded-xl flex-1"
+                    style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="font-bold mb-1" style="color: var(--text-gold);"><i class="fas fa-map mb-1"></i> Layout
+                        Mapping</div>
+                    <div class="text-[10px]" style="color: var(--text-muted);">data/Layouts/*.xml</div>
                 </div>
-                <i class="fas fa-arrow-right text-emerald-400"></i>
-                <div class="p-3 bg-red-950 border border-red-500/40 rounded-xl flex-1">
-                    <div class="text-red-400 font-bold mb-1"><i class="fas fa-desktop mb-1"></i> Win32 Target App</div>
-                    <div class="text-[10px] text-slate-400">SendInput UTF-16</div>
+                <i class="fas fa-arrow-right text-emerald"></i>
+                <div class="p-3 border rounded-xl flex-1"
+                    style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="font-bold mb-1 text-bdRed"><i class="fas fa-desktop mb-1"></i> Win32 Target App</div>
+                    <div class="text-[10px]" style="color: var(--text-muted);">SendInput UTF-16</div>
                 </div>
             </div>
         </div>
 
         <div class="row g-4">
             <div class="col-md-6">
-                <h5 class="font-outfit font-bold text-emerald-100 text-base mb-2">1. Interception & Hook Layer</h5>
-                <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-heading);">1. Interception &
+                    Hook Layer</h5>
+                <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
                     `native_input.cpp` installs a low-level global Windows hook using `SetWindowsHookExW`. When Bangla
                     mode is active,
                     intercepted Virtual Keycodes (VK) are blocked from standard OS processing and forwarded to the
@@ -155,8 +166,9 @@ permalink: /codebase.html
                 </p>
             </div>
             <div class="col-md-6">
-                <h5 class="font-outfit font-bold text-emerald-100 text-base mb-2">2. XML Mapper & Output</h5>
-                <p class="text-slate-300 text-sm leading-relaxed mb-0">
+                <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-heading);">2. XML Mapper &
+                    Output</h5>
+                <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
                     `layout.cpp` performs an $O(1)$ lookup in the active layout map table for the corresponding UTF-16
                     character or conjunctive sequence,
                     then emits keystrokes using Win32 API `SendInput` with `KEYEVENTF_UNICODE`.

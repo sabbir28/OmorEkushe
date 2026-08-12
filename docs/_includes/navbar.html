@@ -2,24 +2,25 @@
   <div class="container">
     <!-- Brand Logo -->
     <a class="navbar-brand-logo group flex items-center gap-3 text-decoration-none" href="{{ '/' | relative_url }}">
-      <div class="brand-circle shadow-lg shadow-emerald-950/60 group-hover:scale-105 transition-transform duration-300">
+      <div class="brand-circle shadow-md group-hover:scale-105 transition-transform duration-300">
         <img src="{{ '/assets/favicon.ico' | relative_url }}" alt="Omor Ekushe App Icon" width="22" height="22"
           class="object-contain filter drop-shadow">
       </div>
       <div class="flex flex-col">
         <span
-          class="font-outfit font-extrabold text-xl text-emerald-100 tracking-tight leading-none group-hover:text-emerald-400 transition-colors">
+          class="font-outfit font-extrabold text-xl tracking-tight leading-none group-hover:text-emerald-500 transition-colors"
+          style="color: var(--text-heading);">
           Omor Ekushe <span class="text-bdRed text-sm font-bold ms-1 font-bangla">(অমর একুশে)</span>
         </span>
-        <span class="text-[10px] text-emerald-400 font-mono tracking-wider opacity-85 uppercase mt-0.5">Win32 Layout
+        <span class="text-[10px] font-mono tracking-wider uppercase mt-0.5" style="color: var(--bd-green);">Win32 Layout
           Engine</span>
       </div>
     </a>
 
     <!-- Mobile Toggler -->
-    <button class="navbar-toggler border-0 shadow-none p-2 text-emerald-100" type="button" data-bs-toggle="collapse"
+    <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="collapse"
       data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-      <i class="fas fa-bars text-emerald-400 fs-4"></i>
+      <i class="fas fa-bars fs-4" style="color: var(--text-heading);"></i>
     </button>
 
     <!-- Navigation Menu -->
@@ -56,6 +57,14 @@
           </a>
         </li>
 
+        <!-- Light / Dark Mode Toggle Button -->
+        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+          <button id="theme-toggle-btn" class="btn-theme-toggle" title="Toggle Light / Dark Mode"
+            aria-label="Toggle Theme">
+            <i class="fas fa-moon"></i>
+          </button>
+        </li>
+
         <!-- Quick GitHub Button -->
         <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
           <a class="btn-github-nav group" href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}"
@@ -63,14 +72,14 @@
             <i class="fab fa-github text-lg group-hover:scale-110 transition-transform"></i>
             <span>GitHub</span>
             <span
-              class="badge bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full px-2 py-0.5 text-xs github-stars-count">★
+              class="badge bg-amber-500/20 text-amber-500 border border-amber-500/30 rounded-full px-2 py-0.5 text-xs github-stars-count">★
               1</span>
           </a>
         </li>
 
         <!-- Quick Installer CTA -->
         <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
-          <a class="btn-nav-cta shadow-lg shadow-red-900/30" href="{{ '/download.html' | relative_url }}">
+          <a class="btn-nav-cta shadow-lg" href="{{ '/download.html' | relative_url }}">
             <i class="fas fa-download me-1.5"></i> Get Installer
           </a>
         </li>
