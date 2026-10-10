@@ -1,6 +1,6 @@
 # OmorEkushe LayoutEditor
 
-`LayoutEditor` is a standalone Win32 GUI application for OmorEkushe, used to view, edit, and create keyboard layouts in an XML format. It visually maps standard keyboard keys to user-defined characters across various states (e.g., normal, Shift, Alt).
+`LayoutEditor` is a GUI application for OmorEkushe built using **GLFW, OpenGL 3, and Dear ImGui**. It is used to view, edit, and create keyboard layouts in XML format, visually mapping standard keyboard keys to user-defined characters across various states (normal, Shift, Alt).
 
 ## Features
 
@@ -8,7 +8,7 @@
 - **Support for Modifiers**: Keys can be configured with output mapping for `Normal`, `Shift`, `Normal_Option`, and `Shift_Option` states.
 - **XML Data Synchronization**: Load `.xml` files from standard layout paths (`Layouts\`, `..\data\layout\`, `..\data\Layouts\`), modifying them in-memory, and flush back to XML upon saving.
 - **Juk (`<Juk>`) Parsing**: The core layout model structure natively parses and stores "Juk" combinations (sequence string mapped to an output string), although primarily edited in layout xmls.
-- **Win32 Native UI**: Lightweight architecture built strictly against `user32` and `gdi32` components, eliminating third-party UI framework dependencies.
+- **Modern Accelerated UI**: Hardware-accelerated architecture built on GLFW, OpenGL 3, and Dear ImGui with immersive dark mode title bar support.
 
 ## Architecture & Components
 
@@ -42,7 +42,7 @@ The `LayoutEditor` component is integrated as part of the overall CMake build pi
 
 By default, building the LayoutEditor is toggled via the CMake option:
 ```cmake
-option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor Win32 prototype" ON)
+option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor GUI (GLFW + OpenGL + Dear ImGui)" ON)
 ```
 
 Target properties define Unicode declarations `UNICODE / _UNICODE` and link against necessary subsystems like `comctl32` and `shlwapi`. During integration, OmorEkushe's main UI provides a dedicated button or layout editor access point that attempts to execute `LayoutEditor.exe` from relative application paths.

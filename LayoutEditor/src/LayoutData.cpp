@@ -98,8 +98,9 @@ namespace editor {
         path = filePath;
         clear();
 
-        FILE* file = _wfopen(filePath, L"r, ccs=UTF-8");
-        if (!file) {
+        // AUDIT FIX: Use secure _wfopen_s instead of deprecated _wfopen.
+        FILE* file = nullptr;
+        if (_wfopen_s(&file, filePath, L"r, ccs=UTF-8") != 0 || !file) {
             return false;
         }
 
@@ -179,8 +180,9 @@ namespace editor {
     }
 
     bool LayoutData::saveToFile(const wchar_t* filePath) const {
-        FILE* file = _wfopen(filePath, L"w, ccs=UTF-8");
-        if (!file) {
+        // AUDIT FIX: Use secure _wfopen_s instead of deprecated _wfopen.
+        FILE* file = nullptr;
+        if (_wfopen_s(&file, filePath, L"w, ccs=UTF-8") != 0 || !file) {
             return false;
         }
 

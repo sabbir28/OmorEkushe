@@ -62,7 +62,12 @@ namespace {
             const size_t end = line.find(close, start);
             if (end == std::wstring::npos || end < start || start > line.size()) return L"";
 
-            return Trim(line.substr(start, end - start));
+            const std::wstring raw = line.substr(start, end - start);
+            // AUDIT FIX: If tag contains a single space (e.g. <Normal> </Normal> for the Spacebar key),
+            // preserve it rather than trimming to empty string which breaks spacebar output.
+            if (raw == L" ") return raw;
+
+            return Trim(raw);
         } catch (...) {
             return L"";
         }
@@ -92,10 +97,12 @@ namespace bijoy::core {
         path = filePath;
         clear();
 
-        std::unique_ptr<FILE, decltype(&fclose)> file(_wfopen(filePath, L"r, ccs=UTF-8"), &fclose);
-        if (!file) {
+        // AUDIT FIX: Use secure _wfopen_s instead of deprecated _wfopen.
+        FILE* rawFile = nullptr;
+        if (_wfopen_s(&rawFile, filePath, L"r, ccs=UTF-8") != 0 || !rawFile) {
             return false;
         }
+        std::unique_ptr<FILE, decltype(&fclose)> file(rawFile, &fclose);
 
         wchar_t lineBuffer[2048] = {};
         auto getLine = [&]() -> std::wstring {

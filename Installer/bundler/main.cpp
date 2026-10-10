@@ -53,6 +53,19 @@ int main(int argc, char* argv[]) {
     if (fs::exists(input_dir)) {
         for (const auto& entry : fs::recursive_directory_iterator(input_dir)) {
             if (entry.is_regular_file()) {
+                // AUDIT FIX: Skip debug symbols, intermediate build artifacts, temporary logs,
+                // and the bundler tool itself so only release distribution assets are embedded.
+                // This prevents Resources.h from bloating to hundreds of megabytes.
+                std::string ext = entry.path().extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (ext == ".pdb" || ext == ".ilk" || ext == ".log" || ext == ".ini" ||
+                    ext == ".gitkeep" || ext == ".lib" || ext == ".exp") {
+                    continue;
+                }
+                if (entry.path().filename() == "bundler.exe") {
+                    continue;
+                }
+
                 std::string var_name = "file_data_" + std::to_string(file_idx++);
                 fs::path rel_path = fs::relative(entry.path(), input_dir);
                 std::string rel_path_str = rel_path.string();

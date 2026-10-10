@@ -5,15 +5,22 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add version management as a pre-build step
-find_package(Python3 REQUIRED)
+# AUDIT FIX: Previously `find_package(Python3 REQUIRED)` caused CMake configuration
+# to fail when Python3 was not installed on the system (e.g., standard C++ Visual Studio environments).
+# Made Python3 optional (QUIET) and only run `version_manager.py` if the interpreter is present.
+find_package(Python3 COMPONENTS Interpreter QUIET)
 
-add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/src/NetClient.rc" "${CMAKE_CURRENT_SOURCE_DIR}/include/NetClientVersion.h"
-    COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/version_manager.py"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    COMMENT "Updating NetClient version and metadata"
-    VERBATIM
-)
+if(Python3_FOUND)
+    add_custom_command(
+        OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/src/NetClient.rc" "${CMAKE_CURRENT_SOURCE_DIR}/include/NetClientVersion.h"
+        COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/version_manager.py"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMENT "Updating NetClient version and metadata"
+        VERBATIM
+    )
+else()
+    message(STATUS "Python3 interpreter not found: skipping automatic version bump. Using existing NetClient.rc and NetClientVersion.h.")
+endif()
 
 set(NETCLIENT_SOURCES
     src/NetClient.cpp

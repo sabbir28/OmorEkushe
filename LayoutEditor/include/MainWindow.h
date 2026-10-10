@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 #include "LayoutData.h"
 
 class MainWindow {
@@ -18,4 +19,6 @@ private:
     static char s_editIcon[256];
     static bool s_showKeyEditPopup;
     static int s_selectedKeyCode;
+    static std::string s_statusMessage;
 };
+

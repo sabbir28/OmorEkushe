@@ -66,3 +66,9 @@ target_link_libraries(Installer PRIVATE
 )
 
 target_compile_definitions(Installer PRIVATE UNICODE _UNICODE)
+
+# AUDIT FIX: Embedded resources in Resources.h can exceed the standard COFF 65536 sections limit.
+# /bigobj is required under MSVC to prevent fatal error C1128.
+if(MSVC)
+    target_compile_options(Installer PRIVATE /bigobj)
+endif()

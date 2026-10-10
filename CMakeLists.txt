@@ -4,7 +4,7 @@ project(OmorEkushe LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor Win32 prototype" ON)
+option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor GUI (GLFW + OpenGL + Dear ImGui)" ON)
 
 set(BIJOY_BUILD_ROOT "${CMAKE_SOURCE_DIR}/build")
 set(BIJOY_RUNTIME_OUTPUT_DIR "${BIJOY_BUILD_ROOT}/bin")
@@ -133,6 +133,8 @@ if(BIJOY_BUILD_LAYOUT_EDITOR)
     set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
     set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    # AUDIT FIX: Disable GLFW_INSTALL to prevent configure_package_config_file failures during subproject builds.
+    set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
     FetchContent_Declare(
@@ -189,15 +191,34 @@ add_subdirectory(Installer/bundler)
 set(INSTALLER_STAGING_DIR "${BIJOY_BUILD_ROOT}/Installer/staging")
 set(INSTALLER_INC_DIR "${CMAKE_SOURCE_DIR}/Installer/include")
 
-add_custom_target(omor_bundle_resources
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${INSTALLER_STAGING_DIR}/bin"
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${INSTALLER_STAGING_DIR}/data"
+set(OMOR_BUNDLE_DEPENDS bundler OmorEkushe NetClient SpellingChecker)
+set(OMOR_BUNDLE_COPY_COMMANDS
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:OmorEkushe>" "${INSTALLER_STAGING_DIR}/bin/"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:NetClient>" "${INSTALLER_STAGING_DIR}/bin/"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${BIJOY_RUNTIME_OUTPUT_DIR}" "${INSTALLER_STAGING_DIR}/bin"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:SpellingChecker>" "${INSTALLER_STAGING_DIR}/bin/"
+)
+if(BIJOY_BUILD_LAYOUT_EDITOR)
+    list(APPEND OMOR_BUNDLE_DEPENDS LayoutEditor)
+    list(APPEND OMOR_BUNDLE_COPY_COMMANDS
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:LayoutEditor>" "${INSTALLER_STAGING_DIR}/bin/"
+    )
+endif()
+
+# AUDIT FIX: Previously `omor_bundle_resources` used `copy_directory "${BIJOY_RUNTIME_OUTPUT_DIR}"`
+# which caused two critical issues:
+# 1. A race condition / "Permission denied" error during parallel builds because other targets
+#    (such as SpellingChecker) were being written by the linker into BIJOY_RUNTIME_OUTPUT_DIR simultaneously.
+# 2. Bundled massive debug/compiler files (.pdb, .ilk, bundler.exe, crash.log) into staging,
+#    causing Resources.h to bloat to >200MB and exhausting MSVC compiler memory.
+# We now depend on all required targets and copy only the specific distribution binaries.
+add_custom_target(omor_bundle_resources
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${INSTALLER_STAGING_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${INSTALLER_STAGING_DIR}/bin"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${INSTALLER_STAGING_DIR}/data"
+    ${OMOR_BUNDLE_COPY_COMMANDS}
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${BIJOY_DATA_DIR}" "${INSTALLER_STAGING_DIR}/data"
     COMMAND $<TARGET_FILE:bundler> "${INSTALLER_STAGING_DIR}" "${INSTALLER_INC_DIR}/Resources.h"
-    DEPENDS bundler OmorEkushe NetClient
+    DEPENDS ${OMOR_BUNDLE_DEPENDS}
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     COMMENT "Generates Resources.h for Installer using Bundler"
 )

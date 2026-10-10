@@ -50,6 +50,9 @@ size_t SpellChecker::GetDictionarySize() const {
 bool SpellChecker::ReadNextWordFromOffset(uintmax_t offset, std::string& outWord, uintmax_t& outStartOffset) {
     if (offset >= m_fileSize) return false;
 
+    // AUDIT FIX: Clear eofbit/failbit before seeking. If a previous read reached EOF,
+    // std::ifstream::seekg silently fails unless clear() is invoked first, breaking subsequent queries.
+    m_file.clear();
     m_file.seekg(offset);
     char buf[1];
     
@@ -177,6 +180,8 @@ std::vector<std::string> SpellChecker::Suggest(const std::string& word, int maxR
     // Read the block into a temporary buffer
     std::string buffer;
     buffer.resize(readLength);
+    // AUDIT FIX: Clear stream flags prior to seeking to avoid silent seek failure if stream touched EOF
+    m_file.clear();
     m_file.seekg(startRead);
     m_file.read(&buffer[0], readLength);
     
@@ -282,6 +287,12 @@ int SpellChecker::LevenshteinDistanceEarlyAbort(
     int maxDist) 
 {
     const size_t lenA = cpA.size();
+    // AUDIT FIX: Stack arrays prev[128] and curr[128] have a maximum indexed size of 127.
+    // If lenA >= 127 (e.g. pasted text/very long input), abort early to prevent stack buffer overflow.
+    if (lenA >= 127) {
+        return maxDist + 1;
+    }
+
     int prev[128], curr[128];
     for (size_t j = 0; j <= 127; ++j) prev[j] = static_cast<int>(j);
 

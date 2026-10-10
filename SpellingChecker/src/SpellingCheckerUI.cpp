@@ -38,12 +38,15 @@ static int TextEditCallback(ImGuiInputTextCallbackData* data) {
 
 void SpellingCheckerUI::Initialize(const std::string& dictPath) {
     auto start = std::chrono::high_resolution_clock::now();
-    s_dictWordCount = s_checker.LoadDictionary(dictPath);
+    // AUDIT FIX: LoadDictionary returns 0 on success and -1 on error.
+    // Assigning the return code directly to s_dictWordCount caused the UI to report 0 words loaded.
+    int status = s_checker.LoadDictionary(dictPath);
     auto end = std::chrono::high_resolution_clock::now();
     
-    if (s_dictWordCount >= 0) {
+    if (status >= 0) {
         s_dictionaryLoaded = true;
-        std::cout << "[INFO] Loaded " << s_dictWordCount << " words in " 
+        s_dictWordCount = static_cast<int>(s_checker.GetDictionarySize());
+        std::cout << "[INFO] Loaded dictionary (" << s_dictWordCount << " bytes) in " 
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms\n";
     } else {
         std::cerr << "[ERROR] Failed to load dictionary from: " << dictPath << "\n";

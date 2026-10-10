@@ -123,6 +123,7 @@ target_link_libraries(LayoutEditor PRIVATE
         user32
         gdi32
         shlwapi
+        dwmapi
 )
 
 # =========================================================

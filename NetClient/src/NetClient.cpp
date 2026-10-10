@@ -39,6 +39,24 @@ namespace NetClient {
     }
 
 #ifdef _WIN32
+    static std::string WStringToUtf8(const std::wstring& wstr) {
+        if (wstr.empty()) return "";
+        int size = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+        if (size <= 0) return "";
+        std::string result(size - 1, '\0');
+        WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &result[0], size, nullptr, nullptr);
+        return result;
+    }
+
+    static std::wstring Utf8ToWString(const std::string& str) {
+        if (str.empty()) return L"";
+        int size = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
+        if (size <= 0) return L"";
+        std::wstring result(size - 1, L'\0');
+        MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &result[0], size);
+        return result;
+    }
+
     static Response internal_request(const std::string& method,
         const std::string& url,
         const std::string& data,
@@ -64,13 +82,12 @@ namespace NetClient {
             MultiByteToWideChar(CP_UTF8, 0, url.c_str(), -1, wUrl, 2048);
 
             if (WinHttpCrackUrl(wUrl, (DWORD)wcslen(wUrl), 0, &urlComp)) {
-                wchar_t szHost[256];
-                wcsncpy_s(szHost, urlComp.lpszHostName, urlComp.dwHostNameLength);
-                szHost[urlComp.dwHostNameLength] = L'\0';
+                // AUDIT FIX: Using std::wstring dynamically handles any host length safely without fixed-size 256-char buffer overrun risk.
+                std::wstring szHost(urlComp.lpszHostName, urlComp.dwHostNameLength);
 
-                HINTERNET hConnect = WinHttpConnect(hSession, szHost, urlComp.nPort, 0);
+                HINTERNET hConnect = WinHttpConnect(hSession, szHost.c_str(), urlComp.nPort, 0);
                 if (hConnect) {
-                    std::wstring wMethod(method.begin(), method.end());
+                    std::wstring wMethod = Utf8ToWString(method);
                     DWORD dwFlags = (urlComp.nScheme == INTERNET_SCHEME_HTTPS) ? WINHTTP_FLAG_SECURE : 0;
 
                     HINTERNET hRequest = WinHttpOpenRequest(hConnect, wMethod.c_str(), urlComp.lpszUrlPath,
@@ -80,8 +97,7 @@ namespace NetClient {
                     if (hRequest) {
                         // Add headers
                         for (const auto& head : headers) {
-                            std::wstring wHeader = std::wstring(head.first.begin(), head.first.end()) + L": " +
-                                std::wstring(head.second.begin(), head.second.end());
+                            std::wstring wHeader = Utf8ToWString(head.first) + L": " + Utf8ToWString(head.second);
                             WinHttpAddRequestHeaders(hRequest, wHeader.c_str(), (ULONG)-1L, WINHTTP_ADDREQ_FLAG_ADD);
                         }
 
@@ -104,21 +120,27 @@ namespace NetClient {
                                 WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF,
                                     WINHTTP_HEADER_NAME_BY_INDEX, NULL, &dwSize, WINHTTP_NO_HEADER_INDEX);
                                 if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-                                    wchar_t* lpHeaders = new wchar_t[dwSize / sizeof(wchar_t)];
+                                    // AUDIT FIX: Allocate +1 wchar_t for explicit null terminator safety.
+                                    DWORD numWchars = dwSize / sizeof(wchar_t);
+                                    wchar_t* lpHeaders = new wchar_t[numWchars + 1];
                                     if (WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF,
                                         WINHTTP_HEADER_NAME_BY_INDEX, lpHeaders, &dwSize, WINHTTP_NO_HEADER_INDEX)) {
+                                        lpHeaders[numWchars] = L'\0';
                                         std::wstring wAllHeaders(lpHeaders);
                                         std::wstringstream ss(wAllHeaders);
                                         std::wstring line;
                                         while (std::getline(ss, line) && line != L"\r") {
                                             size_t pos = line.find(L":");
-                                            if (pos != std::string::npos) {
+                                            if (pos != std::wstring::npos) {
                                                 std::wstring key = line.substr(0, pos);
                                                 std::wstring val = line.substr(pos + 1);
-                                                // Basic trim and convert to std::string
-                                                std::string sKey(key.begin(), key.end());
-                                                std::string sVal(val.begin(), val.end());
-                                                resp.headers[sKey] = sVal;
+                                                // Trim whitespace from key and val
+                                                while (!key.empty() && (key.back() == L' ' || key.back() == L'\t' || key.back() == L'\r')) key.pop_back();
+                                                while (!val.empty() && (val.front() == L' ' || val.front() == L'\t')) val.erase(0, 1);
+                                                while (!val.empty() && (val.back() == L' ' || val.back() == L'\t' || val.back() == L'\r')) val.pop_back();
+
+                                                // AUDIT FIX: Proper UTF-8 conversion instead of lossy iterator copying.
+                                                resp.headers[WStringToUtf8(key)] = WStringToUtf8(val);
                                             }
                                         }
                                     }

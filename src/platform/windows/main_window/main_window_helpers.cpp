@@ -85,8 +85,10 @@ namespace bijoy::platform::windows {
         }
 
         const std::wstring appDir = bijoy::core::GetAppDirectory();
+        // AUDIT FIX: Added appDir/data/Icons/ so icons are correctly located when running from standard installation directory.
         const std::wstring iconPaths[] = {
                 BuildPath(appDir, std::wstring(L"Icons\\") + iconName),
+                BuildPath(appDir, std::wstring(L"data\\Icons\\") + iconName),
                 BuildPath(appDir, std::wstring(L"..\\data\\Icons\\") + iconName),
         };
 

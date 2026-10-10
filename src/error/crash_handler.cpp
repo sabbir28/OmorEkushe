@@ -120,8 +120,9 @@ void WriteCrashLog(const CrashInfo& info) {
         fwprintf(f, L"Exception Code: 0x%08X (%s)\n", info.exceptionCode, info.exceptionName.c_str());
         fwprintf(f, L"Fault Address : 0x%p\n", info.exceptionAddress);
         fwprintf(f, L"Fault Module  : %s\n", info.moduleName.c_str());
-        fwprintf(f, L"Process ID    : %dw\n", GetCurrentProcessId());
-        fwprintf(f, L"Thread ID     : %dw\n", GetCurrentThreadId());
+        // AUDIT FIX: Corrected format specifiers from %dw to %lu for DWORD Process ID and Thread ID.
+        fwprintf(f, L"Process ID    : %lu\n", GetCurrentProcessId());
+        fwprintf(f, L"Thread ID     : %lu\n", GetCurrentThreadId());
         if (!info.miniDumpPath.empty()) {
             fwprintf(f, L"MiniDump Path : %s\n", info.miniDumpPath.c_str());
         }

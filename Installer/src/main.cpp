@@ -1,11 +1,12 @@
+// AUDIT FIX: Include windows.h before GLFW/glfw3.h to prevent C4005 'APIENTRY' macro redefinition warning.
+#include <windows.h>
+#include <shlobj.h>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <GLFW/glfw3.h>
 #include <atomic>
-#include <shlobj.h>
 #include "InstallerLogic.h"
-#include <windows.h>
 #include <string>
 #include <vector>
 
