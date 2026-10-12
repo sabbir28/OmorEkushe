@@ -41,21 +41,30 @@ jobs:
       run: |
         cmake --build build --config Release
 
-    - name: Prepare Release Artifacts
+    - name: Prepare Release Directories
       shell: powershell
       run: |
         New-Item -ItemType Directory -Force -Path release_stage
-        
-        # 1. Copy Standalone Setup Installer
-        if (Test-Path "build/bin/Installer.exe") {
-          Copy-Item "build/bin/Installer.exe" -Destination "release_stage/OmorEkushe-Setup.exe"
+
+    - name: Build Inno Setup Installer
+      shell: powershell
+      run: |
+        $version = if ($env:GITHUB_REF -like "refs/tags/*") { $env:GITHUB_REF.Substring(10).TrimStart('v') } else { "1.1.0" }
+        $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+        if (-not (Test-Path $iscc)) {
+          choco install innosetup -y --no-progress
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
         }
-        
-        # 2. Package Portable Distribution (containing bin and data folders)
+        & $iscc "/DMyAppVersion=$version" setup/OmorEkushe.iss
+
+    - name: Package Portable Distribution
+      shell: powershell
+      run: |
         New-Item -ItemType Directory -Force -Path portable_pack/bin
         New-Item -ItemType Directory -Force -Path portable_pack/data
         
-        Copy-Item -Recurse -Force build/bin/* portable_pack/bin/
+        Copy-Item -Recurse -Force build/bin/*.exe portable_pack/bin/ -Exclude "PhoneticTests.exe"
+        Copy-Item -Recurse -Force build/bin/*.dll portable_pack/bin/
         if (Test-Path "build/data") {
           Copy-Item -Recurse -Force build/data/* portable_pack/data/
         }

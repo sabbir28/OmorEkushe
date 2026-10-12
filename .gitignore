@@ -21,12 +21,6 @@ CTestTestfile.cmake
 compile_commands.json
 
 # -------------------------------------------------
-# Installer Build Staging & Generated Resources
-# -------------------------------------------------
-Installer/staging/
-Installer/include/Resources.h
-
-# -------------------------------------------------
 # Compiled Binaries & Build Artifacts
 # -------------------------------------------------
 *.exe
@@ -118,9 +112,8 @@ build/bin/*.ilk
 build/bin/*.pdb
 !build/bin/OmorEkushe.ilk
 !build/bin/OmorEkushe.pdb
-!build/bin/bundler.ilk
-!build/bin/bundler.pdb
 build/bin/PhoneticTests*
-build/bin/Installer*
+Output/
+setup/Output/
 !build/data/
 !build/data/**

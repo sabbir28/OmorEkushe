@@ -447,36 +447,20 @@ namespace bijoy::platform::windows {
                             return 0;
                         }
 
-                        if (controlId == IDM_UPDATE)
-                        {
-                            std::wstring app_dir = bijoy::core::GetAppDirectory();
-
-                            if (!app_dir.empty() && app_dir.back() != L'\\') {
-                                app_dir += L'\\';
+                        if (controlId == IDM_UPDATE) {
+                            const int choice = MessageBoxW(
+                                nullptr,
+                                L"Omor Ekushe v1.1.0\n\n"
+                                L"Check for newer releases and download the latest installer (OmorEkushe-Setup.exe) from GitHub?\n\n"
+                                L"Click 'Yes' to open the official Releases page.",
+                                L"Omor Ekushe — Check for Updates",
+                                MB_YESNO | MB_ICONINFORMATION | MB_TOPMOST);
+                            if (choice == IDYES) {
+                                ShellExecuteW(nullptr, L"open", L"https://github.com/sabbir28/OmorEkushe/releases", nullptr, nullptr, SW_SHOWNORMAL);
                             }
-
-                            std::wstring dll_path = app_dir + L"libNetClient.dll";
-
-                            HMODULE module = LoadLibraryW(dll_path.c_str());
-                            if (module == nullptr) {
-                                MessageBoxW(
-                                        nullptr,
-                                        L"Omor Ekushe is currently up to date.",
-                                        L"Omor Ekushe Update Check",
-                                        MB_OK | MB_ICONINFORMATION | MB_TOPMOST
-                                );
-                                return 0;
-                            } else {
-                                MessageBoxW(
-                                        nullptr,
-                                        L"NetClient module loaded successfully.",
-                                        L"Omor Ekushe",
-                                        MB_OK | MB_ICONINFORMATION | MB_TOPMOST
-                                );
-                                FreeLibrary(module);
-                                return 0;
-                            }
+                            return 0;
                         }
+
 
                         break;
                     }

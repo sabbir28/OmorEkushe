@@ -1,125 +1,215 @@
 ---
 layout: page
-title: Omor Ekushe Features
-subtitle: Deep dive into native Win32 kernel hooks, C++ spelling checker, ImGui layout editor, and XML keymaps engine.
+title: Omor Ekushe Features & Capabilities
+subtitle: Deep dive into the Avro phonetic transliteration engine, native Win32 options UI, Inno Setup CI, low-level hooks, and XML keymaps.
 permalink: /features.html
 ---
 
 <div class="row g-4 mb-5">
-    <!-- Feature 1: Win32 Hook Engine -->
+    <!-- Feature 1: Avro Phonetic Engine -->
+    <div class="col-lg-6" id="phonetic-engine">
+        <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="feature-icon-box gold mb-0">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Avro Phonetic Engine</h4>
+                    <span class="badge bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-mono">C++17 Trie • F12 Toggle</span>
+                </div>
+            </div>
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
+                Type Bengali phonetically using English QWERTY characters. Built with an optimized native C++ Trie grammar parser matching all Avro Phonetic typing standards:
+            </p>
+            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> <strong>Dynamic Diff Backspacing:</strong> Emits minimal backspaces to transform committed characters seamlessly (e.g. `k` &rarr; ক, `h` &rarr; খ).</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> <strong>Complex Conjuncts (যুক্তবর্ণ):</strong> Resolves clusters effortlessly (e.g. `kkh` &rarr; ক্ষ, `jng` &rarr; জ্ঞ, `nt` &rarr; ন্ত).</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> <strong>Vowel-to-Kar Transitions:</strong> Contextually decides full vowel vs. Kar diacritic based on preceding consonant.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> <strong>Instant F12 Toggle:</strong> One-touch hotkey to jump between English and Phonetic typing in any app.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Feature 2: Native Options & Configuration UI -->
+    <div class="col-lg-6" id="options-ui">
+        <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="feature-icon-box mb-0">
+                    <i class="fas fa-sliders"></i>
+                </div>
+                <div>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Full Options & Settings UI</h4>
+                    <span class="badge bg-emerald-500/20 text-emerald border border-emerald-500/30 text-xs font-mono">Win32 Native Dialog</span>
+                </div>
+            </div>
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
+                Complete native Win32 settings modal accessible directly from the system tray or top bar menu without external dependencies:
+            </p>
+            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> <strong>Live Opacity Slider:</strong> Adjust overlay transparency from 20% to 100% with real-time visual feedback.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> <strong>Auto-Start with Windows:</strong> Toggle launch on boot via standard Windows registry keys.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> <strong>Custom Shortcut Mapping:</strong> Customize layout switching and phonetic toggle hotkeys on the fly.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Feature 3: Inno Setup & Silent Updates -->
+    <div class="col-lg-6" id="installer">
+        <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="feature-icon-box red mb-0">
+                    <i class="fas fa-box-archive"></i>
+                </div>
+                <div>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Inno Setup CI Distribution</h4>
+                    <span class="badge bg-red-500/20 text-bdRed border border-red-500/30 text-xs font-mono">setup/OmorEkushe.iss</span>
+                </div>
+            </div>
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
+                Modernized packaging pipeline using industry-standard Inno Setup compiled automatically by GitHub Actions CI:
+            </p>
+            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> <strong>Zero Local Dev Overhead:</strong> Developers only build pure C++ binaries; GitHub builds setup.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> <strong>Smart Running Instance Detection:</strong> Auto-closes and upgrades running instances safely.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> <strong>Silent Update CLI:</strong> Run <code>OmorEkushe-Setup.exe /VERYSILENT /SUPPRESSMSGBOXES</code> for zero-prompt updates.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Feature 4: Win32 Hook Engine -->
     <div class="col-lg-6" id="hook-engine">
-        <div class="glass-card">
+        <div class="glass-card h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="feature-icon-box mb-0">
                     <i class="fas fa-microchip"></i>
                 </div>
                 <div>
-                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Low-Level Hook
-                        Service</h4>
-                    <span
-                        class="badge bg-emerald-500/20 text-emerald border border-emerald-500/30 text-xs font-mono">WH_KEYBOARD_LL</span>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Kernel Low-Level Hook</h4>
+                    <span class="badge bg-emerald-500/20 text-emerald border border-emerald-500/30 text-xs font-mono">WH_KEYBOARD_LL</span>
                 </div>
             </div>
             <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
-                Omor Ekushe intercepts hardware keyboard events directly at the Windows kernel message layer using
-                `SetWindowsHookExW(WH_KEYBOARD_LL, ...)`. This delivers:
+                Omor Ekushe intercepts hardware keyboard events directly at the Windows kernel message layer using <code>SetWindowsHookExW(WH_KEYBOARD_LL, ...)</code>:
             </p>
             <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> Zero input
-                    latency across all Win32, UWP, WPF, and Chromium applications.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> Clean
-                    passthrough for system hotkeys like Alt+Tab, Win key, and Ctrl+C/V.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> Precise
-                    keycode translation into UTF-16 Bengali glyphs (`SendInput`).</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> Zero input latency across all Win32, UWP, WPF, and Chromium web applications.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> Clean passthrough for system hotkeys (Alt+Tab, Windows Key, Ctrl+C/V).</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-emerald me-1"></i> High-precision character translation with Unicode <code>SendInput</code>.</li>
             </ul>
         </div>
     </div>
 
-    <!-- Feature 2: Spelling Checker Core -->
+    <!-- Feature 5: Per-Window Layout Memory -->
+    <div class="col-lg-6" id="window-binding">
+        <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="feature-icon-box gold mb-0">
+                    <i class="fas fa-window-restore"></i>
+                </div>
+                <div>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Per-Window Layout Memory</h4>
+                    <span class="badge bg-amber-500/20 text-amber border border-amber-500/30 text-xs font-mono" style="color: var(--text-gold);">HWND Context Tracking</span>
+                </div>
+            </div>
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
+                Never accidentally type Bengali in a terminal or English in a Bangla manuscript again:
+            </p>
+            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1" style="color: var(--text-gold);"></i> Remembers layout mode (Bangla or English) independently for every window handle.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1" style="color: var(--text-gold);"></i> Restores your active layout state immediately upon window focus change.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1" style="color: var(--text-gold);"></i> Zero background CPU usage during idle state.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Feature 6: Bengali Spelling Checker -->
     <div class="col-lg-6" id="spelling-checker">
-        <div class="glass-card">
+        <div class="glass-card h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="feature-icon-box red mb-0">
                     <i class="fas fa-spell-check"></i>
                 </div>
                 <div>
-                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Integrated
-                        Spelling Checker</h4>
-                    <span class="badge bg-red-500/20 text-bdRed border border-red-500/30 text-xs font-mono">Sub-module:
-                        SpellingChecker</span>
+                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Integrated Spelling Checker</h4>
+                    <span class="badge bg-red-500/20 text-bdRed border border-red-500/30 text-xs font-mono">Sub-module: SpellingChecker</span>
                 </div>
             </div>
             <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
-                Built-in C++ spelling verification sub-module located in `SpellingChecker/` engineered for
-                high-performance Bengali word verification.
+                Built-in C++ spelling verification sub-module in <code>SpellingChecker/</code> engineered for high-performance Bengali word verification:
             </p>
             <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> High-speed
-                    dictionary lookups for standard Bengali vocabulary.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> Phonetic
-                    distance matching for real-time word suggestion candidates.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> Extendable
-                    custom dictionary file support.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> High-speed dictionary lookups for standard Bengali vocabulary.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> Phonetic distance matching for real-time word suggestion candidates.</li>
+                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-bdRed me-1"></i> Expandable user dictionary support.</li>
             </ul>
         </div>
     </div>
+</div>
 
-    <!-- Feature 3: Graphical Layout Editor -->
-    <div class="col-lg-6" id="layout-editor">
-        <div class="glass-card">
-            <div class="d-flex align-items-center gap-3 mb-3">
-                <div class="feature-icon-box gold mb-0">
-                    <i class="fas fa-pen-ruler"></i>
-                </div>
-                <div>
-                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Graphical Layout
-                        Editor</h4>
-                    <span class="badge bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-mono"
-                        style="color: var(--text-gold);">Sub-module: LayoutEditor</span>
-                </div>
-            </div>
-            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
-                A standalone graphical keymap designer built with GLFW, OpenGL 3.3, and Dear ImGui GUI framework.
-            </p>
-            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1"
-                        style="color: var(--text-gold);"></i> Visual key mapping matrix display for all standard virtual
-                    keys.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1"
-                        style="color: var(--text-gold);"></i> Real-time Unicode preview of Bengali character
-                    combinations.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check me-1"
-                        style="color: var(--text-gold);"></i> One-click export to Omor Ekushe standard XML keymap
-                    format.</li>
-            </ul>
-        </div>
+<!-- Phonetic Cheat Sheet Reference Table -->
+<div class="glass-card p-0 overflow-hidden mb-5" id="phonetic-guide">
+    <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+        <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
+            <i class="fas fa-bolt text-amber-400 me-2"></i> Avro Phonetic Transliteration Reference Table
+        </h3>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">Reference for typing Bengali phonetically with the Omor Ekushe Phonetic Engine (<kbd class="hotkey-cap gold">F12</kbd>).</p>
     </div>
-
-    <!-- Feature 4: Cloud NetClient -->
-    <div class="col-lg-6" id="net-client">
-        <div class="glass-card">
-            <div class="d-flex align-items-center gap-3 mb-3">
-                <div class="feature-icon-box mb-0">
-                    <i class="fas fa-cloud-arrow-down"></i>
-                </div>
-                <div>
-                    <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">Cloud NetClient
-                        Sync</h4>
-                    <span
-                        class="badge bg-blue-500/20 text-blue-500 border border-blue-500/30 text-xs font-mono">Sub-module:
-                        NetClient</span>
-                </div>
-            </div>
-            <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted);">
-                Network client sub-module in `NetClient/` enabling cloud layout synchronization and automatic
-                layout updates.
-            </p>
-            <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-body);">
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-blue-500 me-1"></i> Online
-                    checking for layout map & application updates.</li>
-                <li class="d-flex align-items-center gap-2"><i class="fas fa-check text-blue-500 me-1"></i> Download
-                    community layout XML files directly into `data/Layouts/`.</li>
-            </ul>
+    <div class="p-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 text-sm" style="color: var(--text-body);">
+                <thead class="font-mono text-xs uppercase" style="color: var(--text-emerald); border-bottom: 2px solid var(--border-color);">
+                    <tr>
+                        <th>Category</th>
+                        <th>English Keys</th>
+                        <th>Bengali Output</th>
+                        <th>Example Transliteration</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-emerald-500/10">
+                    <tr>
+                        <td><strong>Vowels (স্বরবর্ণ)</strong></td>
+                        <td><code>a</code>, <code>aa</code> / <code>A</code>, <code>i</code>, <code>ee</code> / <code>I</code>, <code>u</code>, <code>oo</code> / <code>U</code>, <code>e</code>, <code>oi</code>, <code>o</code>, <code>ou</code></td>
+                        <td>অ, আ, ই, ঈ, উ, ঊ, এ, ঐ, ও, ঔ</td>
+                        <td><code>ami</code> &rarr; আমি, <code>eid</code> &rarr; ঈদ, <code>oikya</code> &rarr; ঐক্য</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gutturals & Palatals</strong></td>
+                        <td><code>k</code>, <code>kh</code>, <code>g</code>, <code>gh</code>, <code>Ng</code>, <code>c</code>, <code>ch</code>, <code>j</code>, <code>jh</code>, <code>NG</code></td>
+                        <td>ক, খ, গ, ঘ, ঙ, চ, ছ, জ, ঝ, ঞ</td>
+                        <td><code>kotha</code> &rarr; কথা, <code>gaan</code> &rarr; গান, <code>jol</code> &rarr; জল</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Retroflex & Dentals</strong></td>
+                        <td><code>T</code>, <code>Th</code>, <code>D</code>, <code>Dh</code>, <code>N</code> / <code>t</code>, <code>th</code>, <code>d</code>, <code>dh</code>, <code>n</code></td>
+                        <td>ট, ঠ, ড, ঢ, ণ / ত, থ, দ, ধ, ন</td>
+                        <td><code>Taka</code> &rarr; টাকা, <code>tumi</code> &rarr; তুমি, <code>desh</code> &rarr; দেশ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Labials & Sibilants</strong></td>
+                        <td><code>p</code>, <code>ph</code> / <code>f</code>, <code>b</code>, <code>bh</code> / <code>v</code>, <code>m</code>, <code>sh</code>, <code>Sh</code>, <code>s</code>, <code>h</code></td>
+                        <td>প, ফ, ব, ভ, ম, শ, ষ, স, হ</td>
+                        <td><code>ful</code> &rarr; ফুল, <code>bhalobasha</code> &rarr; ভালোবাসা, <code>shadhinota</code> &rarr; স্বাধীনতা</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flaps & Glides</strong></td>
+                        <td><code>r</code>, <code>l</code>, <code>R</code>, <code>Rh</code>, <code>y</code>, <code>Y</code></td>
+                        <td>র, ল, ড়, ঢ়, য়, য়</td>
+                        <td><code>baRi</code> &rarr; বাড়ি, <code>aShaRh</code> &rarr; আষাঢ়, <code>doya</code> &rarr; দয়া</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Punctuation & Marks</strong></td>
+                        <td><code>.</code> (period), <code>:</code> (colon), <code>^</code> (caret)</td>
+                        <td>। (দাঁড়ি), ঃ (বিসর্গ), ঁ (চন্দ্রবিন্দু)</td>
+                        <td><code>gan gai.</code> &rarr; গান গাই।, <code>chad</code> &rarr; চাঁদ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Common Conjuncts</strong></td>
+                        <td><code>kkh</code>, <code>jng</code>, <code>nd</code>, <code>nt</code>, <code>st</code>, <code>mps</code></td>
+                        <td>ক্ষ, জ্ঞ, ন্দ, ন্ত, স্ত, ম্প</td>
+                        <td><code>shikkha</code> &rarr; শিক্ষা, <code>gyan</code> &rarr; জ্ঞান, <code>anondo</code> &rarr; আনন্দ</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -130,21 +220,17 @@ permalink: /features.html
         <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
             <i class="fas fa-code me-2" style="color: var(--text-gold);"></i> Custom XML Layout Map Syntax
         </h3>
-        <p class="text-sm mb-0" style="color: var(--text-muted);">Learn how to construct custom layout keymap files for
-            Omor Ekushe.</p>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">Learn how to construct custom layout keymap files for Omor Ekushe.</p>
     </div>
     <div class="p-4">
         <p class="text-sm mb-3 leading-relaxed" style="color: var(--text-muted);">
-            Omor Ekushe scans the <code>data/Layouts/</code> directory at application startup for any <code>.xml</code>
-            layout definition file.
-            Each layout is structured with root <code>&lt;Layout&gt;</code> and repeating <code>&lt;KeyMap&gt;</code>
-            elements:
+            Omor Ekushe scans the <code>data/Layouts/</code> directory at application startup for any <code>.xml</code> layout definition file.
+            Each layout is structured with root <code>&lt;Layout&gt;</code> and repeating <code>&lt;KeyMap&gt;</code> elements:
         </p>
 
         <div class="code-window shadow-xl mb-4">
             <div class="code-header">
-                <span class="text-xs text-slate-400 font-mono"><i class="fas fa-file-code me-1 text-emerald"></i> XML
-                    Schema Structure Specification</span>
+                <span class="text-xs text-slate-400 font-mono"><i class="fas fa-file-code me-1 text-emerald"></i> XML Schema Structure Specification</span>
                 <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
                     data-target="schema-code" title="Copy code">
                     <i class="far fa-copy"></i> Copy
@@ -168,24 +254,21 @@ permalink: /features.html
                 <div class="p-3 border rounded-xl"
                     style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                     <h6 class="font-outfit font-bold text-sm mb-1" style="color: var(--text-emerald);">Normal Tag</h6>
-                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines the default character output
-                        without shift keys pressed.</p>
+                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines the default character output without shift keys pressed.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="p-3 border rounded-xl"
                     style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                     <h6 class="font-outfit font-bold text-sm mb-1 text-bdRed">Shift Tag</h6>
-                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines character output when Shift
-                        modifier key is held down.</p>
+                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines character output when Shift modifier key is held down.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="p-3 border rounded-xl"
                     style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                     <h6 class="font-outfit font-bold text-sm mb-1" style="color: var(--text-gold);">AltGr Tag</h6>
-                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines optional third-tier character
-                        output for AltGr / Right-Alt combinations.</p>
+                    <p class="text-xs mb-0" style="color: var(--text-muted);">Defines optional third-tier character output for AltGr / Right-Alt combinations.</p>
                 </div>
             </div>
         </div>

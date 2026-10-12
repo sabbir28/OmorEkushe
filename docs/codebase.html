@@ -115,21 +115,20 @@ permalink: /codebase.html
 <div class="glass-card p-0 overflow-hidden mb-5">
     <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
         <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
-            <i class="fas fa-diagram-project text-emerald me-2"></i> System Architecture & Execution Flow
+            <i class="fas fa-diagram-project text-emerald me-2"></i> Dual-Engine Architecture & Keystroke Pipeline
         </h3>
-        <p class="text-sm mb-0" style="color: var(--text-muted);">High-level architecture showing raw keypress intercept
-            to UTF-16 Bengali rendering.</p>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">High-level architecture showing low-level keyboard interception through Phonetic and XML layout translation to UTF-16 rendering.</p>
     </div>
     <div class="p-4">
         <!-- Visual Architecture Diagram Box -->
         <div class="p-4 border rounded-2xl font-mono text-xs overflow-x-auto mb-4 leading-relaxed"
             style="background-color: var(--bg-surface-alt); border-color: var(--border-color); color: var(--text-body);">
-            <div class="d-flex align-items-center justify-content-between gap-3 text-center min-w-[650px]">
+            <div class="d-flex align-items-center justify-content-between gap-2 text-center min-w-[750px]">
                 <div class="p-3 border rounded-xl flex-1"
                     style="background-color: var(--bg-surface); border-color: var(--border-color);">
                     <div class="font-bold mb-1" style="color: var(--text-emerald);"><i class="fas fa-keyboard mb-1"></i>
-                        Hardware Keyboard</div>
-                    <div class="text-[10px]" style="color: var(--text-muted);">Raw Virtual Keycode (VK)</div>
+                        Hardware Keypress</div>
+                    <div class="text-[10px]" style="color: var(--text-muted);">Virtual Keycode (VK)</div>
                 </div>
                 <i class="fas fa-arrow-right text-emerald"></i>
                 <div class="p-3 border rounded-xl flex-1"
@@ -141,37 +140,35 @@ permalink: /codebase.html
                 <i class="fas fa-arrow-right text-emerald"></i>
                 <div class="p-3 border rounded-xl flex-1"
                     style="background-color: var(--bg-surface); border-color: var(--border-color);">
-                    <div class="font-bold mb-1" style="color: var(--text-gold);"><i class="fas fa-map mb-1"></i> Layout
-                        Mapping</div>
-                    <div class="text-[10px]" style="color: var(--text-muted);">data/Layouts/*.xml</div>
+                    <div class="font-bold mb-1" style="color: var(--text-gold);"><i class="fas fa-bolt mb-1"></i> Mode Dispatch</div>
+                    <div class="text-[10px]" style="color: var(--text-muted);">Phonetic vs. Fixed XML</div>
                 </div>
                 <i class="fas fa-arrow-right text-emerald"></i>
                 <div class="p-3 border rounded-xl flex-1"
                     style="background-color: var(--bg-surface); border-color: var(--border-color);">
-                    <div class="font-bold mb-1 text-bdRed"><i class="fas fa-desktop mb-1"></i> Win32 Target App</div>
-                    <div class="text-[10px]" style="color: var(--text-muted);">SendInput UTF-16</div>
+                    <div class="font-bold mb-1" style="color: var(--text-emerald);"><i class="fas fa-arrows-split-up-and-left mb-1"></i> Dynamic Diff</div>
+                    <div class="text-[10px]" style="color: var(--text-muted);">Backspace + UTF-16</div>
+                </div>
+                <i class="fas fa-arrow-right text-emerald"></i>
+                <div class="p-3 border rounded-xl flex-1"
+                    style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="font-bold mb-1 text-bdRed"><i class="fas fa-desktop mb-1"></i> Target Application</div>
+                    <div class="text-[10px]" style="color: var(--text-muted);">SendInput Unicode</div>
                 </div>
             </div>
         </div>
 
         <div class="row g-4">
             <div class="col-md-6">
-                <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-heading);">1. Interception &
-                    Hook Layer</h5>
+                <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-heading);">1. Low-Level Hook Interception</h5>
                 <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
-                    `native_input.cpp` installs a low-level global Windows hook using `SetWindowsHookExW`. When Bangla
-                    mode is active,
-                    intercepted Virtual Keycodes (VK) are blocked from standard OS processing and forwarded to the
-                    layout mapper.
+                    <code>keyboard_hook_service.cpp</code> installs a low-level global Windows hook using <code>SetWindowsHookExW</code>. Intercepted key events are evaluated against the per-window layout context and modifier state. If Bangla mode is active, native input is consumed and directed into the active engine.
                 </p>
             </div>
             <div class="col-md-6">
-                <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-heading);">2. XML Mapper &
-                    Output</h5>
+                <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-heading);">2. Dual Typing Translation Engines</h5>
                 <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
-                    `layout.cpp` performs an $O(1)$ lookup in the active layout map table for the corresponding UTF-16
-                    character or conjunctive sequence,
-                    then emits keystrokes using Win32 API `SendInput` with `KEYEVENTF_UNICODE`.
+                    In <strong>Phonetic Mode (<kbd>F12</kbd>)</strong>, keystrokes pass through a Trie-based Avro parser that handles vowel-kar conversions, conjunct resolution, and emits dynamic backspaces for seamless editing. In <strong>Fixed Mode (<kbd>Ctrl+Alt+B</kbd>)</strong>, <code>layout.cpp</code> performs O(1) keymap lookups to inject UTF-16 glyphs via <code>SendInput</code>.
                 </p>
             </div>
         </div>

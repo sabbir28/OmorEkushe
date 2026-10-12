@@ -1,54 +1,74 @@
-# Omor Ekushe (অমর একুশে)
+# Omor Ekushe (অমর একুশে) — Technical Documentation
 
-**Omor Ekushe** is a lightweight, high-performance Bengali keyboard layout manager designed for Windows. It provides a seamless typing experience by allowing users to switch between different Bengali keyboard layouts (like Bijoy) and English effortlessly.
-
----
-
-## Features
-
-- **Multi-Layout Support**: Supports multiple Bengali keyboard layouts. Layouts are loaded dynamically from XML-based format files.
-- **Window-Specific Binding**: Automatically remembers and applies different layouts to different active windows.
-- **System Tray Integration**: Minimizes to the system tray to stay out of the way while remaining accessible.
-- **Global Keyboard Hooking**: Intercepts keystrokes at a low level to provide consistent mapping across all applications.
-- **Keyboard Shortcuts**: Switch between layouts quickly using customizable global shortcuts (e.g., Ctrl+Alt+B).
-- **Layout Discovery**: Automatically searches for and loads available layout files in the application directory.
-- **Customizable Aesthetics**: Support for semi-transparent background images (glassmorphism-lite) for the main control window.
-- **Layout Editor Support**: Integrated shortcut to open a dedicated Layout Editor for creating/modifying keyboard mappings.
+**Omor Ekushe** is a lightweight, high-performance Bengali keyboard engine designed for Windows. It provides an ultra-responsive native typing experience combining dynamic XML layout mapping (Bijoy, Unijoy, National) with an Avro-compatible phonetic transliteration engine.
 
 ---
 
-## Disadvantages / Limitations
+## Architecture Overview
 
-- **Platform Dependent**: Currently only supports Windows (Win32 API). Not compatible with macOS or Linux.
-- **Resource Dependency**: Requires specific data files (icons, backgrounds, and layout XMLs) to be present in the `data` directory.
-- **Multi-Layout & Phonetic Engine**: Full support for both fixed mapping layouts (Bijoy Classic/Unicode) and Avro-compatible phonetic transliteration (with F12 toggle and smart dynamic diff backspacing).
+Omor Ekushe is built on three core pillars:
 
----
+1. **Kernel-Level Input Interception (`WH_KEYBOARD_LL`)**:
+   Keystrokes are captured via a Windows low-level keyboard hook before applications process them. Depending on the active mode, characters are translated and emitted using `SendInput` with Unicode glyphs.
 
-## Upcoming Features (Roadmap)
+2. **Dual Typing Engine**:
+   - **Fixed Layout Engine (`layout.cpp`)**: Parses XML layout files on the fly and matches virtual key codes and modifiers to UTF-16 Bengali characters.
+   - **Phonetic Engine (`phonetic_engine.cpp` & `phonetic_parser.cpp`)**: Implements an Avro-standard phonetic Trie parser with vowel-to-Kar conversions, consonant clusters, conjunct resolution, and **smart dynamic backspacing**.
 
-- **[x] Options Dialog**: Full-featured native settings menu to customize hotkeys, overlay opacity (transparency), auto-start with Windows, and layout shortcuts.
-- **[x] Phonetic Engine**: Support for phonetic Bengali typing (write Bengali using English alphabet with Avro rules).
-- **[ ] Layout Sharing**: Export and import layouts easily through the UI.
-- **[ ] Cross-Platform Support**: Plans to port the core engine to Linux and macOS using a cross-platform GUI framework.
-- **[ ] Auto-Update**: Built-in mechanism to check for and install new layouts or software updates.
+3. **Per-Window Layout Context (`window_binding.cpp`)**:
+   Automatically tracks window focus transitions and maintains the user's preferred layout (Bangla vs. English) per application window.
 
----
-
-## Technical Details
-
-- **Language**: C++17
-- **Build System**: CMake 3.14+
-- **Platform**: Windows (MinGW/MSVC)
-- **Dependencies**: 
-  - `stb_image` (embedded for image loading)
-  - `Win32 API` (Native UI and Keyboard Hooks)
+4. **Options & Configuration UI (`options_dialog.cpp`)**:
+   Native Win32 settings modal allowing users to configure overlay opacity (20%-100%), auto-start with Windows, and global hotkeys.
 
 ---
 
-## How to Use
+## Global Shortcuts & Hotkeys
 
-1. **Launch**: Run `OmorEkushe.exe`. The small control window will appear at the top of your screen.
-2. **Select Layout**: Use the dropdown menu to choose your desired Bengali layout or "English".
-3. **Switch Hotkey**: Press the configured hotkey (default is usually Ctrl+Alt+B) to toggle layouts without touching the mouse.
-4. **Minimize**: Click the `_` button to hide the window to the system tray. Double-click the tray icon to bring it back.
+| Action | Default Hotkey | Configurable | Behavior |
+| :--- | :--- | :--- | :--- |
+| **Cycle Layout** | <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>B</kbd> | Yes (Options Dialog) | Switches to the next available XML layout or English |
+| **Toggle Phonetic** | <kbd>F12</kbd> (or <kbd>Ctrl+Alt+P</kbd>) | Yes (Options Dialog) | Instant toggle between Phonetic typing and English |
+| **Minimize to Tray** | <kbd>Esc</kbd> or `_` button | N/A | Hides top control bar to system notification area |
+| **Restore Bar** | Double-Click Tray Icon | N/A | Restores the floating control bar |
+| **Open Options** | Right-Click Tray &rarr; Options | N/A | Opens native settings dialog |
+| **Exit** | Right-Click Tray &rarr; Exit | N/A | Detaches hook service and terminates process cleanly |
+
+---
+
+## Inno Setup & Silent Upgrades
+
+The application installer is configured in `setup/OmorEkushe.iss` and generated automatically via GitHub Actions CI:
+- **Clean In-Place Upgrades**: Uses `CloseApplications=yes` and `RestartApplications=yes` to detect and safely close running instances during updates.
+- **Silent Installation Flag**: Supports unattended deployments:
+  ```powershell
+  OmorEkushe-Setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+  ```
+
+---
+
+## Registry Keys
+
+Settings are stored under `HKEY_CURRENT_USER\Software\OmorEkushe`:
+- `Opacity`: Integer DWORD representing overlay alpha (50-255).
+- `AutoStart`: DWORD (0 or 1). Also mirrored to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run\OmorEkushe`.
+- `ShortcutModifiers`: Bitmask for layout toggle modifier keys.
+- `ShortcutKey`: Virtual key code for layout toggle.
+- `PhoneticModifiers`: Bitmask for phonetic modifier keys.
+- `PhoneticKey`: Virtual key code for phonetic toggle (default: `VK_F12`).
+
+To reset settings:
+```bat
+reg delete "HKCU\Software\OmorEkushe" /f
+```
+
+---
+
+## Visionary Future Roadmap
+
+- [ ] **AI-Powered Predictive Word Suggestions**: Non-intrusive floating candidate bar powered by n-gram frequency dictionaries.
+- [ ] **Cloud Layout Marketplace**: In-app browser to discover and download user-contributed XML layout maps.
+- [ ] **Background Auto-Updater Daemon**: Seamless background downloader utilizing silent Inno Setup updates.
+- [ ] **Cross-Platform Linux & macOS Ports**: Native Wayland/X11 and macOS input method integration.
+- [ ] **Phonetic Spellchecker**: Real-time spell correction suggestions for Bengali text fields.
+- [ ] **Voice-to-Bangla Speech Typing**: Direct voice recognition input.

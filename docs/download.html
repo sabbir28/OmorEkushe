@@ -1,22 +1,20 @@
 ---
 layout: page
 title: Download Omor Ekushe
-subtitle: Standalone Windows setup installer (.exe), portable ZIP package, and compatibility table.
+subtitle: Official Inno Setup Windows installer (.exe), standalone portable ZIP package, and silent update instructions.
 permalink: /download.html
 ---
 
 <div class="row g-4 mb-5">
-    <!-- Featured Installer Card -->
+    <!-- Featured Inno Setup Installer Card -->
     <div class="col-lg-6">
-        <div class="card-download featured">
+        <div class="card-download featured h-100">
             <div class="mb-3 text-emerald">
                 <i class="fas fa-file-download fa-3x filter drop-shadow"></i>
             </div>
-            <h3 class="font-outfit font-extrabold text-2xl mb-2" style="color: var(--text-heading);">Windows Setup
-                Installer</h3>
+            <h3 class="font-outfit font-extrabold text-2xl mb-2" style="color: var(--text-heading);">Windows Setup Installer</h3>
             <p class="text-sm mb-4 leading-relaxed" style="color: var(--text-muted);">
-                Self-contained single-file installer setup (`Installer.exe`). Automatically registers system shortcuts,
-                registry keys, and bundles core keymap XML files.
+                Official standard Inno Setup package (<code>OmorEkushe-Setup.exe</code>) built automatically by GitHub Actions CI. Features automatic shortcut creation, layout XML deployment, and seamless in-place updates.
             </p>
 
             <div class="p-3.5 border rounded-2xl mb-4 text-start text-xs font-mono space-y-2"
@@ -26,26 +24,28 @@ permalink: /download.html
                     <span class="font-bold" style="color: var(--text-heading);">Windows 10 / 11 (64-bit)</span>
                 </div>
                 <div class="d-flex justify-content-between">
+                    <span style="color: var(--text-muted);">Installer Architecture:</span>
+                    <span class="font-bold" style="color: var(--text-emerald);">Inno Setup CI Automation</span>
+                </div>
+                <div class="d-flex justify-content-between">
                     <span style="color: var(--text-muted);">Executable Package:</span>
                     <span class="font-bold" style="color: var(--text-emerald);">OmorEkushe-Setup.exe</span>
                 </div>
                 <div class="d-flex justify-content-between">
+                    <span style="color: var(--text-muted);">Seamless Upgrade:</span>
+                    <span class="font-bold" style="color: var(--text-heading);">Auto-closes & Updates</span>
+                </div>
+                <div class="d-flex justify-content-between">
                     <span style="color: var(--text-muted);">Latest Release Tag:</span>
-                    <span
-                        class="badge bg-emerald-500/20 text-emerald border border-emerald-500/30 github-release-tag">v1.0.0</span>
+                    <span class="badge bg-emerald-500/20 text-emerald border border-emerald-500/30 github-release-tag">v1.0.0</span>
                 </div>
                 <div class="d-flex justify-content-between">
                     <span style="color: var(--text-muted);">License:</span>
-                    <span class="font-bold" style="color: var(--text-emerald);">MIT License (Free & Open Source)</span>
+                    <span class="font-bold" style="color: var(--text-emerald);">MIT (Free & Open Source)</span>
                 </div>
                 <div class="d-flex justify-content-between">
                     <span style="color: var(--text-muted);">RAM Footprint:</span>
                     <span class="font-bold text-bdRed">~5 MB RAM</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <span style="color: var(--text-muted);">Total Downloads:</span>
-                    <span class="font-bold github-setup-downloads" style="color: var(--text-gold);"><i
-                            class="fas fa-download me-1"></i> Live Metric</span>
                 </div>
             </div>
 
@@ -54,42 +54,42 @@ permalink: /download.html
                 <i class="fas fa-download me-2"></i> Download Setup (.exe) <small
                     class="ms-1 opacity-80 github-setup-size">(~5 MB)</small>
             </a>
-            <span class="text-xs" style="color: var(--text-muted);"><i class="fas fa-shield-halved me-1"
-                    style="color: var(--text-emerald);"></i> Direct Executable Signed Download</span>
+            <span class="text-xs" style="color: var(--text-muted);"><i class="fas fa-shield-halved me-1 text-emerald"></i> Official GitHub Actions Release Artifact</span>
         </div>
     </div>
 
     <!-- Portable Package Card -->
     <div class="col-lg-6">
-        <div class="card-download">
+        <div class="card-download h-100">
             <div class="mb-3 text-bdRed">
                 <i class="fas fa-box-open fa-3x filter drop-shadow"></i>
             </div>
-            <h3 class="font-outfit font-extrabold text-2xl mb-2" style="color: var(--text-heading);">Portable Zip
-                Package</h3>
+            <h3 class="font-outfit font-extrabold text-2xl mb-2" style="color: var(--text-heading);">Portable Zip Package</h3>
             <p class="text-sm mb-4 leading-relaxed" style="color: var(--text-muted);">
-                No installation required. Unpack portable ZIP containing `bin/` executable and `data/Layouts/` keymap
-                XML files,
-                or compile directly from CMake source.
+                Zero installation required. Extract the portable ZIP archive to any directory or USB flash drive and run <code>OmorEkushe.exe</code> immediately. Requires zero admin rights.
             </p>
 
             <div class="p-3.5 border rounded-2xl mb-4 text-start text-xs font-mono space-y-2"
                 style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                 <div class="d-flex justify-content-between">
-                    <span style="color: var(--text-muted);">Compiler Toolchain:</span>
-                    <span class="font-bold" style="color: var(--text-heading);">MSVC 2019/2022 or MinGW GCC 9+</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <span style="color: var(--text-muted);">Archive File:</span>
+                    <span style="color: var(--text-muted);">Package File:</span>
                     <span class="font-bold" style="color: var(--text-emerald);">OmorEkushe-Portable.zip</span>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <span style="color: var(--text-muted);">Output Binary:</span>
-                    <span class="font-bold" style="color: var(--text-heading);">build/bin/OmorEkushe.exe</span>
+                    <span style="color: var(--text-muted);">Execution Mode:</span>
+                    <span class="font-bold" style="color: var(--text-heading);">Standalone (Zero Setup)</span>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <span style="color: var(--text-muted);">Dependencies:</span>
-                    <span class="font-bold" style="color: var(--text-emerald);">Zero External Runtime DLLs</span>
+                    <span style="color: var(--text-muted);">Binary Included:</span>
+                    <span class="font-bold" style="color: var(--text-heading);">OmorEkushe.exe</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span style="color: var(--text-muted);">Included Layouts:</span>
+                    <span class="font-bold" style="color: var(--text-emerald);">Bijoy, Unijoy, Phonetic</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span style="color: var(--text-muted);">Runtime Dependencies:</span>
+                    <span class="font-bold" style="color: var(--text-emerald);">Zero External DLLs</span>
                 </div>
             </div>
 
@@ -97,8 +97,34 @@ permalink: /download.html
                 class="btn-emerald-outline text-base w-100 py-3 mb-2 font-bold github-download-portable">
                 <i class="fas fa-file-archive me-2"></i> Download Portable (.zip)
             </a>
-            <span class="text-xs" style="color: var(--text-muted);"><i class="fas fa-code me-1"
-                    style="color: var(--text-emerald);"></i> Standalone & Ready to Execute</span>
+            <span class="text-xs" style="color: var(--text-muted);"><i class="fas fa-code me-1 text-emerald"></i> Ready to Extract & Execute Anywhere</span>
+        </div>
+    </div>
+</div>
+
+<!-- Silent Update CLI Feature Box -->
+<div class="glass-card p-0 overflow-hidden mb-5">
+    <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+        <h4 class="font-outfit font-bold text-lg mb-1" style="color: var(--text-heading);">
+            <i class="fas fa-terminal me-2 text-emerald"></i> Silent Updates & Unattended Installation
+        </h4>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">Deploy or upgrade Omor Ekushe silently without interrupting user workflow.</p>
+    </div>
+    <div class="p-4">
+        <p class="text-sm mb-3" style="color: var(--text-muted);">
+            Because the installer is built on industry-standard Inno Setup, system administrators and automated scripts can run silent updates using the following command-line flags:
+        </p>
+        <div class="code-window">
+            <div class="code-header">
+                <span class="text-xs text-slate-400 font-mono">Silent Upgrade Command</span>
+                <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
+                    data-target="silent-cmd" title="Copy command">
+                    <i class="far fa-copy"></i> Copy
+                </button>
+            </div>
+            <div class="code-body py-2">
+                <pre class="mb-0"><code id="silent-cmd">OmorEkushe-Setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART</code></pre>
+            </div>
         </div>
     </div>
 </div>
@@ -107,8 +133,7 @@ permalink: /download.html
 <div class="glass-card p-0 overflow-hidden mb-5">
     <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
         <h4 class="font-outfit font-bold text-xl mb-0" style="color: var(--text-heading);">
-            <i class="fas fa-laptop-code me-2" style="color: var(--text-emerald);"></i> System Requirements &
-            Compatibility Matrix
+            <i class="fas fa-laptop-code me-2" style="color: var(--text-emerald);"></i> System Requirements & Compatibility
         </h4>
     </div>
     <div class="p-4">
@@ -117,28 +142,26 @@ permalink: /download.html
                 <thead class="font-mono text-xs uppercase"
                     style="color: var(--text-emerald); border-bottom: 2px solid var(--border-color);">
                     <tr>
-                        <th>Component</th>
-                        <th>Minimum Specification</th>
+                        <th>Specification</th>
+                        <th>Minimum Requirement</th>
                         <th>Recommended Specification</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-emerald-500/10">
                     <tr>
                         <td><strong style="color: var(--text-heading);">Operating System</strong></td>
-                        <td style="color: var(--text-muted);">Windows 7 / 8.1 (64-bit)</td>
-                        <td><span class="badge bg-emerald-500/20 text-emerald border border-emerald-500/30">Windows 10 /
-                                11 (64-bit)</span></td>
+                        <td style="color: var(--text-muted);">Windows 7 SP1 / 8.1 (64-bit)</td>
+                        <td><span class="badge bg-emerald-500/20 text-emerald border border-emerald-500/30">Windows 10 / 11 (64-bit)</span></td>
                     </tr>
                     <tr>
                         <td><strong style="color: var(--text-heading);">Processor</strong></td>
                         <td style="color: var(--text-muted);">1.0 GHz x64 Intel/AMD</td>
-                        <td style="color: var(--text-muted);">Dual-Core 2.0 GHz or higher</td>
+                        <td style="color: var(--text-muted);">Modern Dual-Core or higher</td>
                     </tr>
                     <tr>
-                        <td><strong style="color: var(--text-heading);">RAM Usage</strong></td>
-                        <td style="color: var(--text-muted);">10 MB available RAM</td>
-                        <td><span class="badge bg-red-500/20 text-red-500 border border-red-500/30">~5 MB RAM (Pure
-                                Win32 C++)</span></td>
+                        <td><strong style="color: var(--text-heading);">Memory (RAM)</strong></td>
+                        <td style="color: var(--text-muted);">15 MB available RAM</td>
+                        <td><span class="badge bg-red-500/20 text-red-500 border border-red-500/30">~5 MB RAM (Pure Native Win32)</span></td>
                     </tr>
                     <tr>
                         <td><strong style="color: var(--text-heading);">Disk Space</strong></td>
@@ -146,9 +169,9 @@ permalink: /download.html
                         <td style="color: var(--text-muted);">25 MB free disk space</td>
                     </tr>
                     <tr>
-                        <td><strong style="color: var(--text-heading);">Display Overlay</strong></td>
-                        <td style="color: var(--text-muted);">Standard GDI display driver</td>
-                        <td style="color: var(--text-muted);">Acrylic glassmorphic desktop overlay renderer</td>
+                        <td><strong style="color: var(--text-heading);">Input Hook Compatibility</strong></td>
+                        <td style="color: var(--text-muted);">Standard Windows Desktop</td>
+                        <td style="color: var(--text-muted);">All Win32, UWP, WPF, Chromium apps</td>
                     </tr>
                 </tbody>
             </table>
@@ -160,18 +183,17 @@ permalink: /download.html
 <div class="row g-4 mb-4">
     <div class="col-12">
         <h3 class="font-outfit font-extrabold text-2xl mb-1" style="color: var(--text-heading);"><i
-                class="fas fa-list-check me-2" style="color: var(--text-emerald);"></i> Installation Walkthrough</h3>
+                class="fas fa-list-check me-2" style="color: var(--text-emerald);"></i> Quick-Start Walkthrough</h3>
     </div>
 
     <div class="col-md-4">
         <div class="glass-card h-100">
             <div
-                class="w-8 h-8 rounded-full bg-red-500/20 text-red-500 border border-red-500/30 font-bold flex items-center justify-center mb-3">
+                class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald border border-emerald-500/30 font-bold d-flex align-items-center justify-content-center mb-3">
                 1</div>
-            <h5 class="font-outfit font-bold text-lg mb-2" style="color: var(--text-heading);">Run Setup Installer</h5>
+            <h5 class="font-outfit font-bold text-lg mb-2" style="color: var(--text-heading);">Run Setup</h5>
             <p class="text-sm mb-0 leading-relaxed" style="color: var(--text-muted);">
-                Execute `OmorEkushe-Setup.exe`. The embedded Win32 setup unpacks application binaries and XML layout
-                files to your system directory.
+                Run <code>OmorEkushe-Setup.exe</code>. Inno Setup safely installs application binaries, registers shortcuts, and copies layout files.
             </p>
         </div>
     </div>
@@ -179,13 +201,11 @@ permalink: /download.html
     <div class="col-md-4">
         <div class="glass-card h-100">
             <div
-                class="w-8 h-8 rounded-full bg-red-500/20 text-red-500 border border-red-500/30 font-bold flex items-center justify-center mb-3">
+                class="w-8 h-8 rounded-full bg-amber-500/20 text-amber border border-amber-500/30 font-bold d-flex align-items-center justify-content-center mb-3">
                 2</div>
-            <h5 class="font-outfit font-bold text-lg mb-2" style="color: var(--text-heading);">Control Bar & Tray</h5>
+            <h5 class="font-outfit font-bold text-lg mb-2" style="color: var(--text-heading);">Overlay & Tray</h5>
             <p class="text-sm mb-0 leading-relaxed" style="color: var(--text-muted);">
-                Omor Ekushe launches directly to your top desktop overlay bar and minimizes cleanly into the Windows
-                System Tray
-                notification area.
+                The floating control bar appears at the top. Minimize it to the system tray anytime by pressing <kbd class="hotkey-cap">Esc</kbd>.
             </p>
         </div>
     </div>
@@ -193,13 +213,11 @@ permalink: /download.html
     <div class="col-md-4">
         <div class="glass-card h-100">
             <div
-                class="w-8 h-8 rounded-full bg-red-500/20 text-red-500 border border-red-500/30 font-bold flex items-center justify-center mb-3">
+                class="w-8 h-8 rounded-full bg-red-500/20 text-bdRed border border-red-500/30 font-bold d-flex align-items-center justify-content-center mb-3">
                 3</div>
-            <h5 class="font-outfit font-bold text-lg mb-2" style="color: var(--text-heading);">Toggle Bangla Hotkey</h5>
+            <h5 class="font-outfit font-bold text-lg mb-2" style="color: var(--text-heading);">Toggle & Type</h5>
             <p class="text-sm mb-0 leading-relaxed" style="color: var(--text-muted);">
-                Press <kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> + <kbd
-                    class="hotkey-cap gold">B</kbd> in any document, browser, or editor to switch between Bangla &
-                English typing.
+                Press <kbd class="hotkey-cap gold">F12</kbd> for Avro Phonetic typing, or <kbd class="hotkey-cap gold">Ctrl+Alt+B</kbd> to cycle fixed layouts (Bijoy/Unijoy).
             </p>
         </div>
     </div>

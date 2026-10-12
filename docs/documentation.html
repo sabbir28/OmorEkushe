@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Omor Ekushe Documentation
-subtitle: Full user manual, default hotkeys, CMake build matrix guide, and codebase file breakdown.
+title: Omor Ekushe Documentation & User Manual
+subtitle: Complete hotkey matrix, native options guide, Avro phonetic typing rules, CMake build matrix, and modular architecture.
 permalink: /documentation.html
 ---
 
@@ -12,10 +12,9 @@ permalink: /documentation.html
             <div class="p-4 border-b d-flex align-items-center justify-content-between"
                 style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                 <h4 class="font-outfit font-bold text-lg mb-0" style="color: var(--text-heading);">
-                    <i class="fas fa-keyboard me-2" style="color: var(--text-emerald);"></i> Default Hotkeys & Shortcuts
+                    <i class="fas fa-keyboard me-2" style="color: var(--text-emerald);"></i> Global Hotkeys & Shortcuts
                 </h4>
-                <span class="badge bg-emerald-500/10 text-emerald border border-emerald-500/30 text-xs font-mono">Win32
-                    Hook</span>
+                <span class="badge bg-emerald-500/10 text-emerald border border-emerald-500/30 text-xs font-mono">Win32 Hooks</span>
             </div>
             <div class="p-4">
                 <div class="table-responsive">
@@ -25,35 +24,42 @@ permalink: /documentation.html
                             <tr>
                                 <th>Action</th>
                                 <th>Shortcut Keycap</th>
-                                <th>Behavior</th>
+                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-emerald-500/10">
                             <tr>
-                                <td><strong style="color: var(--text-heading);">Toggle Layout</strong></td>
+                                <td><strong style="color: var(--text-heading);">Toggle Phonetic</strong></td>
+                                <td><kbd class="hotkey-cap gold">F12</kbd></td>
+                                <td style="color: var(--text-muted);">Instantly toggles Avro Phonetic typing mode.</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--text-heading);">Cycle Layout</strong></td>
                                 <td>
                                     <kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> +
                                     <kbd class="hotkey-cap gold">B</kbd>
                                 </td>
-                                <td style="color: var(--text-muted);">Instantly switches between Bangla and English
-                                    mode.</td>
+                                <td style="color: var(--text-muted);">Cycles to next XML layout (Bijoy, Unijoy, English).</td>
                             </tr>
                             <tr>
                                 <td><strong style="color: var(--text-heading);">Minimize to Tray</strong></td>
-                                <td><kbd class="hotkey-cap">Esc</kbd> or <kbd class="hotkey-cap">_</kbd> button</td>
-                                <td style="color: var(--text-muted);">Hides top acrylic control bar to system
-                                    notification tray.</td>
+                                <td><kbd class="hotkey-cap">Esc</kbd> or <kbd class="hotkey-cap">_</kbd></td>
+                                <td style="color: var(--text-muted);">Hides floating bar to Windows system tray.</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--text-heading);">Open Options</strong></td>
+                                <td><kbd class="hotkey-cap">Tray Right-Click</kbd> &rarr; Options</td>
+                                <td style="color: var(--text-muted);">Opens native configuration & opacity settings.</td>
                             </tr>
                             <tr>
                                 <td><strong style="color: var(--text-heading);">Restore Overlay</strong></td>
-                                <td><kbd class="hotkey-cap">Double Click Tray Icon</kbd></td>
-                                <td style="color: var(--text-muted);">Restores top acrylic control window overlay.</td>
+                                <td><kbd class="hotkey-cap">Double-Click Tray</kbd></td>
+                                <td style="color: var(--text-muted);">Restores floating acrylic bar to primary display.</td>
                             </tr>
                             <tr>
                                 <td><strong style="color: var(--text-heading);">Exit Application</strong></td>
-                                <td><kbd class="hotkey-cap">Right-Click Tray</kbd> &rarr; Exit</td>
-                                <td style="color: var(--text-muted);">Terminates background hook service and exits app
-                                    cleanly.</td>
+                                <td><kbd class="hotkey-cap">Tray Right-Click</kbd> &rarr; Exit</td>
+                                <td style="color: var(--text-muted);">Detaches hooks and terminates process cleanly.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -62,42 +68,40 @@ permalink: /documentation.html
         </div>
     </div>
 
-    <!-- Registry & Settings Cleanup -->
+    <!-- Options Dialog & Settings Guide -->
     <div class="col-lg-6">
         <div class="glass-card h-100 p-0 overflow-hidden">
             <div class="p-4 border-b d-flex align-items-center justify-content-between"
                 style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                 <h4 class="font-outfit font-bold text-lg mb-0" style="color: var(--text-heading);">
-                    <i class="fas fa-sliders me-2" style="color: var(--text-gold);"></i> Registry Configuration &
-                    Cleanup
+                    <i class="fas fa-sliders me-2" style="color: var(--text-gold);"></i> Options Dialog & Registry
                 </h4>
                 <span class="badge bg-amber-500/10 text-amber border border-amber-500/30 text-xs font-mono"
                     style="color: var(--text-gold);">HKCU Registry</span>
             </div>
             <div class="p-4">
                 <p class="text-sm mb-3" style="color: var(--text-muted);">
-                    Omor Ekushe stores active layout choices and overlay opacity preferences under Windows Registry
-                    Current User keys:
+                    Omor Ekushe features a full native settings dialog allowing live customization of:
                 </p>
-                <div class="p-3 rounded-xl border font-mono text-xs mb-3 select-all"
+                <ul class="text-xs space-y-2 mb-3" style="color: var(--text-body);">
+                    <li><strong>Overlay Opacity:</strong> Interactive slider from 20% to 100% opacity with instant visual alpha preview.</li>
+                    <li><strong>Auto-Start with Windows:</strong> Automatically launches on login via <code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code>.</li>
+                    <li><strong>Custom Hotkey Modifiers:</strong> Pick your own key bindings for Layout Switching and Phonetic toggle.</li>
+                </ul>
+                <div class="p-2.5 rounded-xl border font-mono text-xs mb-3"
                     style="background-color: var(--bg-surface-alt); border-color: var(--border-color); color: var(--text-emerald);">
                     HKEY_CURRENT_USER\Software\OmorEkushe
                 </div>
-                <p class="text-sm mb-3" style="color: var(--text-muted);">
-                    To reset all settings to clean factory defaults or clean registry entries, run the batch script
-                    command:
-                </p>
                 <div class="code-window">
                     <div class="code-header">
-                        <span class="text-xs text-slate-400 font-mono">remove_registry.bat</span>
+                        <span class="text-xs text-slate-400 font-mono">Reset to Defaults (remove_registry.bat)</span>
                         <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
                             data-target="reg-code-block" title="Copy code">
                             <i class="far fa-copy"></i> Copy
                         </button>
                     </div>
                     <div class="code-body py-2">
-                        <pre
-                            class="mb-0"><code id="reg-code-block">reg delete "HKCU\Software\OmorEkushe" /f</code></pre>
+                        <pre class="mb-0"><code id="reg-code-block">reg delete "HKCU\Software\OmorEkushe" /f</code></pre>
                     </div>
                 </div>
             </div>
@@ -109,10 +113,11 @@ permalink: /documentation.html
 <div class="glass-card p-0 overflow-hidden mb-5">
     <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
         <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
-            <i class="fas fa-terminal me-2" style="color: var(--text-emerald);"></i> Building from Source with CMake
+            <i class="fas fa-terminal me-2" style="color: var(--text-emerald);"></i> Building from Source (Pure C++17)
         </h3>
-        <p class="text-sm mb-0" style="color: var(--text-muted);">Follow these instructions to compile Omor Ekushe on
-            Visual Studio (MSVC) or MinGW-w64 toolchains.</p>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">
+            Developers only compile pure C++ binaries locally. No installer software or bundlers are required on your device!
+        </p>
     </div>
     <div class="p-4">
         <!-- Build Tabs Navigation -->
@@ -132,10 +137,10 @@ permalink: /documentation.html
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link rounded-full px-4 text-sm font-semibold" id="editor-tab" data-bs-toggle="tab"
-                    data-bs-target="#editor-pane" type="button" role="tab" aria-controls="editor-pane"
+                <button class="nav-link rounded-full px-4 text-sm font-semibold" id="tests-tab" data-bs-toggle="tab"
+                    data-bs-target="#tests-pane" type="button" role="tab" aria-controls="tests-pane"
                     aria-selected="false">
-                    <i class="fas fa-pen-ruler me-1.5" style="color: var(--text-gold);"></i> Layout Editor (ImGui)
+                    <i class="fas fa-vial me-1.5 text-amber-400"></i> Phonetic Test Suite
                 </button>
             </li>
         </ul>
@@ -146,24 +151,24 @@ permalink: /documentation.html
                 <div class="code-window">
                     <div class="code-header">
                         <span class="text-xs text-slate-400 font-mono"><i class="fab fa-windows me-1 text-blue-400"></i>
-                            PowerShell / Visual Studio Developer Prompt</span>
+                            PowerShell / Developer Command Prompt</span>
                         <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
                             data-target="msvc-code" title="Copy code">
                             <i class="far fa-copy"></i> Copy
                         </button>
                     </div>
                     <div class="code-body">
-                        <pre class="mb-0"><code id="msvc-code"># 1. Clone Omor Ekushe repository
+                        <pre class="mb-0"><code id="msvc-code"># 1. Clone Omor Ekushe
 git clone https://github.com/sabbir28/OmorEkushe.git
 cd OmorEkushe
 
-# 2. Generate CMake build configuration for Visual Studio (x64)
-cmake -B build -A x64
+# 2. Configure build with CMake
+cmake -B out/build/x64-Release -DCMAKE_BUILD_TYPE=Release
 
-# 3. Build Release executable
-cmake --build build --config Release
+# 3. Compile binaries
+cmake --build out/build/x64-Release --config Release
 
-# Output binary generated in: build/bin/Release/OmorEkushe.exe</code></pre>
+# Output binary placed in: build/bin/OmorEkushe.exe</code></pre>
                     </div>
                 </div>
             </div>
@@ -183,37 +188,32 @@ cmake --build build --config Release
                         <pre class="mb-0"><code id="mingw-code"># 1. Generate MinGW Makefiles
 cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
 
-# 2. Build executable target
+# 2. Compile executable
 cmake --build build
 
-# Output binary generated in: build/bin/OmorEkushe.exe</code></pre>
+# Output binary placed in: build/bin/OmorEkushe.exe</code></pre>
                     </div>
                 </div>
             </div>
 
-            <!-- Layout Editor Tab -->
-            <div class="tab-pane fade" id="editor-pane" role="tabpanel" aria-labelledby="editor-tab">
+            <!-- Tests Tab -->
+            <div class="tab-pane fade" id="tests-pane" role="tabpanel" aria-labelledby="tests-tab">
                 <div class="code-window">
                     <div class="code-header">
                         <span class="text-xs text-slate-400 font-mono"><i
-                                class="fas fa-pen-ruler me-1 text-amber-400"></i> Build Dear ImGui Graphical Keymap
-                            Designer</span>
+                                class="fas fa-vial me-1 text-amber-400"></i> Run Avro Phonetic Test Suite</span>
                         <button class="btn btn-link text-slate-400 hover:text-emerald-400 text-xs p-0 btn-copy-code"
-                            data-target="editor-code" title="Copy code">
+                            data-target="tests-code" title="Copy code">
                             <i class="far fa-copy"></i> Copy
                         </button>
                     </div>
                     <div class="code-body">
-                        <pre class="mb-0"><code id="editor-code"># Enable Layout Editor sub-module build flag
-cmake -B build -DBIJOY_BUILD_LAYOUT_EDITOR=ON
-cmake --build build --config Release
-
-# Output binary target: build/bin/LayoutEditor.exe</code></pre>
+                        <pre class="mb-0"><code id="tests-code"># Run automated phonetic suite verifying 410+ transliteration test cases
+.\build\bin\PhoneticTests.exe</code></pre>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -221,10 +221,9 @@ cmake --build build --config Release
 <div class="glass-card p-0 overflow-hidden mb-5">
     <div class="p-4 border-b" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
         <h3 class="font-outfit font-bold text-xl mb-1" style="color: var(--text-heading);">
-            <i class="fas fa-sitemap text-bdRed me-2"></i> Source Tree Modules Breakdown
+            <i class="fas fa-sitemap text-bdRed me-2"></i> Source Code Modular Architecture
         </h3>
-        <p class="text-sm mb-0" style="color: var(--text-muted);">Detailed breakdown of repository modules, source
-            files, and build configuration targets.</p>
+        <p class="text-sm mb-0" style="color: var(--text-muted);">Overview of C++ source files, Inno Setup scripts, and GitHub Actions CI pipelines.</p>
     </div>
     <div class="p-4">
         <div class="row g-4">
@@ -233,17 +232,15 @@ cmake --build build --config Release
                 <div class="p-3.5 border rounded-2xl h-100"
                     style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                     <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-emerald);">
-                        <i class="fas fa-microchip me-2"></i> Core Engine (`src/core/`)
+                        <i class="fas fa-microchip me-2"></i> Core Engines (`src/core/`)
                     </h5>
                     <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-muted);">
-                        <li><code style="color: var(--text-heading);">layout.cpp / layout.h</code>: XML keymap parser
-                            and in-memory key mapping dictionary.</li>
-                        <li><code style="color: var(--text-heading);">layout_discovery.cpp</code>: Dynamically scans
-                            <code>data/Layouts/</code> directory for XML layouts.</li>
-                        <li><code style="color: var(--text-heading);">spelling_checker.cpp</code>: Native C++ Bengali
-                            spellchecker & dictionary lookup core.</li>
-                        <li><code style="color: var(--text-heading);">net_client.cpp</code>: Lightweight IPC socket
-                            client module for remote layout sync.</li>
+                        <li><code style="color: var(--text-heading);">phonetic_engine.cpp</code>: Avro transliteration coordinator & dynamic backspacing diff engine.</li>
+                        <li><code style="color: var(--text-heading);">phonetic_parser.cpp</code>: Phonetic Trie parser, consonant clusters, and Kar transformations.</li>
+                        <li><code style="color: var(--text-heading);">startup_options.cpp</code>: Registry persistence for opacity, auto-start, and hotkeys.</li>
+                        <li><code style="color: var(--text-heading);">layout.cpp / layout.h</code>: XML keymap parser and in-memory lookup table.</li>
+                        <li><code style="color: var(--text-heading);">layout_discovery.cpp</code>: Scans <code>data/Layouts/</code> for XML layouts.</li>
+                        <li><code style="color: var(--text-heading);">keyboard_hook_service.cpp</code>: Low-level keyboard hook (<code>WH_KEYBOARD_LL</code>).</li>
                     </ul>
                 </div>
             </div>
@@ -253,39 +250,33 @@ cmake --build build --config Release
                 <div class="p-3.5 border rounded-2xl h-100"
                     style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                     <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-emerald);">
-                        <i class="fab fa-windows me-2 text-blue-500"></i> Win32 Integration (`src/platform/windows/`)
+                        <i class="fab fa-windows me-2 text-blue-500"></i> Win32 Native UI (`src/platform/windows/`)
                     </h5>
                     <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-muted);">
-                        <li><code style="color: var(--text-heading);">main_window.cpp</code>: Top acrylic control bar
-                            overlay & Win32 window message loop.</li>
-                        <li><code style="color: var(--text-heading);">native_input.cpp</code>: Low-level system keyboard
-                            hook (<code>WH_KEYBOARD_LL</code>).</li>
-                        <li><code style="color: var(--text-heading);">registration_dialog.cpp</code>: Win32 registry
-                            settings UI and persistence.</li>
-                        <li><code style="color: var(--text-heading);">main_window_tray.cpp</code>: System tray
-                            notification icon & context menu.</li>
+                        <li><code style="color: var(--text-heading);">main_window.cpp</code>: Top acrylic control bar overlay & Win32 message loop.</li>
+                        <li><code style="color: var(--text-heading);">options_dialog.cpp</code>: Full Options dialog with opacity slider & shortcut inputs.</li>
+                        <li><code style="color: var(--text-heading);">main_window_tray.cpp</code>: System tray notification icon & context menus.</li>
+                        <li><code style="color: var(--text-heading);">splash_screen.cpp</code>: Native lightweight startup splash screen.</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Installer Module -->
+            <!-- Setup & Packaging Module -->
             <div class="col-lg-6">
                 <div class="p-3.5 border rounded-2xl h-100"
                     style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
                     <h5 class="font-outfit font-bold text-base mb-2" style="color: var(--text-emerald);">
-                        <i class="fas fa-box me-2" style="color: var(--text-gold);"></i> Installer Sub-Module
-                        (`Installer/`)
+                        <i class="fas fa-box-open me-2 text-amber-400"></i> Inno Setup Packaging (`setup/`)
                     </h5>
                     <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-muted);">
-                        <li><code style="color: var(--text-heading);">InstallerLogic.cpp</code>: Unpacks embedded binary
-                            payload array to target disk directory.</li>
-                        <li><code style="color: var(--text-heading);">bundler.cpp</code>: Build tool that embeds
-                            application binaries into single setup installer.</li>
+                        <li><code style="color: var(--text-heading);">OmorEkushe.iss</code>: Standard Inno Setup definition script.</li>
+                        <li><code style="color: var(--text-heading);">CloseApplications</code>: Detects and gracefully closes running instances during upgrade.</li>
+                        <li><code style="color: var(--text-heading);">/VERYSILENT</code>: CLI silent deployment switch for unattended upgrades.</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Workflows Module -->
+            <!-- CI/CD Workflows -->
             <div class="col-lg-6">
                 <div class="p-3.5 border rounded-2xl h-100"
                     style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
@@ -293,12 +284,9 @@ cmake --build build --config Release
                         <i class="fas fa-cogs me-2 text-bdRed"></i> GitHub Workflows (`.github/workflows/`)
                     </h5>
                     <ul class="list-unstyled text-xs space-y-2 mb-0" style="color: var(--text-muted);">
-                        <li><code style="color: var(--text-heading);">build.yml</code>: CI build matrix compiling MSVC &
-                            MinGW targets.</li>
-                        <li><code style="color: var(--text-heading);">release.yml</code>: Automated GitHub Release
-                            publisher publishing versioned binaries.</li>
-                        <li><code style="color: var(--text-heading);">jekyll-gh-pages.yml</code>: Automated GitHub Pages
-                            documentation deployment pipeline.</li>
+                        <li><code style="color: var(--text-heading);">release.yml</code>: Builds Release binaries, compiles Inno Setup installer via ISCC, packages portable ZIP, and publishes to GitHub Releases.</li>
+                        <li><code style="color: var(--text-heading);">build.yml</code>: Matrix CI compiling MSVC and MinGW-w64 on every push.</li>
+                        <li><code style="color: var(--text-heading);">jekyll-gh-pages.yml</code>: Deploys documentation site to GitHub Pages automatically.</li>
                     </ul>
                 </div>
             </div>

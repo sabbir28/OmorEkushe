@@ -1,6 +1,6 @@
 /**
  * Omor Ekushe - Interactive JS Engine
- * Features: Light/Dark Theme Switcher, Live Typing Simulator,
+ * Features: Light/Dark Theme Switcher, Live Avro Phonetic & Layout Simulator,
  * GitHub REST API Integration, Clipboard Copy Toasts, Back to Top scroll.
  */
 
@@ -120,17 +120,17 @@ $(document.documentElement).ready(function () {
             const commitDate = new Date(item.commit.author.date).toLocaleDateString();
 
             html += `
-                            <div class="py-3 d-flex align-items-center justify-content-between gap-3">
-                                <div class="d-flex align-items-center gap-2 overflow-hidden">
-                                    <img src="${authorAvatar}" width="28" height="28" class="rounded-circle border border-emerald-500/30" alt="${authorName}">
-                                    <div class="text-truncate">
-                                        <a href="${commitUrl}" target="_blank" class="text-sm font-semibold hover:text-emerald-400 text-decoration-none" style="color: var(--text-heading);">${message}</a>
-                                        <div class="text-xs text-slate-400 font-mono">${authorName} • ${commitDate}</div>
-                                    </div>
-                                </div>
-                                <a href="${commitUrl}" target="_blank" class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs text-decoration-none">${commitSha}</a>
-                            </div>
-                        `;
+              <div class="py-3 d-flex align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-2 overflow-hidden">
+                  <img src="${authorAvatar}" width="28" height="28" class="rounded-circle border border-emerald-500/30" alt="${authorName}">
+                  <div class="text-truncate">
+                    <a href="${commitUrl}" target="_blank" class="text-sm font-semibold hover:text-emerald-400 text-decoration-none" style="color: var(--text-heading);">${message}</a>
+                    <div class="text-xs text-slate-400 font-mono">${authorName} • ${commitDate}</div>
+                  </div>
+                </div>
+                <a href="${commitUrl}" target="_blank" class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs text-decoration-none">${commitSha}</a>
+              </div>
+            `;
           });
           html += '</div>';
           $('#github-commit-feed').html(html);
@@ -151,14 +151,14 @@ $(document.documentElement).ready(function () {
           let html = '<div class="d-flex flex-wrap gap-2">';
           contributors.forEach(user => {
             html += `
-                            <a href="${user.html_url}" target="_blank" class="d-flex align-items-center gap-2 p-2 rounded-xl border border-emerald-500/20 text-decoration-none hover:border-emerald-400 transition-all" style="background: var(--bg-surface-alt);">
-                                <img src="${user.avatar_url}" width="32" height="32" class="rounded-circle" alt="${user.login}">
-                                <div class="pe-1">
-                                    <div class="text-xs font-bold" style="color: var(--text-heading);">${user.login}</div>
-                                    <div class="text-[10px] text-amber-500 font-mono">${user.contributions} commits</div>
-                                </div>
-                            </a>
-                        `;
+              <a href="${user.html_url}" target="_blank" class="d-flex align-items-center gap-2 p-2 rounded-xl border border-emerald-500/20 text-decoration-none hover:border-emerald-400 transition-all" style="background: var(--bg-surface-alt);">
+                <img src="${user.avatar_url}" width="32" height="32" class="rounded-circle" alt="${user.login}">
+                <div class="pe-1">
+                  <div class="text-xs font-bold" style="color: var(--text-heading);">${user.login}</div>
+                  <div class="text-[10px] text-amber-500 font-mono">${user.contributions} commits</div>
+                </div>
+              </a>
+            `;
           });
           html += '</div>';
           $('#github-contributors-list').html(html);
@@ -173,51 +173,228 @@ $(document.documentElement).ready(function () {
   fetchGitHubRepoMetrics();
 
   // ----------------------------------------------------------------------
-  // 3. Live Interactive Typing & Layout Simulator
+  // 3. Live Interactive Typing & Avro Phonetic Transliteration Engine
   // ----------------------------------------------------------------------
+
+  // Lightweight JavaScript Avro Transliteration Parser
+  function parseAvroWord(word) {
+    if (!word) return "";
+    
+    // Quick dictionary overrides for common words
+    const commonWords = {
+      "ami": "আমি", "tumi": "তুমি", "amra": "আমরা", "tomra": "তোমরা",
+      "bangla": "বাংলা", "bangladesh": "বাংলাদেশ", "dhaka": "ঢাকা",
+      "omor": "অমর", "ekushe": "একুশে", "bhasha": "ভাষা", "gan": "গান",
+      "gai": "গাই", "desh": "দেশ", "sonar": "সোনার", "shadhinota": "স্বাধীনতা",
+      "bhalobashi": "ভালোবাসি", "dhonnobad": "ধন্যবাদ", "shagotom": "স্বাগতম",
+      "kemon": "কেমন", "acho": "আছো", "achhi": "আছি", "valobasha": "ভালোবাসা"
+    };
+    const lower = word.toLowerCase();
+    if (commonWords[lower]) {
+      return commonWords[lower];
+    }
+
+    const conjunctRules = [
+      ["kkh", "ক্ষ"], ["kkhN", "ক্ষ্ণ"], ["kkhm", "ক্ষ্ম"], ["gdh", "গ্ধ"],
+      ["cch", "চ্ছ"], ["cchr", "চ্ছ্ব"], ["jng", "জ্ঞ"], ["jbh", "জ্ব"],
+      ["TTh", "ট্ঠ"], ["DDh", "ড্ড"], ["ND", "ণ্ড"], ["NDh", "ণ্ঠ"], ["NN", "ণ্ণ"],
+      ["tth", "ত্থ"], ["ttr", "ত্র"], ["tm", "ত্ম"], ["thb", "থ্ব"],
+      ["ddh", "দ্ধ"], ["dgh", "দ্ঘ"], ["dbh", "দ্ব"], ["dhm", "ধ্ম"],
+      ["nt", "ন্ত"], ["nth", "ন্থ"], ["nd", "ন্দ"], ["ndh", "ন্ধ"], ["nn", "ন্ন"],
+      ["pl", "প্ল"], ["ps", "প্স"], ["bd", "ব্দ"], ["bdh", "ব্ধ"], ["bb", "ব্ব"],
+      ["mps", "ম্প"], ["mph", "ম্ফ"], ["mb", "ম্ব"], ["mbh", "ম্ভ"], ["mm", "ম্ম"],
+      ["shc", "শ্চ"], ["shch", "শ্ছ"], ["sht", "শ্ত"], ["shn", "শ্ন"], ["shb", "শ্ব"], ["shm", "শ্ম"], ["shl", "শ্ল"],
+      ["Shk", "ষ্ক"], ["Shkh", "ষ্খ"], ["ShT", "ষ্ট"], ["ShTh", "ষ্ঠ"], ["ShN", "ষ্ণ"], ["Shp", "ষ্প"], ["Shph", "ষ্ফ"], ["Shm", "ষ্ম"],
+      ["sk", "স্ক"], ["skh", "স্খ"], ["st", "স্ত"], ["sth", "স্থ"], ["sn", "স্ন"], ["sp", "স্প"], ["sph", "স্ফ"], ["sb", "স্ব"], ["sm", "স্ম"], ["sl", "স্ল"],
+      ["hN", "হ্ণ"], ["hn", "হ্ন"], ["hb", "হ্ব"], ["hm", "হ্ম"], ["hl", "হ্ল"],
+      ["k", "ক"], ["kh", "খ"], ["g", "গ"], ["gh", "ঘ"], ["Ng", "ঙ"],
+      ["c", "চ"], ["ch", "ছ"], ["j", "জ"], ["jh", "ঝ"], ["NG", "ঞ"],
+      ["T", "ট"], ["Th", "ঠ"], ["D", "ড"], ["Dh", "ঢ"], ["N", "ণ"],
+      ["t", "ত"], ["th", "থ"], ["d", "দ"], ["dh", "ধ"], ["n", "ন"],
+      ["p", "প"], ["ph", "ফ"], ["f", "ফ"], ["b", "ব"], ["bh", "ভ"], ["v", "ভ"], ["m", "ম"],
+      ["z", "য"], ["r", "র"], ["l", "ল"], ["sh", "শ"], ["Sh", "ষ"], ["s", "স"], ["h", "হ"],
+      ["R", "ড়"], ["Rh", "ঢ়"], ["y", "য়"], ["Y", "য়"]
+    ];
+
+    const vowelFull = {
+      "aa": "আ", "a": "অ", "A": "আ", "i": "ই", "I": "ঈ", "ee": "ঈ",
+      "u": "উ", "U": "ঊ", "oo": "ঊ", "e": "এ", "E": "এ", "oi": "ঐ",
+      "OI": "ঐ", "o": "ও", "O": "ও", "ou": "ঔ", "OU": "ঔ", "rri": "ঋ"
+    };
+
+    const vowelKar = {
+      "aa": "া", "a": "", "A": "া", "i": "ি", "I": "ী", "ee": "ী",
+      "u": "ু", "U": "ূ", "oo": "ূ", "e": "ে", "E": "ে", "oi": "ৈ",
+      "OI": "ৈ", "o": "ো", "O": "ো", "ou": "ৌ", "OU": "ৌ", "rri": "ৃ"
+    };
+
+    let result = "";
+    let i = 0;
+    let prevWasConsonant = false;
+
+    while (i < word.length) {
+      if (word[i] === '.') {
+        result += "।";
+        prevWasConsonant = false;
+        i++;
+        continue;
+      }
+
+      // Check vowels
+      let matchedVowel = false;
+      const two = word.substring(i, i + 2);
+      const three = word.substring(i, i + 3);
+      const one = word.substring(i, i + 1);
+
+      if (three === "rri") {
+        result += prevWasConsonant ? vowelKar["rri"] : vowelFull["rri"];
+        i += 3;
+        prevWasConsonant = false;
+        continue;
+      }
+      if (vowelFull[two]) {
+        result += prevWasConsonant ? vowelKar[two] : vowelFull[two];
+        i += 2;
+        prevWasConsonant = false;
+        continue;
+      }
+      if (vowelFull[one]) {
+        if (one === 'a' && prevWasConsonant) {
+          // Implicit 'o' or skip kar
+        } else {
+          result += prevWasConsonant ? vowelKar[one] : vowelFull[one];
+        }
+        i += 1;
+        prevWasConsonant = false;
+        continue;
+      }
+
+      // Check consonants and conjuncts
+      let matchedCons = false;
+      for (const [pattern, bengali] of conjunctRules) {
+        if (word.startsWith(pattern, i)) {
+          result += bengali;
+          i += pattern.length;
+          prevWasConsonant = true;
+          matchedCons = true;
+          break;
+        }
+      }
+
+      if (!matchedCons) {
+        result += word[i];
+        prevWasConsonant = false;
+        i++;
+      }
+    }
+
+    return result;
+  }
+
+  function transliterateText(input) {
+    return input.replace(/[a-zA-Z0-9\.]+/g, function (token) {
+      return parseAvroWord(token);
+    });
+  }
+
   const layoutMaps = {
+    phonetic: {
+      name: "Phonetic (Avro • F12)",
+      sample: "ami banglay gan gai, ami banglar gan gai. omor ekushe amader gorbo!",
+      isPhonetic: true
+    },
     bijoy: {
       name: "Bijoy (বিজয়)",
       sample: "আমার সোনার বাংলা, আমি তোমায় ভালোবাসি। অমর একুশে গ্রন্থমেলা।",
+      isPhonetic: false,
       keymap: { 'a': 'া', 'b': 'ন', 'c': 'চ', 'd': 'ড', 'e': 'ে', 'f': 'ফ', 'g': 'গ', 'h': 'হ', 'i': 'ি', 'j': 'জ', 'k': 'ক', 'l': 'ল', 'm': 'ম', 'n': 'স', 'o': 'গ', 'p': 'প', 'q': 'ং', 'r': 'র', 's': 'ু', 't': 'ট', 'u': 'ু', 'v': 'র', 'w': 'য', 'x': 'হ', 'y': 'থ', 'z': 'ধ' }
     },
     unijoy: {
       name: "Unijoy (ইউনিজয়)",
       sample: "মোদের গরব, মোদের আশা, আ-মরি বাংলা ভাষা!",
+      isPhonetic: false,
       keymap: { 'a': 'ো', 'b': 'ব', 'c': 'চ', 'd': 'দ', 'e': 'ে', 'f': 'ফ', 'g': 'গ', 'h': 'হ', 'i': 'ি', 'j': 'জ', 'k': 'ক', 'l': 'ল', 'm': 'ম', 'n': 'ন', 'o': 'গ', 'p': 'প', 'r': 'র', 's': 'স', 't': 'ত', 'u': 'ু', 'v': 'ভ', 'w': 'ও', 'y': 'য়' }
     },
     english: {
       name: "English",
       sample: "Omor Ekushe Win32 Native Bengali Keyboard Engine for Windows.",
+      isPhonetic: false,
       keymap: {}
     }
   };
 
-  let activeLayout = 'bijoy';
+  let activeLayout = 'phonetic';
+
+  function activateLayout(layoutKey) {
+    if (!layoutMaps[layoutKey]) return;
+    activeLayout = layoutKey;
+    $('.layout-pill-btn').removeClass('active');
+    $(`.layout-pill-btn[data-layout="${layoutKey}"]`).addClass('active');
+    $('#active-layout-name').text(layoutMaps[layoutKey].name);
+    
+    if (layoutKey === 'phonetic') {
+      $('#simulator-input').val("আমি বাংলায় গান গাই, আমি বাংলার গান গাই। অমর একুশে আমাদের গর্ব!");
+      $('#active-hotkey-badge').html('<i class="fas fa-bolt me-1 text-amber"></i> Press F12 or Ctrl+Alt+B');
+    } else {
+      $('#simulator-input').val(layoutMaps[layoutKey].sample);
+      $('#active-hotkey-badge').html('<i class="fas fa-keyboard me-1 text-emerald"></i> Press Ctrl+Alt+B');
+    }
+  }
 
   $('.layout-pill-btn').on('click', function () {
-    $('.layout-pill-btn').removeClass('active');
-    $(this).addClass('active');
-    activeLayout = $(this).data('layout');
-    $('#active-layout-name').text(layoutMaps[activeLayout].name);
-    $('#simulator-input').val(layoutMaps[activeLayout].sample);
+    const layout = $(this).data('layout');
+    activateLayout(layout);
+  });
+
+  // Real-time phonetic input conversion on keyup/input in simulator
+  let isComposing = false;
+  $('#simulator-input').on('input', function () {
+    if (activeLayout === 'phonetic' && !isComposing) {
+      const currentVal = $(this).val();
+      // If user typed Latin letters, transliterate words ending with space or punctuation
+      const words = currentVal.split(/(\s+)/);
+      let changed = false;
+      const convertedWords = words.map(chunk => {
+        if (/^[a-zA-Z\.]+$/.test(chunk)) {
+          changed = true;
+          return parseAvroWord(chunk);
+        }
+        return chunk;
+      });
+
+      if (changed) {
+        const caret = this.selectionStart;
+        $(this).val(convertedWords.join(''));
+        this.setSelectionRange(caret, caret);
+      }
+    }
   });
 
   $('#simulator-input').on('keydown', function (e) {
-    // Hotkey Ctrl+Alt+B simulator switch
-    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'b') {
+    // F12 Toggle: Instant Phonetic <-> English switch
+    if (e.key === 'F12') {
       e.preventDefault();
-      const layouts = ['bijoy', 'unijoy', 'english'];
-      let nextIndex = (layouts.indexOf(activeLayout) + 1) % layouts.length;
-      activeLayout = layouts[nextIndex];
+      const next = activeLayout === 'phonetic' ? 'english' : 'phonetic';
+      activateLayout(next);
 
-      $(`.layout-pill-btn[data-layout="${activeLayout}"]`).click();
-
-      // Flash hotkey badge
       $('#active-hotkey-badge').addClass('bg-red-500 text-white').removeClass('bg-emerald-950 text-emerald-400');
       setTimeout(() => {
         $('#active-hotkey-badge').removeClass('bg-red-500 text-white').addClass('bg-emerald-950 text-emerald-400');
-      }, 600);
+      }, 500);
+      return;
+    }
+
+    // Ctrl+Alt+B layout cycle
+    if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'b') {
+      e.preventDefault();
+      const layouts = ['phonetic', 'bijoy', 'unijoy', 'english'];
+      let nextIndex = (layouts.indexOf(activeLayout) + 1) % layouts.length;
+      activateLayout(layouts[nextIndex]);
+
+      $('#active-hotkey-badge').addClass('bg-amber-500 text-black').removeClass('bg-emerald-950 text-emerald-400');
+      setTimeout(() => {
+        $('#active-hotkey-badge').removeClass('bg-amber-500 text-black').addClass('bg-emerald-950 text-emerald-400');
+      }, 500);
     }
   });
 

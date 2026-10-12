@@ -1,8 +1,7 @@
 ---
 layout: default
 title: Home - Win32 Bengali Keyboard Engine
-description: "Omor Ekushe is a modern, lightweight, 100% native Win32 Bengali Keyboard Layout Manager & Engine for
-Windows."
+description: "Omor Ekushe is a modern, ultra-lightweight, 100% native Win32 Bengali Keyboard Engine featuring Avro Phonetic typing, XML layout maps, and full options configuration."
 permalink: /index.html
 ---
 
@@ -22,6 +21,10 @@ permalink: /index.html
                         class="badge bg-emerald-500/10 text-emerald border border-emerald-500/20 px-3 py-1.5 rounded-full text-xs font-semibold">
                         <i class="fas fa-tag me-1"></i> Release: <span class="github-release-tag">v1.0.0</span>
                     </span>
+                    <span
+                        class="badge bg-blue-500/10 text-blue-400 border border-blue-500/30 px-3 py-1.5 rounded-full text-xs font-semibold">
+                        <i class="fas fa-bolt me-1"></i> Dual-Mode: Avro Phonetic + Fixed XML
+                    </span>
                     <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}/stargazers"
                         target="_blank"
                         class="badge bg-amber-500/10 text-amber border border-amber-500/30 px-3 py-1.5 rounded-full text-xs font-semibold text-decoration-none hover:opacity-80 transition-all">
@@ -37,13 +40,15 @@ permalink: /index.html
                 </h1>
 
                 <p class="lead font-light mb-4 max-w-2xl leading-relaxed" style="color: var(--text-muted);">
-                    Effortless layout switching powered by Windows low-level kernel hooks, dynamic XML layout maps,
-                    per-window layout memory, and built-in Bengali spellchecking.
+                    Effortless Bengali desktop typing featuring an <strong>Avro-compatible Phonetic Transliteration Engine</strong> (<kbd>F12</kbd>), classic XML keymaps (Bijoy/Unijoy), per-window layout memory, a full native <strong>Options UI</strong> with live opacity control, and zero runtime bloat (~5MB RAM).
                 </p>
 
                 <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
                     <a href="{{ '/download.html' | relative_url }}" class="btn-emerald-primary github-download-setup">
                         <i class="fas fa-download me-1.5"></i> Download Setup (.exe)
+                    </a>
+                    <a href="{{ '/download.html' | relative_url }}" class="btn-emerald-outline github-download-portable">
+                        <i class="fas fa-file-archive me-1.5"></i> Portable (.zip)
                     </a>
                     <a href="{{ '/features.html' | relative_url }}" class="btn-emerald-outline">
                         <i class="fas fa-layer-group me-1.5"></i> Explore Features
@@ -53,7 +58,12 @@ permalink: /index.html
                 <div class="d-flex flex-wrap align-items-center gap-3 text-xs font-mono"
                     style="color: var(--text-muted);">
                     <div class="d-flex align-items-center gap-1.5">
-                        <i class="fas fa-keyboard text-emerald me-1"></i> Hotkey:
+                        <i class="fas fa-bolt text-amber-400 me-1"></i> Phonetic:
+                        <kbd class="hotkey-cap gold">F12</kbd>
+                    </div>
+                    <span>•</span>
+                    <div class="d-flex align-items-center gap-1.5">
+                        <i class="fas fa-keyboard text-emerald me-1"></i> Layout:
                         <kbd class="hotkey-cap gold">Ctrl</kbd> + <kbd class="hotkey-cap gold">Alt</kbd> + <kbd
                             class="hotkey-cap gold">B</kbd>
                     </div>
@@ -70,36 +80,37 @@ permalink: /index.html
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div class="d-flex align-items-center gap-2">
                             <span class="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-                            <span class="font-outfit font-bold text-sm" style="color: var(--text-heading);">Try Live
-                                Simulator</span>
+                            <span class="font-outfit font-bold text-sm" style="color: var(--text-heading);">Live Typing Simulator</span>
                         </div>
                         <span
                             class="badge bg-emerald-500/10 border border-emerald-500/30 text-emerald text-xs font-mono"
                             id="active-hotkey-badge">
-                            Press Ctrl+Alt+B
+                            <i class="fas fa-bolt me-1 text-amber"></i> Press F12 or Ctrl+Alt+B
                         </span>
                     </div>
 
-                    <div class="d-flex gap-2 mb-3">
-                        <button class="layout-pill-btn active" data-layout="bijoy">Bijoy (বিজয়)</button>
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <button class="layout-pill-btn active" data-layout="phonetic">
+                            <i class="fas fa-bolt me-1 text-amber-400"></i> Phonetic (Avro)
+                        </button>
+                        <button class="layout-pill-btn" data-layout="bijoy">Bijoy (বিজয়)</button>
                         <button class="layout-pill-btn" data-layout="unijoy">Unijoy (ইউনিজয়)</button>
                         <button class="layout-pill-btn" data-layout="english">English</button>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label text-xs mb-1" style="color: var(--text-muted);">
-                            Active Layout: <strong class="font-bangla" id="active-layout-name"
-                                style="color: var(--text-gold);">Bijoy (বিজয়)</strong>
+                        <label class="form-label text-xs mb-1 d-flex justify-content-between" style="color: var(--text-muted);">
+                            <span>Active Layout: <strong class="font-bangla" id="active-layout-name" style="color: var(--text-gold);">Phonetic (Avro • F12)</strong></span>
+                            <span class="text-xs text-slate-400">Try typing "ami banglay gan gai"</span>
                         </label>
-                        <textarea id="simulator-input" class="simulator-textarea"
-                            placeholder="Type here or test layout sample...">আমার সোনার বাংলা, আমি তোমায় ভালোবাসি। অমর একুশে গ্রন্থমেলা।</textarea>
+                        <textarea id="simulator-input" class="simulator-textarea" rows="4"
+                            placeholder="Type here in English phonetics to see Bangla transliteration...">আমি বাংলায় গান গাই, আমি বাংলার গান গাই। অমর একুশে আমাদের গর্ব!</textarea>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center text-xs font-mono"
                         style="color: var(--text-muted);">
-                        <span><i class="fas fa-bolt me-1" style="color: var(--text-gold);"></i> WH_KEYBOARD_LL
-                            Active</span>
-                        <span class="text-emerald"><i class="fas fa-check-circle me-1"></i> Win32 Ready</span>
+                        <span><i class="fas fa-bolt me-1" style="color: var(--text-gold);"></i> WH_KEYBOARD_LL + Dynamic Diff</span>
+                        <span class="text-emerald"><i class="fas fa-check-circle me-1"></i> Win32 C++17 Ready</span>
                     </div>
                 </div>
             </div>
@@ -113,19 +124,19 @@ permalink: /index.html
         <div class="row g-4 text-center">
             <div class="col-md-3 col-6">
                 <h3 class="display-6 font-outfit font-extrabold mb-0" style="color: var(--text-emerald);">&lt; 5MB</h3>
-                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Memory Footprint</p>
+                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Ultra-Light Memory</p>
             </div>
             <div class="col-md-3 col-6">
                 <h3 class="display-6 font-outfit font-extrabold text-bdRed mb-0">100%</h3>
                 <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Native Win32 C++17</p>
             </div>
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-outfit font-extrabold mb-0" style="color: var(--text-emerald);">WH_HOOK</h3>
-                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Low-Level Interception</p>
+                <h3 class="display-6 font-outfit font-extrabold mb-0" style="color: var(--text-gold);">Dual-Core</h3>
+                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Phonetic + XML Keymaps</p>
             </div>
             <div class="col-md-3 col-6">
-                <h3 class="display-6 font-outfit font-extrabold mb-0" style="color: var(--text-gold);">XML</h3>
-                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Dynamic Keymaps</p>
+                <h3 class="display-6 font-outfit font-extrabold mb-0" style="color: var(--text-emerald);">CI Setup</h3>
+                <p class="text-xs font-mono mt-1" style="color: var(--text-muted);">Inno Setup Automated</p>
             </div>
         </div>
     </div>
@@ -137,95 +148,206 @@ permalink: /index.html
         <div class="text-center max-w-2xl mx-auto mb-5">
             <span
                 class="badge bg-emerald-500/10 text-emerald border border-emerald-500/30 px-3 py-1.5 rounded-full text-xs font-bold font-mono tracking-wider uppercase mb-2">
-                WHY OMOR EKUSHE?
+                CORE CAPABILITIES
             </span>
             <h2 class="display-6 font-outfit font-extrabold mb-2" style="color: var(--text-heading);">Engineered for
-                Performance & Customization</h2>
-            <p class="font-light leading-relaxed" style="color: var(--text-muted);">Everything you need for fluent
-                Bengali desktop typing with minimal system impact.</p>
+                Speed, Flexibility & Precision</h2>
+            <p class="font-light leading-relaxed" style="color: var(--text-muted);">A comprehensive Bengali keyboard solution combining modern phonetic convenience with classic layout support.</p>
         </div>
 
         <div class="row g-4">
+            <!-- Avro Phonetic Engine -->
             <div class="col-lg-4 col-md-6">
                 <div class="glass-card">
-                    <div class="feature-icon-box">
-                        <i class="fas fa-feather-alt"></i>
+                    <div class="feature-icon-box gold">
+                        <i class="fas fa-bolt"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Ultra-Lightweight
-                        Engine</h4>
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Avro Phonetic Engine</h4>
                     <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
-                        Built from scratch in pure C++17 using Win32 API without heavy web engines (Electron/Qt).
-                        Launches instantly with ~5MB RAM footprint.
+                        Type Bengali phonetically using standard English QWERTY characters. Features complex conjunct resolution, vowel-to-Kar transforms, dynamic diff backspacing, and an instant <kbd class="hotkey-cap gold">F12</kbd> toggle.
                     </p>
                 </div>
             </div>
 
+            <!-- Full Options UI -->
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-card">
+                    <div class="feature-icon-box">
+                        <i class="fas fa-sliders"></i>
+                    </div>
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Options & Settings UI</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
+                        Full native Win32 configuration dialog. Adjust overlay opacity (20%&ndash;100%) with real-time preview, toggle auto-start with Windows, and customize hotkey shortcuts without restarting.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dynamic XML Keymaps -->
             <div class="col-lg-4 col-md-6">
                 <div class="glass-card">
                     <div class="feature-icon-box red">
                         <i class="fas fa-file-code"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Dynamic XML
-                        Layout Maps</h4>
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Dynamic XML Layout Maps</h4>
                     <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
-                        Load layout definitions dynamically from simple XML files. Built-in support for Bijoy, Unijoy,
-                        National, and custom layout keymaps.
+                        Load layout definitions dynamically from XML files in <code>data/Layouts/</code>. Supports Bijoy Classic/Unicode, Unijoy, National, and unlimited custom user keymaps.
                     </p>
                 </div>
             </div>
 
-            <div class="col-lg-4 col-md-6">
-                <div class="glass-card">
-                    <div class="feature-icon-box gold">
-                        <i class="fas fa-window-restore"></i>
-                    </div>
-                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Per-Window Layout
-                        Memory</h4>
-                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
-                        Automatically remembers active typing mode (Bangla or English) on a per-application window basis
-                        as you switch window focus.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="glass-card">
-                    <div class="feature-icon-box gold">
-                        <i class="fas fa-spell-check"></i>
-                    </div>
-                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Integrated
-                        Spelling Checker</h4>
-                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
-                        Includes a dedicated `SpellingChecker` C++ core for real-time Bengali dictionary lookups and
-                        spell correction candidate lookups.
-                    </p>
-                </div>
-            </div>
-
+            <!-- Per-Window Layout Memory -->
             <div class="col-lg-4 col-md-6">
                 <div class="glass-card">
                     <div class="feature-icon-box">
-                        <i class="fas fa-pen-ruler"></i>
+                        <i class="fas fa-window-restore"></i>
                     </div>
-                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Graphical Layout
-                        Editor</h4>
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Per-Window Layout Memory</h4>
                     <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
-                        Optional standalone sub-module `LayoutEditor` built with GLFW and Dear ImGui for visual creation
-                        and editing of keyboard layouts.
+                        Omor Ekushe automatically tracks the active window handle (`HWND`) and restores the exact typing mode (Bangla or English) as you switch between your browser, IDE, Word, and chat apps.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Inno Setup & Silent Updates -->
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-card">
+                    <div class="feature-icon-box gold">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Inno Setup CI Distribution</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
+                        Zero local installer build complexity. Standard Inno Setup script compiled automatically by GitHub Actions CI. Supports seamless in-place updates, auto-closing running instances, and <code>/VERYSILENT</code> mode.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Low-Level Kernel Hook -->
+            <div class="col-lg-4 col-md-6">
+                <div class="glass-card">
+                    <div class="feature-icon-box red">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Kernel Low-Level Hook</h4>
+                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
+                        Native <code>WH_KEYBOARD_LL</code> interceptor with <code>SendInput</code> Unicode injection ensures 0ms latency, bypasses IME overhead, and passes through critical system shortcuts like Alt+Tab and Win-key cleanly.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Visionary Future Roadmap Section -->
+<section class="py-5 border-y" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+    <div class="container py-4">
+        <div class="text-center max-w-2xl mx-auto mb-5">
+            <span
+                class="badge bg-amber-500/10 text-amber border border-amber-500/30 px-3 py-1.5 rounded-full text-xs font-bold font-mono tracking-wider uppercase mb-2">
+                FUTURE HORIZONS
+            </span>
+            <h2 class="display-6 font-outfit font-extrabold mb-2" style="color: var(--text-heading);">What We're Building Next</h2>
+            <p class="font-light leading-relaxed" style="color: var(--text-muted);">Omor Ekushe is evolving into an AI-augmented, cloud-connected, cross-platform Bengali language powerhouse.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="p-4 border rounded-2xl h-100" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-outfit font-bold mb-0 text-base" style="color: var(--text-heading);">Smart AI Word Predictor</h5>
+                            <span class="text-xs text-purple-400 font-mono">In Design</span>
+                        </div>
+                    </div>
+                    <p class="text-xs leading-relaxed mb-0" style="color: var(--text-muted);">
+                        Discreet, non-intrusive floating suggestion pill providing contextual Bengali next-word predictions and high-frequency n-gram autocompletion.
                     </p>
                 </div>
             </div>
 
             <div class="col-lg-4 col-md-6">
-                <div class="glass-card">
-                    <div class="feature-icon-box red">
-                        <i class="fas fa-glasses"></i>
+                <div class="p-4 border rounded-2xl h-100" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-cloud-arrow-down"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-outfit font-bold mb-0 text-base" style="color: var(--text-heading);">Cloud Layout Marketplace</h5>
+                            <span class="text-xs text-blue-400 font-mono">In Architecture</span>
+                        </div>
                     </div>
-                    <h4 class="font-outfit font-bold text-xl mb-2" style="color: var(--text-heading);">Acrylic Control
-                        Overlay</h4>
-                    <p class="text-sm leading-relaxed mb-0" style="color: var(--text-muted);">
-                        Sleek top bar control window with customizable opacity, background image support, and seamless
-                        system tray minimization.
+                    <p class="text-xs leading-relaxed mb-0" style="color: var(--text-muted);">
+                        Community layout repository inside the app. Browse, preview, rate, and install community-crafted XML keymaps with one click via <code>NetClient</code>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="p-4 border rounded-2xl h-100" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald border border-emerald-500/20 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-arrows-rotate"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-outfit font-bold mb-0 text-base" style="color: var(--text-heading);">Silent Auto-Updater Daemon</h5>
+                            <span class="text-xs text-emerald font-mono">In Progress</span>
+                        </div>
+                    </div>
+                    <p class="text-xs leading-relaxed mb-0" style="color: var(--text-muted);">
+                        Background daemon that checks GitHub Releases and performs silent, zero-interruption updates using Inno Setup's <code>/VERYSILENT</code> engine.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="p-4 border rounded-2xl h-100" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber border border-amber-500/20 d-flex align-items-center justify-content-center">
+                            <i class="fab fa-linux"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-outfit font-bold mb-0 text-base" style="color: var(--text-heading);">Cross-Platform Linux Core</h5>
+                            <span class="text-xs text-amber font-mono">Planned</span>
+                        </div>
+                    </div>
+                    <p class="text-xs leading-relaxed mb-0" style="color: var(--text-muted);">
+                        Native Linux port integrating with X11 / Wayland input method extensions (IBus / Fcitx5), bringing ultra-low latency Bengali typing to Linux distributions.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="p-4 border rounded-2xl h-100" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-red-500/10 text-bdRed border border-red-500/20 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-outfit font-bold mb-0 text-base" style="color: var(--text-heading);">Voice-to-Bangla Speech</h5>
+                            <span class="text-xs text-bdRed font-mono">Researching</span>
+                        </div>
+                    </div>
+                    <p class="text-xs leading-relaxed mb-0" style="color: var(--text-muted);">
+                        On-device Bengali voice dictation module converting spoken Bengali speech directly into formatted text across any desktop text input field.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="p-4 border rounded-2xl h-100" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-mobile-screen"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-outfit font-bold mb-0 text-base" style="color: var(--text-heading);">Mobile Companion Sync</h5>
+                            <span class="text-xs text-sky-400 font-mono">Concept</span>
+                        </div>
+                    </div>
+                    <p class="text-xs leading-relaxed mb-0" style="color: var(--text-muted);">
+                        Pair your Android or iOS device over local network to sync custom phonetic dictionary entries, abbreviations, and clipboard history seamlessly.
                     </p>
                 </div>
             </div>
@@ -234,7 +356,7 @@ permalink: /index.html
 </section>
 
 <!-- Custom XML Showcase Section -->
-<section class="py-5 border-y" style="background-color: var(--bg-surface-alt); border-color: var(--border-color);">
+<section class="py-5">
     <div class="container py-4">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
@@ -244,13 +366,11 @@ permalink: /index.html
                 <h2 class="display-6 font-outfit font-extrabold mb-3" style="color: var(--text-heading);">Design Custom
                     Keyboard Maps via XML</h2>
                 <p class="lead font-light mb-4" style="color: var(--text-muted);">
-                    Omor Ekushe reads simple XML files in `data/Layouts/`. Define virtual key mapping (`vk`), Normal,
-                    Shift, and
-                    AltGr character assignments effortlessly.
+                    Omor Ekushe reads simple XML files in <code>data/Layouts/</code>. Define virtual key mapping (<code>vk</code>), Normal, Shift, and AltGr character assignments effortlessly.
                 </p>
                 <ul class="list-unstyled space-y-2 mb-4" style="color: var(--text-body);">
                     <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle me-1"
-                            style="color: var(--text-gold);"></i> Standard virtual keycodes (`vk="0x41"` for 'A')</li>
+                            style="color: var(--text-gold);"></i> Standard virtual keycodes (<code>vk="0x41"</code> for 'A')</li>
                     <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle me-1"
                             style="color: var(--text-gold);"></i> Supports Normal, Shift, and AltGr modifier states</li>
                     <li class="d-flex align-items-center gap-2"><i class="fas fa-check-circle me-1"
@@ -304,13 +424,16 @@ permalink: /index.html
                 <h2 class="display-5 font-outfit font-extrabold mb-3" style="color: var(--text-heading);">Ready for
                     High-Speed Bangla Typing?</h2>
                 <p class="lead font-light mb-4" style="color: var(--text-muted);">
-                    Download the standalone single-file setup installer for Windows 10/11 or compile directly from CMake
-                    source code.
+                    Download the official Inno Setup installer for Windows 10/11 or use the standalone portable zip edition.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
                     <a href="{{ '/download.html' | relative_url }}"
                         class="btn-nav-cta text-lg px-5 py-3 shadow-xl font-bold github-download-setup">
                         <i class="fas fa-download me-2"></i> Download Setup (.exe)
+                    </a>
+                    <a href="{{ '/download.html' | relative_url }}"
+                        class="btn-emerald-outline text-lg px-4 py-3 rounded-full github-download-portable">
+                        <i class="fas fa-file-archive me-2"></i> Portable (.zip)
                     </a>
                     <a href="https://github.com/{{ site.github_username }}/{{ site.github_repo }}" target="_blank"
                         class="btn-emerald-outline text-lg px-4 py-3 rounded-full">
