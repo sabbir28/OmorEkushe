@@ -434,3 +434,4 @@ $(document.documentElement).ready(function () {
     $('html, body').animate({ scrollTop: 0 }, 400);
   });
 });
+

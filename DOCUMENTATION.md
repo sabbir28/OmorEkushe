@@ -72,3 +72,4 @@ reg delete "HKCU\Software\OmorEkushe" /f
 - [ ] **Cross-Platform Linux & macOS Ports**: Native Wayland/X11 and macOS input method integration.
 - [ ] **Phonetic Spellchecker**: Real-time spell correction suggestions for Bengali text fields.
 - [ ] **Voice-to-Bangla Speech Typing**: Direct voice recognition input.
+

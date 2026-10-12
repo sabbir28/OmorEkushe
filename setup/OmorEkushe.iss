@@ -60,8 +60,8 @@ Source: "..\build\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesu
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"; IconFilename: "{app}\bin\{#MyAppExeName}"
-Name: "{group}\Layout Editor"; Filename: "{app}\bin\LayoutEditor.exe"; IconFilename: "{app}\bin\LayoutEditor.exe"; Tasks: ; Flags: skipifsourcedoesntexist
-Name: "{group}\Spelling Checker"; Filename: "{app}\bin\SpellingChecker.exe"; IconFilename: "{app}\bin\SpellingChecker.exe"; Tasks: ; Flags: skipifsourcedoesntexist
+Name: "{group}\Layout Editor"; Filename: "{app}\bin\LayoutEditor.exe"; IconFilename: "{app}\bin\LayoutEditor.exe"; Flags: createonlyiffileexists
+Name: "{group}\Spelling Checker"; Filename: "{app}\bin\SpellingChecker.exe"; IconFilename: "{app}\bin\SpellingChecker.exe"; Flags: createonlyiffileexists
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"; Tasks: desktopicon
 
@@ -71,3 +71,4 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 
 [Run]
 Filename: "{app}\bin\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+

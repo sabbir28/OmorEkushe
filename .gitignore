@@ -113,7 +113,8 @@ build/bin/*.pdb
 !build/bin/OmorEkushe.ilk
 !build/bin/OmorEkushe.pdb
 build/bin/PhoneticTests*
-Output/
 setup/Output/
+release_stage/
+portable_pack/
 !build/data/
 !build/data/**

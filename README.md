@@ -235,3 +235,4 @@ We welcome contributions from the global Bengali and open-source software commun
 - Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 - Dedicated to the memory of the Language Movement Martyrs of February 21, 1952 (**মহান ভাষা শহিদদের স্মৃতির প্রতি গভীর শ্রদ্ধাঞ্জলি**).
 - Developed and maintained by **Sabbir** and the **Omor Ekushe Open Source Community**.
+
