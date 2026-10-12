@@ -96,6 +96,27 @@ namespace bijoy::core {
                 layouts.push_back(std::move(layout));
             }
         }
+
+        bool hasPhonetic = false;
+        for (const auto& l : layouts) {
+            if (l.isPhonetic) {
+                hasPhonetic = true;
+                break;
+            }
+        }
+        if (!hasPhonetic) {
+            Layout phoneticLayout;
+            phoneticLayout.name = L"Phonetic";
+            phoneticLayout.iconName = L"Phonetic";
+            phoneticLayout.isPhonetic = true;
+            phoneticLayout.shortcut.keyCode = VK_F12;
+            phoneticLayout.shortcut.ctrl = false;
+            phoneticLayout.shortcut.alt = false;
+            phoneticLayout.shortcut.shift = false;
+            phoneticLayout.id = static_cast<int>(layouts.size());
+            layouts.push_back(std::move(phoneticLayout));
+        }
+
         return !layouts.empty();
     }
 

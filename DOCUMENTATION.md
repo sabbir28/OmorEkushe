@@ -22,14 +22,14 @@
 - **Platform Dependent**: Currently only supports Windows (Win32 API). Not compatible with macOS or Linux.
 - **Work in Progress**: The "Options" dialog is currently a placeholder and not yet implemented.
 - **Resource Dependency**: Requires specific data files (icons, backgrounds, and layout XMLs) to be present in the `data` directory.
-- **Phonetic Typing**: Currently focused on fixed mapping layouts; advanced phonetic engine (like Avro) is not yet fully implemented.
+- **Multi-Layout & Phonetic Engine**: Full support for both fixed mapping layouts (Bijoy Classic/Unicode) and Avro-compatible phonetic transliteration (with F12 toggle and smart dynamic diff backspacing).
 
 ---
 
 ## Upcoming Features (Roadmap)
 
 - **[ ] Options Dialog**: A full-featured settings menu to customize shortcuts, transparency, and startup behavior.
-- **[ ] Phonetic Engine**: Support for phonetic Bengali typing (write Bengali using English alphabet).
+- **[x] Phonetic Engine**: Support for phonetic Bengali typing (write Bengali using English alphabet with Avro rules).
 - **[ ] Layout Sharing**: Export and import layouts easily through the UI.
 - **[ ] Cross-Platform Support**: Plans to port the core engine to Linux and macOS using a cross-platform GUI framework.
 - **[ ] Auto-Update**: Built-in mechanism to check for and install new layouts or software updates.

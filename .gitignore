@@ -40,6 +40,7 @@ Installer/include/Resources.h
 *.pch
 *.res
 *.rc.res
+RC*
 
 # -------------------------------------------------
 # Debugging & Symbol Files
@@ -113,5 +114,13 @@ Desktop.ini
 !build/
 !build/bin/
 !build/bin/*
+build/bin/*.ilk
+build/bin/*.pdb
+!build/bin/OmorEkushe.ilk
+!build/bin/OmorEkushe.pdb
+!build/bin/bundler.ilk
+!build/bin/bundler.pdb
+build/bin/PhoneticTests*
+build/bin/Installer*
 !build/data/
 !build/data/**

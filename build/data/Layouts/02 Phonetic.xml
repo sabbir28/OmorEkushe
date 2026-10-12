@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Start of Layout-->
+<KeyLayout>
+  <Name>Phonetic</Name>
+  <Type>Phonetic</Type>
+  <Shortcut>
+    <Alt>False</Alt>
+    <Ctrl>False</Ctrl>
+    <Shift>False</Shift>
+    <KeyCode>123</KeyCode>
+  </Shortcut>
+  <IconName>Phonetic</IconName>
+</KeyLayout>
+

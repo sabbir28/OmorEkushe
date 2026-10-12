@@ -54,6 +54,9 @@ target_sources(OmorEkushe PRIVATE
         src/core/keyboard_hook_service.cpp
         src/core/layout.cpp
         src/core/layout_discovery.cpp
+        src/core/phonetic_data.cpp
+        src/core/phonetic_parser.cpp
+        src/core/phonetic_engine.cpp
         src/core/startup_options.cpp
         src/core/window_layout_binding.cpp
         src/utils/system_utils.cpp
@@ -122,6 +125,18 @@ endif()
 
 add_custom_target(omorekushe_all
         DEPENDS OmorEkushe
+)
+
+add_executable(PhoneticTests
+    src/core/phonetic_data.cpp
+    src/core/phonetic_parser.cpp
+    src/core/phonetic_engine.cpp
+    src/core/layout.cpp
+    src/core/test_phonetic_parser.cpp
+)
+target_include_directories(PhoneticTests PRIVATE include)
+set_target_properties(PhoneticTests PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}"
 )
 
 # Optional Layout Editor dependencies (only if explicitly enabled)

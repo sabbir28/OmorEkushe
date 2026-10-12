@@ -90,6 +90,7 @@ namespace bijoy::core {
     void Layout::clear() {
         key.clear();
         juk.clear();
+        isPhonetic = false;
     }
 
     bool Layout::loadFromFile(const wchar_t* filePath) {
@@ -124,6 +125,14 @@ namespace bijoy::core {
 
                 if (line.find(L"<Name>") != std::wstring::npos) {
                     name = GetTagContent(line, L"Name");
+                    if (name.find(L"Phonetic") != std::wstring::npos || name.find(L"phonetic") != std::wstring::npos) {
+                        isPhonetic = true;
+                    }
+                } else if (line.find(L"<Type>") != std::wstring::npos) {
+                    std::wstring type = GetTagContent(line, L"Type");
+                    if (type == L"Phonetic" || type == L"phonetic") {
+                        isPhonetic = true;
+                    }
                 } else if (line.find(L"<Shortcut>") != std::wstring::npos) {
                     while (!feof(file.get())) {
                         std::wstring sub = getLine();

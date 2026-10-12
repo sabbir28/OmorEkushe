@@ -24,6 +24,7 @@ struct Layout {
   std::wstring iconName;
   std::wstring path;
   int id = 0;
+  bool isPhonetic = false;
   LayoutShortcut shortcut;
   std::map<int, KeyMapping> key;
   std::map<std::wstring, std::wstring> juk;

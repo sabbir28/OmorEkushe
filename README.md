@@ -165,7 +165,7 @@ Omor Ekushe dynamically parses XML layout files stored in the `data/` directory.
 - [x] Integrated Spelling Checker Core
 - [x] Dedicated Setup Installer Generator
 - [ ] **Full Options & Configuration UI**: Settings menu for custom hotkeys, overlay opacity, and auto-start.
-- [ ] **Advanced Phonetic Engine**: Write Bengali phonetically using English characters (Avro-style layout parsing).
+- [x] **Advanced Phonetic Engine**: Write Bengali phonetically using English characters (Avro-style layout parsing with real-time backspacing and F12 hotkey toggle).
 - [ ] **Cloud Layout Marketplace**: Download and share layout XML files online via `NetClient`.
 - [ ] **Cross-Platform Linux Core**: Linux port using X11 / Wayland native hooks.
 

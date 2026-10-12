@@ -1,0 +1,61 @@
+#pragma once
+
+#include "core/phonetic_parser.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <string>
+
+namespace bijoy::core {
+
+constexpr ULONG_PTR OMOR_EKUSHE_EXTRA_INFO = 0x0E1952;
+
+class PhoneticEngine {
+public:
+    PhoneticEngine();
+    explicit PhoneticEngine(const PhoneticParser& parser);
+
+    /// Processes a physical key press.
+    /// Returns true if the key event was consumed and transliterated.
+    /// Returns false if the key should pass through to the system.
+    bool ProcessKey(
+        DWORD vkCode,
+        bool isKeyDown,
+        bool isSysKey,
+        bool ctrl,
+        bool alt,
+        bool shift,
+        HWND foregroundWnd);
+
+    /// Resets the current word buffer (commits on-screen text).
+    void Reset();
+
+    /// Converts a physical key to its ASCII character representation.
+    char MapVirtualKeyToChar(DWORD vkCode, bool shift) const;
+
+    const std::string& GetRawBuffer() const { return m_rawBuffer; }
+    const std::wstring& GetLastOutput() const { return m_lastOutput; }
+    const PhoneticParser& GetParser() const { return m_parser; }
+
+    /// Helper for testing diff calculation without sending Win32 input
+    struct DiffResult {
+        size_t commonPrefixLength = 0;
+        size_t backspaceCount = 0;
+        std::wstring toSend;
+    };
+    static DiffResult ComputeDiff(const std::wstring& oldOutput, const std::wstring& newOutput);
+
+private:
+    void ApplyDiff(const std::wstring& newOutput);
+    void EmitBackspacesAndChars(size_t backspaces, const std::wstring& toSend);
+
+    PhoneticParser m_parser;
+    std::string m_rawBuffer;
+    std::wstring m_lastOutput;
+    HWND m_lastWindow = nullptr;
+};
+
+extern PhoneticEngine g_phoneticEngine;
+
+} // namespace bijoy::core
+

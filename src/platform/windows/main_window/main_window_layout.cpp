@@ -20,6 +20,7 @@
 #include "platform/windows/main_window/main_window_helpers.h"
 #include "platform/windows/main_window/main_window_types.h"
 #include "core/app_state.h"
+#include "core/phonetic_engine.h"
 #include "core/window_layout_binding.h"
 
 #include <shellapi.h>
@@ -42,6 +43,7 @@ namespace bijoy::platform::windows {
 
     void SelectLayout(int index) {
         bijoy::core::SetCurrentLayout(index);
+        bijoy::core::g_phoneticEngine.Reset();
 
         if (g_layoutCombo) {
             const int count = static_cast<int>(SendMessageW(g_layoutCombo, CB_GETCOUNT, 0, 0));
