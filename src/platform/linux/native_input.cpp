@@ -3,11 +3,13 @@
 namespace bijoy::platform::linux {
 
     void DoKeyboard(int flags, int scanCode) {
-        // TODO: Implement Linux keyboard input simulation
+        (void)flags;
+        (void)scanCode;
     }
 
     void DoKeyboardVk(int flags, int vk) {
-        // TODO: Implement Linux keyboard input simulation
+        (void)flags;
+        (void)vk;
     }
 
 } // namespace bijoy::platform::linux

@@ -175,6 +175,13 @@ else()
         src/platform/linux/x11_input_method.cpp
         src/platform/linux/wayland_input_method.cpp
     )
+    if(X11_FOUND)
+        target_include_directories(PhoneticTests PRIVATE ${X11_INCLUDE_DIR})
+        target_link_libraries(PhoneticTests PRIVATE ${X11_LIBRARIES})
+        if(XTST_LIB)
+            target_link_libraries(PhoneticTests PRIVATE ${XTST_LIB})
+        endif()
+    endif()
     target_link_libraries(PhoneticTests PRIVATE pthread dl)
 endif()
 

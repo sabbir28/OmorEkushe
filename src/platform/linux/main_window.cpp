@@ -7,7 +7,8 @@ namespace bijoy::platform::linux {
     }
 
     void SetMainWindowInitialPosition(int left, int top) {
-        // TODO: Implement Linux window positioning
+        (void)left;
+        (void)top;
     }
 
 } // namespace bijoy::platform::linux

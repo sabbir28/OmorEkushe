@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <cwctype>
 
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -56,7 +57,9 @@ namespace bijoy::utils {
         }
 
         std::wstring value = input;
-        std::transform(value.begin(), value.end(), value.begin(), ::towlower);
+        std::transform(value.begin(), value.end(), value.begin(), [](wchar_t c) {
+            return static_cast<wchar_t>(std::towlower(c));
+        });
         std::reverse(value.begin(), value.end());
 
         std::wstring transformed;
