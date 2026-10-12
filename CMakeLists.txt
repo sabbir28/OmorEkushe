@@ -36,6 +36,7 @@ if(WIN32)
         src/platform/windows/registration_dialog.cpp
         src/platform/windows/splash_screen.cpp
         src/platform/windows/options_overlay.cpp
+        src/platform/windows/options_dialog.cpp
     )
 elseif(UNIX AND NOT APPLE)
     target_sources(OmorEkushe PRIVATE
@@ -132,9 +133,11 @@ add_executable(PhoneticTests
     src/core/phonetic_parser.cpp
     src/core/phonetic_engine.cpp
     src/core/layout.cpp
+    src/core/startup_options.cpp
     src/core/test_phonetic_parser.cpp
 )
 target_include_directories(PhoneticTests PRIVATE include)
+target_link_libraries(PhoneticTests PRIVATE advapi32)
 set_target_properties(PhoneticTests PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}"
 )
@@ -159,6 +162,8 @@ if(BIJOY_BUILD_LAYOUT_EDITOR)
         GIT_SHALLOW TRUE
         GIT_PROGRESS TRUE
     )
+    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/_deps/glfw-build/src")
+    file(MAKE_DIRECTORY "${FETCHCONTENT_BASE_DIR}/glfw-build/src")
     FetchContent_MakeAvailable(glfw)
 
     FetchContent_Declare(

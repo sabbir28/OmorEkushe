@@ -1,6 +1,7 @@
 #include "core/phonetic_parser.h"
 #include "core/phonetic_engine.h"
 #include "core/layout.h"
+#include "core/startup_options.h"
 #include <iostream>
 #include <cassert>
 #include <string>
@@ -534,6 +535,65 @@ int main() {
         assert(!phoneticLayout.shortcut.alt);
         assert(!phoneticLayout.shortcut.shift);
         std::cout << "Phonetic XML Layout Test: 02 Phonetic.xml loaded and verified successfully!" << std::endl;
+    }
+
+    // 5. Test StartupOptions and Custom Layout Shortcuts persistence
+    {
+        bijoy::core::StartupOptions opts;
+        opts.autoStart = false;
+        opts.overlayOpacity = 85;
+        opts.alwaysOnTop = true;
+        opts.snapToTop = true;
+        opts.showSplash = true;
+        opts.phoneticToggleKey = VK_F11;
+        opts.phoneticToggleCtrl = true;
+        opts.phoneticToggleAlt = false;
+        opts.phoneticToggleShift = true;
+        opts.defaultLayout = 1;
+
+        bool saved = bijoy::core::SaveStartupOptions(opts);
+        assert(saved);
+
+        bijoy::core::StartupOptions loaded = bijoy::core::LoadStartupOptions();
+        assert(loaded.overlayOpacity == 85);
+        assert(loaded.alwaysOnTop == true);
+        assert(loaded.snapToTop == true);
+        assert(loaded.showSplash == true);
+        assert(loaded.phoneticToggleKey == VK_F11);
+        assert(loaded.phoneticToggleCtrl == true);
+        assert(loaded.phoneticToggleAlt == false);
+        assert(loaded.phoneticToggleShift == true);
+        assert(loaded.defaultLayout == 1);
+
+        // Test custom layout shortcut persistence
+        bijoy::core::LayoutShortcut sc;
+        sc.keyCode = 'V';
+        sc.ctrl = true;
+        sc.alt = true;
+        sc.shift = false;
+        bool scSaved = bijoy::core::SaveCustomLayoutShortcut(L"TestLayout", sc);
+        assert(scSaved);
+
+        bijoy::core::LayoutShortcut scLoaded;
+        bool scFound = bijoy::core::LoadCustomLayoutShortcut(L"TestLayout", scLoaded);
+        assert(scFound);
+        assert(scLoaded.keyCode == 'V');
+        assert(scLoaded.ctrl == true);
+        assert(scLoaded.alt == true);
+        assert(scLoaded.shift == false);
+
+        bool scDeleted = bijoy::core::DeleteCustomLayoutShortcut(L"TestLayout");
+        assert(scDeleted);
+        assert(!bijoy::core::LoadCustomLayoutShortcut(L"TestLayout", scLoaded));
+
+        // Restore default options
+        opts.overlayOpacity = 100;
+        opts.phoneticToggleKey = VK_F12;
+        opts.phoneticToggleCtrl = false;
+        opts.phoneticToggleShift = false;
+        bijoy::core::SaveStartupOptions(opts);
+
+        std::cout << "StartupOptions & Custom Shortcuts Test: All persistence tests passed successfully!" << std::endl;
     }
 
     return failed == 0 ? 0 : 1;

@@ -34,6 +34,7 @@
 #include "platform/windows/main_window/main_window_tray.h"
 #include "platform/windows/main_window.h"
 #include "platform/windows/options_overlay.h"
+#include "platform/windows/options_dialog.h"
 
 #include "core/app_state.h"
 #include "core/layout_discovery.h"
@@ -74,6 +75,10 @@ namespace bijoy::platform::windows {
         HICON g_windowClassIconLarge = nullptr;
         HICON g_windowClassIconSmall = nullptr;
         bool g_ownsDefaultIcon = false;
+
+        int g_overlayOpacity = 100;
+        bool g_alwaysOnTop = true;
+        bool g_snapToTop = true;
 
         void AddTooltip(HWND tool, const wchar_t* text) {
             if (!g_tooltipWindow || !tool || !text) {
@@ -381,6 +386,11 @@ namespace bijoy::platform::windows {
                             return 0;
                         }
 
+                        if (controlId == IDM_SETTINGS || controlId == IDM_TRAY_SETTINGS) {
+                            ShowOptionsDialog(hwnd);
+                            return 0;
+                        }
+
                         if (controlId == IDM_ABOUT) {
                             MessageBoxW(nullptr,
                                         L"Omor Ekushe\n"
@@ -513,7 +523,7 @@ namespace bijoy::platform::windows {
                     case WM_WINDOWPOSCHANGING: {
                         auto* windowPos = reinterpret_cast<WINDOWPOS*>(lParam);
                         if (windowPos != nullptr && (windowPos->flags & SWP_NOMOVE) == 0) {
-                            if (windowPos->y > 1) {
+                            if (g_snapToTop && windowPos->y > 1) {
                                 windowPos->y = kForcedTopY;
                             }
                         }
@@ -521,8 +531,11 @@ namespace bijoy::platform::windows {
                     }
 
                     case WM_EXITSIZEMOVE:
-                        SnapWindowToTop(hwnd);
+                        if (g_snapToTop) {
+                            SnapWindowToTop(hwnd);
+                        }
                         return 0;
+
 
                     case WM_SIZE:
                         if (wParam != SIZE_MINIMIZED) {
@@ -613,9 +626,20 @@ namespace bijoy::platform::windows {
         RegisterClassExW(&windowClass);
 
         bijoy::core::StartupOptions options = bijoy::core::LoadStartupOptions();
+        g_overlayOpacity = options.overlayOpacity;
+        g_alwaysOnTop = options.alwaysOnTop;
+        g_snapToTop = options.snapToTop;
+
+        DWORD exStyle = WS_EX_TOOLWINDOW;
+        if (g_alwaysOnTop) {
+            exStyle |= WS_EX_TOPMOST;
+        }
+        if (g_overlayOpacity < 100) {
+            exStyle |= WS_EX_LAYERED;
+        }
 
         g_mainWindow = CreateWindowExW(
-                WS_EX_TOPMOST | WS_EX_TOOLWINDOW,
+                exStyle,
                 windowClass.lpszClassName,
                 L"Omor Ekushe",
                 WS_POPUP,
@@ -629,6 +653,9 @@ namespace bijoy::platform::windows {
                 nullptr);
 
         if (g_mainWindow) {
+            if (g_overlayOpacity < 100) {
+                SetMainWindowOpacity(g_overlayOpacity);
+            }
             ShowWindow(g_mainWindow, SW_SHOW);
             UpdateWindow(g_mainWindow);
         }
@@ -641,6 +668,49 @@ namespace bijoy::platform::windows {
             (void)top; // Suppress unused parameter warning as Y is forced to top
             SetWindowPos(g_mainWindow, nullptr, left, kForcedTopY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
         }
+    }
+
+    void SetMainWindowOpacity(int opacityPercent) {
+        if (!g_mainWindow || !IsWindow(g_mainWindow)) return;
+        if (opacityPercent < 20) opacityPercent = 20;
+        if (opacityPercent > 100) opacityPercent = 100;
+        g_overlayOpacity = opacityPercent;
+
+        LONG_PTR exStyle = GetWindowLongPtrW(g_mainWindow, GWL_EXSTYLE);
+        if ((exStyle & WS_EX_LAYERED) == 0) {
+            SetWindowLongPtrW(g_mainWindow, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);
+        }
+        BYTE alpha = static_cast<BYTE>((255 * opacityPercent) / 100);
+        SetLayeredWindowAttributes(g_mainWindow, 0, alpha, LWA_ALPHA);
+    }
+
+    int GetMainWindowOpacity() {
+        return g_overlayOpacity;
+    }
+
+    void SetMainWindowAlwaysOnTop(bool alwaysOnTop) {
+        if (!g_mainWindow || !IsWindow(g_mainWindow)) return;
+        g_alwaysOnTop = alwaysOnTop;
+        SetWindowPos(g_mainWindow, alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    }
+
+    void SetMainWindowSnapToTop(bool snap) {
+        g_snapToTop = snap;
+        if (snap && g_mainWindow && IsWindow(g_mainWindow)) {
+            RECT rect;
+            GetWindowRect(g_mainWindow, &rect);
+            SetWindowPos(g_mainWindow, nullptr, rect.left, kForcedTopY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+        }
+    }
+
+    void ResetMainWindowPosition() {
+        if (!g_mainWindow || !IsWindow(g_mainWindow)) return;
+        RECT rect;
+        GetWindowRect(g_mainWindow, &rect);
+        int width = rect.right - rect.left;
+        int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+        int newX = (screenWidth - width) / 2;
+        SetWindowPos(g_mainWindow, nullptr, newX, kForcedTopY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     }
 
 } // namespace bijoy::platform::windows

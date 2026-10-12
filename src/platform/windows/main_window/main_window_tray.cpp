@@ -17,6 +17,7 @@
 #include "platform/windows/main_window/main_window_tray.h"
 #include "platform/windows/main_window/main_window_types.h"
 #include "platform/windows/main_window/main_window_layout.h"
+#include "platform/windows/options_dialog.h"
 #include "core/app_state.h"
 
 namespace bijoy::platform::windows {
@@ -34,6 +35,7 @@ namespace bijoy::platform::windows {
 
         const bool isVisible = g_mainWindow && IsWindowVisible(g_mainWindow);
         AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_SHOW, isVisible ? L"&Hide" : L"&Show");
+        AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_SETTINGS, L"&Settings...");
         AppendMenuW(g_trayMenu, MF_SEPARATOR, 0, nullptr);
 
         AppendMenuW(g_trayMenu, MF_STRING, IDM_TRAY_LAYOUT_BASE, L"English");
@@ -59,6 +61,11 @@ namespace bijoy::platform::windows {
         if (id == IDM_TRAY_SHOW) {
             const bool isVisible = g_mainWindow && IsWindowVisible(g_mainWindow);
             ShowWindow(g_mainWindow, isVisible ? SW_HIDE : SW_SHOW);
+            return;
+        }
+
+        if (id == IDM_TRAY_SETTINGS) {
+            ShowOptionsDialog(g_mainWindow);
             return;
         }
 

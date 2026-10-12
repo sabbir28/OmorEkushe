@@ -33,11 +33,12 @@ void ShowOptionsOverlay(HWND parent, int x, int y) {
         return;
     }
 
-    AppendMenuW(hMenu, MF_STRING, IDM_ABOUT, L"About Omor Ekushe");
-    AppendMenuW(hMenu, MF_STRING, IDM_LICENSE, L"License Information");
-    AppendMenuW(hMenu, MF_STRING, IDM_WEBSITE, L"Visit Website");
+    AppendMenuW(hMenu, MF_STRING, IDM_SETTINGS, L"Settings & Options...");
     AppendMenuW(hMenu, MF_SEPARATOR, 0, nullptr);
     AppendMenuW(hMenu, MF_STRING, IDM_UPDATE, L"Check for Updates");
+    AppendMenuW(hMenu, MF_STRING, IDM_WEBSITE, L"Visit Website");
+    AppendMenuW(hMenu, MF_STRING, IDM_LICENSE, L"License Information");
+    AppendMenuW(hMenu, MF_STRING, IDM_ABOUT, L"About Omor Ekushe");
 
     SetForegroundWindow(parent);
     const UINT selectedCmd = TrackPopupMenu(

@@ -18,6 +18,8 @@
 // =============================================================================
 
 #include "core/layout_discovery.h"
+#include "core/startup_options.h"
+#include "core/keyboard_hook_service.h"
 #include "utils/system_utils.h"
 
 #include <shlwapi.h>
@@ -93,14 +95,27 @@ namespace bijoy::core {
             Layout layout;
             if (layout.loadFromFile(files[i].c_str())) {
                 layout.id = static_cast<int>(i);
+
+                LayoutShortcut customShortcut;
+                if (LoadCustomLayoutShortcut(layout.name, customShortcut)) {
+                    layout.shortcut = customShortcut;
+                }
+
                 layouts.push_back(std::move(layout));
             }
         }
 
         bool hasPhonetic = false;
-        for (const auto& l : layouts) {
+        for (auto& l : layouts) {
             if (l.isPhonetic) {
                 hasPhonetic = true;
+                int key = VK_F12;
+                bool ctrl = false, alt = false, shift = false;
+                GetPhoneticToggleShortcut(key, ctrl, alt, shift);
+                l.shortcut.keyCode = key;
+                l.shortcut.ctrl = ctrl;
+                l.shortcut.alt = alt;
+                l.shortcut.shift = shift;
                 break;
             }
         }
@@ -109,10 +124,13 @@ namespace bijoy::core {
             phoneticLayout.name = L"Phonetic";
             phoneticLayout.iconName = L"Phonetic";
             phoneticLayout.isPhonetic = true;
-            phoneticLayout.shortcut.keyCode = VK_F12;
-            phoneticLayout.shortcut.ctrl = false;
-            phoneticLayout.shortcut.alt = false;
-            phoneticLayout.shortcut.shift = false;
+            int key = VK_F12;
+            bool ctrl = false, alt = false, shift = false;
+            GetPhoneticToggleShortcut(key, ctrl, alt, shift);
+            phoneticLayout.shortcut.keyCode = key;
+            phoneticLayout.shortcut.ctrl = ctrl;
+            phoneticLayout.shortcut.alt = alt;
+            phoneticLayout.shortcut.shift = shift;
             phoneticLayout.id = static_cast<int>(layouts.size());
             layouts.push_back(std::move(phoneticLayout));
         }

@@ -45,6 +45,11 @@ namespace bijoy::core {
         HHOOK g_mouseHook = nullptr;
         bool g_layoutsReady = false;
 
+        int g_phoneticToggleKey = VK_F12;
+        bool g_phoneticToggleCtrl = false;
+        bool g_phoneticToggleAlt = false;
+        bool g_phoneticToggleShift = false;
+
         bool IsKeyPressed(int vk) {
             return (GetAsyncKeyState(vk) & 0x8000) != 0;
         }
@@ -55,8 +60,11 @@ namespace bijoy::core {
             const bool shift = IsKeyPressed(VK_SHIFT);
             const HWND foregroundWindow = GetForegroundWindow();
 
-            // 1. Check F12 toggle for phonetic layout
-            if (!ctrl && !alt && !shift && hs->vkCode == VK_F12) {
+            // 1. Check custom toggle shortcut for phonetic layout
+            if (ctrl == g_phoneticToggleCtrl &&
+                alt == g_phoneticToggleAlt &&
+                shift == g_phoneticToggleShift &&
+                hs->vkCode == static_cast<DWORD>(g_phoneticToggleKey)) {
                 int phoneticIndex = -1;
                 for (int i = 0; i < GetLayoutCount(); ++i) {
                     Layout* l = GetLayoutByIndex(i);
@@ -195,6 +203,20 @@ namespace bijoy::core {
 
     void SetLayoutsReady(bool ready) {
         g_layoutsReady = ready;
+    }
+
+    void SetPhoneticToggleShortcut(int vkCode, bool ctrl, bool alt, bool shift) {
+        g_phoneticToggleKey = vkCode;
+        g_phoneticToggleCtrl = ctrl;
+        g_phoneticToggleAlt = alt;
+        g_phoneticToggleShift = shift;
+    }
+
+    void GetPhoneticToggleShortcut(int& vkCode, bool& ctrl, bool& alt, bool& shift) {
+        vkCode = g_phoneticToggleKey;
+        ctrl = g_phoneticToggleCtrl;
+        alt = g_phoneticToggleAlt;
+        shift = g_phoneticToggleShift;
     }
 
 } // namespace bijoy::core

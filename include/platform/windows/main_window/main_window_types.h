@@ -23,6 +23,7 @@ constexpr UINT_PTR IDC_CLOSE_BUTTON = 106;
 // Menu IDs
 constexpr UINT IDM_TRAY_SHOW = 201;
 constexpr UINT IDM_TRAY_EXIT = 202;
+constexpr UINT IDM_TRAY_SETTINGS = 203;
 constexpr UINT IDM_TRAY_LAYOUT_BASE = 300; // Layouts will be BASE + index + 1
 
 // Tray Icon ID

@@ -58,7 +58,7 @@ error::Status Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     error::InstallCrashDiagnostics();
 
     // 2. Initialize Common Controls
-    INITCOMMONCONTROLSEX icc = {sizeof(icc), ICC_STANDARD_CLASSES};
+    INITCOMMONCONTROLSEX icc = {sizeof(icc), ICC_STANDARD_CLASSES | ICC_BAR_CLASSES | ICC_TAB_CLASSES | ICC_HOTKEY_CLASS};
     if (!InitCommonControlsEx(&icc)) {
         // Fallback or warning, not fatal for standard Win32 windows
     }
@@ -110,33 +110,56 @@ error::Status Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
 
     // 9. Startup options & splash screen
     m_startupOptions = std::make_shared<core::StartupOptions>();
+    *m_startupOptions = core::LoadStartupOptions();
+    core::SetPhoneticToggleShortcut(
+        m_startupOptions->phoneticToggleKey,
+        m_startupOptions->phoneticToggleCtrl,
+        m_startupOptions->phoneticToggleAlt,
+        m_startupOptions->phoneticToggleShift);
 
-    HWND splashWindow = platform::windows::ShowSplashScreen(
-        m_hInstance,
-        m_mainWindow,
-        [this]() {
-            *m_startupOptions = core::LoadStartupOptions();
+    HWND splashWindow = nullptr;
+    if (m_startupOptions->showSplash) {
+        splashWindow = platform::windows::ShowSplashScreen(
+            m_hInstance,
+            m_mainWindow,
+            [this]() {
+                platform::windows::SetMainWindowInitialPosition(
+                    m_startupOptions->mainWindowLeft,
+                    m_startupOptions->mainWindowTop);
 
-            platform::windows::SetMainWindowInitialPosition(
-                m_startupOptions->mainWindowLeft,
-                m_startupOptions->mainWindowTop);
+                if (m_startupOptions->defaultLayout >= 0 &&
+                    m_startupOptions->defaultLayout < core::GetLayoutCount()) {
+                    core::SetCurrentLayout(m_startupOptions->defaultLayout);
+                }
+            },
+            [this]() {
+                const bool shouldStartHidden =
+                    m_startupOptions->applicationMode == 3 ||
+                    (m_startupOptions->applicationMode != 2 && m_startupOptions->trayMode);
 
-            if (m_startupOptions->defaultLayout >= 0 &&
-                m_startupOptions->defaultLayout < core::GetLayoutCount()) {
-                core::SetCurrentLayout(m_startupOptions->defaultLayout);
-            }
-        },
-        [this]() {
-            const bool shouldStartHidden =
-                m_startupOptions->applicationMode == 3 ||
-                (m_startupOptions->applicationMode != 2 && m_startupOptions->trayMode);
+                ShowWindow(m_mainWindow, shouldStartHidden ? SW_HIDE : SW_SHOW);
+            });
+    } else {
+        platform::windows::SetMainWindowInitialPosition(
+            m_startupOptions->mainWindowLeft,
+            m_startupOptions->mainWindowTop);
 
-            ShowWindow(m_mainWindow, shouldStartHidden ? SW_HIDE : SW_SHOW);
-        });
+        if (m_startupOptions->defaultLayout >= 0 &&
+            m_startupOptions->defaultLayout < core::GetLayoutCount()) {
+            core::SetCurrentLayout(m_startupOptions->defaultLayout);
+        }
 
-    if (!splashWindow) {
+        const bool shouldStartHidden =
+            m_startupOptions->applicationMode == 3 ||
+            (m_startupOptions->applicationMode != 2 && m_startupOptions->trayMode);
+
+        ShowWindow(m_mainWindow, shouldStartHidden ? SW_HIDE : SW_SHOW);
+    }
+
+    if (!splashWindow && m_startupOptions->showSplash) {
         ShowWindow(m_mainWindow, SW_SHOW);
     }
+
 
     m_state = ApplicationState::Running;
     return error::Status();
