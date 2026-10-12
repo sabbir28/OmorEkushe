@@ -26,6 +26,10 @@
 //            e) Process termination via ExitProcess(1)
 // =============================================================================
 
+#ifdef _MSC_VER
+#pragma warning(disable: 4702) // Unreachable code (ProcessCrash calls ExitProcess(1))
+#endif
+
 #include "error/crash_handler.h"
 
 #include <atomic>

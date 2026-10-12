@@ -41,6 +41,7 @@ int WINAPI wWinMain(
     LPWSTR lpCmdLine,
     int nCmdShow);
 
+#ifndef _MSC_VER
 int WINAPI WinMain(
     HINSTANCE hInstance,
     HINSTANCE hPrevInstance,
@@ -48,6 +49,7 @@ int WINAPI WinMain(
     int nCmdShow) {
     return wWinMain(hInstance, hPrevInstance, GetCommandLineW(), nCmdShow);
 }
+#endif
 
 #include <exception>
 

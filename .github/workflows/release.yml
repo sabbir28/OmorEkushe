@@ -45,6 +45,13 @@ jobs:
       shell: powershell
       run: |
         New-Item -ItemType Directory -Force -Path release_stage
+        
+        # When using Visual Studio CMake generator, binaries are placed under build/bin/Release/
+        # Copy them into build/bin/ so Inno Setup and portable packaging find them reliably
+        if (Test-Path "build/bin/Release") {
+          Write-Host "Copying Release binaries from build/bin/Release/ to build/bin/..."
+          Copy-Item -Recurse -Force build/bin/Release/* build/bin/
+        }
 
     - name: Build Inno Setup Installer
       shell: powershell
