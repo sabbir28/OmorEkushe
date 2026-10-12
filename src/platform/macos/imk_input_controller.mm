@@ -2,8 +2,12 @@
 #import "platform/macos/imk_input_controller.h"
 #include "core/phonetic_engine.h"
 #include "core/app_state.h"
-#include <codecvt>
-#include <locale>
+static NSString* WStringToNSString(const std::wstring& str) {
+    if (str.empty()) return @"";
+    return [[NSString alloc] initWithBytes:str.data()
+                                    length:str.size() * sizeof(wchar_t)
+                                  encoding:NSUTF32StringEncoding];
+}
 
 @implementation OmorEkusheInputController {
     BOOL _phoneticActive;
@@ -54,9 +58,7 @@
         uintptr_t clientHandle = (uintptr_t)(__bridge void*)sender;
         if (bijoy::core::g_phoneticEngine.ProcessBackspace(clientHandle)) {
             const std::wstring& lastOutput = bijoy::core::g_phoneticEngine.GetLastOutput();
-            std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-            std::string utf8 = converter.to_bytes(lastOutput);
-            NSString* nsStr = [NSString stringWithUTF8String:utf8.c_str()];
+            NSString* nsStr = WStringToNSString(lastOutput);
             [sender setMarkedText:nsStr selectionRange:NSMakeRange(nsStr.length, 0) replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
             return YES;
         }
@@ -67,9 +69,7 @@
     if ([event keyCode] == 49 || [event keyCode] == 36 || [event keyCode] == 48) {
         const std::wstring& lastOutput = bijoy::core::g_phoneticEngine.GetLastOutput();
         if (!lastOutput.empty()) {
-            std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-            std::string utf8 = converter.to_bytes(lastOutput);
-            NSString* nsStr = [NSString stringWithUTF8String:utf8.c_str()];
+            NSString* nsStr = WStringToNSString(lastOutput);
             [sender insertText:nsStr replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
             bijoy::core::g_phoneticEngine.Reset();
         }
@@ -86,9 +86,7 @@
         uintptr_t clientHandle = (uintptr_t)(__bridge void*)sender;
         if (bijoy::core::g_phoneticEngine.ProcessCharacter(static_cast<char>(ch), clientHandle)) {
             const std::wstring& lastOutput = bijoy::core::g_phoneticEngine.GetLastOutput();
-            std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-            std::string utf8 = converter.to_bytes(lastOutput);
-            NSString* nsStr = [NSString stringWithUTF8String:utf8.c_str()];
+            NSString* nsStr = WStringToNSString(lastOutput);
             [sender setMarkedText:nsStr selectionRange:NSMakeRange(nsStr.length, 0) replacementRange:NSMakeRange(NSNotFound, NSNotFound)];
             return YES;
         }

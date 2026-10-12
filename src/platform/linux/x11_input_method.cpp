@@ -2,9 +2,34 @@
 #include "platform/linux/x11_input_method.h"
 #include <iostream>
 #include <vector>
-#include <codecvt>
-#include <locale>
 #include <cstring>
+
+namespace {
+
+inline std::string WStringToUtf8(const std::wstring& wstr) {
+    std::string out;
+    for (wchar_t wc : wstr) {
+        uint32_t cp = static_cast<uint32_t>(wc);
+        if (cp < 0x80) {
+            out.push_back(static_cast<char>(cp));
+        } else if (cp < 0x800) {
+            out.push_back(static_cast<char>(0xC0 | (cp >> 6)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        } else if (cp < 0x10000) {
+            out.push_back(static_cast<char>(0xE0 | (cp >> 12)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        } else {
+            out.push_back(static_cast<char>(0xF0 | (cp >> 18)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 12) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        }
+    }
+    return out;
+}
+
+} // namespace
 
 #if __has_include(<X11/Xlib.h>)
 #include <X11/Xlib.h>
@@ -100,8 +125,7 @@ void X11InputEngine::EmitBackspacesAndChars(size_t backspaces, const std::wstrin
 #endif
 
     // For Unicode text, UTF-8 conversion
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::string utf8Text = converter.to_bytes(toSend);
+    std::string utf8Text = WStringToUtf8(toSend);
 
     // Emits keystrokes or dispatches to client
     XFlush(dpy);

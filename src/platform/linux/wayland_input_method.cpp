@@ -2,8 +2,33 @@
 #include "platform/linux/wayland_input_method.h"
 #include "core/phonetic_engine.h"
 #include <iostream>
-#include <codecvt>
-#include <locale>
+
+namespace {
+
+inline std::string WStringToUtf8(const std::wstring& wstr) {
+    std::string out;
+    for (wchar_t wc : wstr) {
+        uint32_t cp = static_cast<uint32_t>(wc);
+        if (cp < 0x80) {
+            out.push_back(static_cast<char>(cp));
+        } else if (cp < 0x800) {
+            out.push_back(static_cast<char>(0xC0 | (cp >> 6)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        } else if (cp < 0x10000) {
+            out.push_back(static_cast<char>(0xE0 | (cp >> 12)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        } else {
+            out.push_back(static_cast<char>(0xF0 | (cp >> 18)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 12) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        }
+    }
+    return out;
+}
+
+} // namespace
 
 namespace bijoy::platform::linux {
 
@@ -33,8 +58,7 @@ bool WaylandInputMethodEngine::IsAvailable() const {
 
 void WaylandInputMethodEngine::CommitText(const std::wstring& utf16Text) {
     if (!m_initialized) return;
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::string utf8 = converter.to_bytes(utf16Text);
+    std::string utf8 = WStringToUtf8(utf16Text);
     // Wayland text-input-v3: zwp_text_input_v3_commit_string
     // IBus: ibus_engine_commit_text
     m_currentPreedit.clear();

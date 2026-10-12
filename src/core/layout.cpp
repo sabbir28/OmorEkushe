@@ -25,8 +25,14 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <fstream>
 #include <memory>
+#include <string>
+#include <filesystem>
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#endif
 
 namespace {
 
@@ -83,6 +89,50 @@ namespace {
         return static_cast<int>(wcstol(value.c_str(), nullptr, 10));
     }
 
+    std::wstring Utf8ToWstring(const std::string& str) {
+        std::wstring out;
+        out.reserve(str.size());
+        for (size_t i = 0; i < str.size();) {
+            unsigned char c = static_cast<unsigned char>(str[i]);
+            if (c < 0x80) {
+                out.push_back(static_cast<wchar_t>(c));
+                i += 1;
+            } else if ((c & 0xE0) == 0xC0) {
+                if (i + 1 < str.size()) {
+                    wchar_t cp = ((c & 0x1F) << 6) | (static_cast<unsigned char>(str[i + 1]) & 0x3F);
+                    out.push_back(cp);
+                }
+                i += 2;
+            } else if ((c & 0xF0) == 0xE0) {
+                if (i + 2 < str.size()) {
+                    wchar_t cp = ((c & 0x0F) << 12) |
+                                 ((static_cast<unsigned char>(str[i + 1]) & 0x3F) << 6) |
+                                 (static_cast<unsigned char>(str[i + 2]) & 0x3F);
+                    out.push_back(cp);
+                }
+                i += 3;
+            } else if ((c & 0xF8) == 0xF0) {
+                if (i + 3 < str.size()) {
+                    uint32_t cp = ((c & 0x07) << 18) |
+                                  ((static_cast<unsigned char>(str[i + 1]) & 0x3F) << 12) |
+                                  ((static_cast<unsigned char>(str[i + 2]) & 0x3F) << 6) |
+                                  (static_cast<unsigned char>(str[i + 3]) & 0x3F);
+                    if constexpr (sizeof(wchar_t) == 2) {
+                        cp -= 0x10000;
+                        out.push_back(static_cast<wchar_t>((cp >> 10) + 0xD800));
+                        out.push_back(static_cast<wchar_t>((cp & 0x3FF) + 0xDC00));
+                    } else {
+                        out.push_back(static_cast<wchar_t>(cp));
+                    }
+                }
+                i += 4;
+            } else {
+                i += 1;
+            }
+        }
+        return out;
+    }
+
 } // namespace
 
 namespace bijoy::core {
@@ -98,7 +148,8 @@ namespace bijoy::core {
         path = filePath;
         clear();
 
-        // AUDIT FIX: Use secure _wfopen_s instead of deprecated _wfopen.
+#if defined(_WIN32)
+        // AUDIT FIX: Use secure _wfopen_s on Windows.
         FILE* rawFile = nullptr;
         if (_wfopen_s(&rawFile, filePath, L"r, ccs=UTF-8") != 0 || !rawFile) {
             return false;
@@ -115,9 +166,31 @@ namespace bijoy::core {
             if (!line.empty() && line.back() == L'\r') line.pop_back();
             return Trim(line);
         };
+        auto isEof = [&]() -> bool {
+            return feof(file.get()) != 0;
+        };
+#else
+        std::filesystem::path p(filePath);
+        std::ifstream file(p);
+        if (!file.is_open()) {
+            return false;
+        }
+
+        std::string lineBuffer;
+        auto getLine = [&]() -> std::wstring {
+            if (!std::getline(file, lineBuffer)) {
+                return L"";
+            }
+            if (!lineBuffer.empty() && lineBuffer.back() == '\r') lineBuffer.pop_back();
+            return Trim(Utf8ToWstring(lineBuffer));
+        };
+        auto isEof = [&]() -> bool {
+            return file.eof();
+        };
+#endif
 
         try {
-            while (!feof(file.get())) {
+            while (!isEof()) {
                 std::wstring line = getLine();
                 if (line.empty()) {
                     continue;
@@ -134,7 +207,7 @@ namespace bijoy::core {
                         isPhonetic = true;
                     }
                 } else if (line.find(L"<Shortcut>") != std::wstring::npos) {
-                    while (!feof(file.get())) {
+                    while (!isEof()) {
                         std::wstring sub = getLine();
                         if (sub.find(L"</Shortcut>") != std::wstring::npos) break;
                         if (sub.find(L"<Alt>") != std::wstring::npos) shortcut.alt = ParseBool(GetTagContent(sub, L"Alt"));
