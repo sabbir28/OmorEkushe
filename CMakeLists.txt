@@ -3,6 +3,7 @@ project(OmorEkushe LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor GUI (GLFW + OpenGL + Dear ImGui)" ON)
 
@@ -21,12 +22,12 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/data")
 endif()
 
 # =========================================================
-# Main Executable: OmorEkushe (100% Pure Native Win32 API)
+# Main Executable: OmorEkushe (Cross-Platform Native Engine)
 # =========================================================
-add_executable(OmorEkushe WIN32)
-
 if(WIN32)
+    add_executable(OmorEkushe WIN32)
     target_sources(OmorEkushe PRIVATE
+        src/platform/windows/platform_input_win.cpp
         src/platform/windows/main_window.cpp
         src/platform/windows/main_window/main_window_background.cpp
         src/platform/windows/main_window/main_window_helpers.cpp
@@ -38,13 +39,39 @@ if(WIN32)
         src/platform/windows/options_overlay.cpp
         src/platform/windows/options_dialog.cpp
     )
-elseif(UNIX AND NOT APPLE)
+elseif(APPLE)
+    add_executable(OmorEkushe MACOSX_BUNDLE)
     target_sources(OmorEkushe PRIVATE
+        src/platform/macos/platform_input_macos.mm
+        src/platform/macos/imk_input_controller.mm
+        src/platform/macos/main_window.mm
+    )
+    find_library(COCOA_LIB Cocoa REQUIRED)
+    find_library(IMK_LIB InputMethodKit REQUIRED)
+    find_library(CARBON_LIB Carbon REQUIRED)
+    find_library(COREGRAPHICS_LIB CoreGraphics REQUIRED)
+    target_link_libraries(OmorEkushe PRIVATE ${COCOA_LIB} ${IMK_LIB} ${CARBON_LIB} ${COREGRAPHICS_LIB})
+elseif(UNIX AND NOT APPLE)
+    add_executable(OmorEkushe)
+    target_sources(OmorEkushe PRIVATE
+        src/platform/linux/platform_input_linux.cpp
+        src/platform/linux/x11_input_method.cpp
+        src/platform/linux/wayland_input_method.cpp
         src/platform/linux/main_window.cpp
         src/platform/linux/native_input.cpp
         src/platform/linux/registration_dialog.cpp
         src/platform/linux/splash_screen.cpp
     )
+    find_package(X11)
+    if(X11_FOUND)
+        target_include_directories(OmorEkushe PRIVATE ${X11_INCLUDE_DIR})
+        target_link_libraries(OmorEkushe PRIVATE ${X11_LIBRARIES})
+        find_library(XTST_LIB Xtst)
+        if(XTST_LIB)
+            target_link_libraries(OmorEkushe PRIVATE ${XTST_LIB})
+        endif()
+    endif()
+    target_link_libraries(OmorEkushe PRIVATE pthread dl)
 endif()
 
 target_sources(OmorEkushe PRIVATE
@@ -64,7 +91,7 @@ target_sources(OmorEkushe PRIVATE
 )
 
 option(BIJOY_INCLUDE_RESOURCES "Compile Win32 resource file (app.rc)" ON)
-if(BIJOY_INCLUDE_RESOURCES)
+if(WIN32 AND BIJOY_INCLUDE_RESOURCES)
   if(CMAKE_RC_COMPILER)
     enable_language(RC)
     target_sources(OmorEkushe PRIVATE src/platform/windows/app.rc)
@@ -85,8 +112,6 @@ target_compile_definitions(
 
 if(WIN32)
     target_link_libraries(OmorEkushe PRIVATE comctl32 shell32 shlwapi msimg32 dbghelp user32 gdi32 advapi32)
-else()
-    target_link_libraries(OmorEkushe PRIVATE)
 endif()
 
 set_target_properties(OmorEkushe PROPERTIES
@@ -137,13 +162,28 @@ add_executable(PhoneticTests
     src/core/test_phonetic_parser.cpp
 )
 target_include_directories(PhoneticTests PRIVATE include)
-target_link_libraries(PhoneticTests PRIVATE advapi32)
+
+if(WIN32)
+    target_sources(PhoneticTests PRIVATE src/platform/windows/platform_input_win.cpp)
+    target_link_libraries(PhoneticTests PRIVATE advapi32 user32)
+elseif(APPLE)
+    target_sources(PhoneticTests PRIVATE src/platform/macos/platform_input_macos.mm)
+    target_link_libraries(PhoneticTests PRIVATE ${COREGRAPHICS_LIB} ${COCOA_LIB})
+else()
+    target_sources(PhoneticTests PRIVATE
+        src/platform/linux/platform_input_linux.cpp
+        src/platform/linux/x11_input_method.cpp
+        src/platform/linux/wayland_input_method.cpp
+    )
+    target_link_libraries(PhoneticTests PRIVATE pthread dl)
+endif()
+
 set_target_properties(PhoneticTests PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}"
 )
 
-# Optional Layout Editor dependencies (only if explicitly enabled)
-if(BIJOY_BUILD_LAYOUT_EDITOR)
+# Optional Layout Editor dependencies (only if explicitly enabled on Windows)
+if(BIJOY_BUILD_LAYOUT_EDITOR AND WIN32)
     include(FetchContent)
     set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/_deps CACHE PATH "Dependencies Base Directory")
     set(FETCHCONTENT_QUIET OFF)
@@ -196,10 +236,11 @@ if(BIJOY_BUILD_LAYOUT_EDITOR)
     endif()
 
     add_subdirectory(LayoutEditor)
+    add_subdirectory(SpellingChecker)
 endif()
 
-# Add NetClient
-add_subdirectory(NetClient)
+# Add NetClient (Windows)
+if(WIN32)
+    add_subdirectory(NetClient)
+endif()
 
-# Add Bangla Spelling Checker
-add_subdirectory(SpellingChecker)

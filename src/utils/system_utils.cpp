@@ -2,38 +2,32 @@
 // File   : system_utils.cpp
 // Module : utils (System & Registration Utilities)
 // Purpose: Cross-cutting utility functions for Omor Ekushe.
-//
-//          Registration:
-//            Password              — hardcoded 20-char license key constant
-//            Encrypt()             — lightweight obfuscation (NOT cryptographic)
-//            GetRegistryPassword() — reads saved key from HKCU\Ekushe\Settings
-//            SetRegistryPassword() — writes key to HKCU\Ekushe\Settings
-//
-//          System helpers:
-//            EnsureTrailingBackslash() — normalizes directory paths
-//            GetMachineId()           — returns current Windows username
-//            Drag()                   — enables borderless window dragging
-//            InstallCrashHandler()    — convenience wrapper for crash diagnostics
+//          Cross-platform support for Windows, Linux, and macOS.
 // =============================================================================
 
 #include "utils/system_utils.h"
 #include "error/crash_handler.h"
 
 #include <algorithm>
+#include <cstdlib>
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 namespace bijoy::utils {
 
 // -----------------------------------------------------------------------------
 // Global static password seed
-// Used as a base constant for encryption-related logic
-// -----------------------------------------------------------------------------
 // Key : RN28 - T29S - K1XM - J6XY - LK24
+// -----------------------------------------------------------------------------
     std::wstring Password = L"RN28T29SK1XMJ6XYLK24";
 
 // -----------------------------------------------------------------------------
-// Ensures a filesystem path always ends with a backslash
-// Prevents path concatenation bugs downstream
+// Ensures a filesystem path always ends with a backslash / slash
 // -----------------------------------------------------------------------------
     std::wstring EnsureTrailingBackslash(const std::wstring& path) {
         if (path.empty()) {
@@ -41,46 +35,40 @@ namespace bijoy::utils {
         }
 
         std::wstring normalized = path;
-        if (normalized.back() != L'\\') {
+#if defined(_WIN32)
+        if (normalized.back() != L'\\' && normalized.back() != L'/') {
             normalized.push_back(L'\\');
         }
+#else
+        if (normalized.back() != L'/') {
+            normalized.push_back(L'/');
+        }
+#endif
         return normalized;
     }
 
 // -----------------------------------------------------------------------------
 // Custom lightweight obfuscation routine
-// 1. Normalize input to lowercase
-// 2. Reverse the string
-// 3. Apply position-based numeric scrambling
-// 4. Split, reverse halves, and recombine
-//
-// NOTE: This is NOT cryptographically secure.
-// Intended only for basic deterrence.
 // -----------------------------------------------------------------------------
     std::wstring Encrypt(const std::wstring& input) {
+        if (input.empty()) {
+            return input;
+        }
+
         std::wstring value = input;
-
-        // Normalize input
         std::transform(value.begin(), value.end(), value.begin(), ::towlower);
-
-        // Reverse string
         std::reverse(value.begin(), value.end());
 
-        // Position-based digit transformation
         std::wstring transformed;
         for (size_t i = 0, offset = 0; i < value.size(); ++i, offset += 2) {
             int digit = static_cast<int>(value[i]) + static_cast<int>(offset);
-
-            // Reduce to single digit
             while (digit >= 10 || digit < 0) {
                 digit = (digit / 10) + (digit % 10);
                 digit = std::abs(digit) % 10;
             }
-
             transformed.push_back(static_cast<wchar_t>(L'0' + digit));
         }
 
-        // Split and reverse halves for added diffusion
         const size_t midpoint = (transformed.size() + 1) / 2;
         std::wstring left = transformed.substr(0, midpoint);
         std::wstring right = transformed.substr(midpoint);
@@ -92,59 +80,50 @@ namespace bijoy::utils {
     }
 
 // -----------------------------------------------------------------------------
-// Retrieves the local machine name
-// Used as a lightweight machine identifier
-// -----------------------------------------------------------------------------
-    // -----------------------------------------------------------------------------
-// Retrieves the current Windows user name
-// Lightweight, fast, no registry access
+// Retrieves the current user name as machine identifier
 // -----------------------------------------------------------------------------
     std::wstring GetMachineId() {
+#if defined(_WIN32)
         wchar_t buffer[256] = {};
         DWORD size = static_cast<DWORD>(std::size(buffer));
-
-        return GetUserNameW(buffer, &size)
-               ? buffer
-               : L"UNKNOWN_USER";
+        return GetUserNameW(buffer, &size) ? buffer : L"UNKNOWN_USER";
+#else
+        const char* user = std::getenv("USER");
+        if (!user) user = getlogin();
+        if (user) {
+            std::string s(user);
+            return std::wstring(s.begin(), s.end());
+        }
+        return L"UNKNOWN_USER";
+#endif
     }
 
 // -----------------------------------------------------------------------------
-// Enables window dragging by simulating a title-bar mouse event
-// Typically used for borderless windows
+// Window dragging simulation
 // -----------------------------------------------------------------------------
-    bool Drag(HWND hwnd) {
+    bool Drag(bijoy::core::NativeWindowHandle hwnd) {
+#if defined(_WIN32)
         ReleaseCapture();
         SendMessageW(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
         return true;
+#else
+        (void)hwnd;
+        return true;
+#endif
     }
 
 // -----------------------------------------------------------------------------
-// Registry configuration
-// Separate vendor namespace for clean OS hygiene
+// Registry / Settings configuration
 // -----------------------------------------------------------------------------
+#if defined(_WIN32)
     namespace {
+        constexpr const wchar_t* kRegistryPath = L"SOFTWARE\\Ekushe\\Settings";
+        constexpr const wchar_t* kRegistryValueName = L"Password";
+    }
 
-        constexpr const wchar_t* kRegistryPath =
-                L"SOFTWARE\\Ekushe\\Settings";
-
-        constexpr const wchar_t* kRegistryValueName =
-                L"Password";
-
-    }  // namespace
-
-// -----------------------------------------------------------------------------
-// Reads the stored password value from registry
-// Returns 0 on success, -1 on failure
-// -----------------------------------------------------------------------------
     int GetRegistryPassword(std::wstring& out_password) {
         HKEY key = nullptr;
-
-        if (RegOpenKeyExW(
-                HKEY_CURRENT_USER,
-                kRegistryPath,
-                0,
-                KEY_READ,
-                &key) != ERROR_SUCCESS) {
+        if (RegOpenKeyExW(HKEY_CURRENT_USER, kRegistryPath, 0, KEY_READ, &key) != ERROR_SUCCESS) {
             return -1;
         }
 
@@ -170,13 +149,8 @@ namespace bijoy::utils {
         return 0;
     }
 
-// -----------------------------------------------------------------------------
-// Writes the password value into registry
-// Creates the key path if it does not exist
-// -----------------------------------------------------------------------------
     int SetRegistryPassword(const std::wstring& password) {
         HKEY key = nullptr;
-
         if (RegCreateKeyExW(
                 HKEY_CURRENT_USER,
                 kRegistryPath,
@@ -190,9 +164,7 @@ namespace bijoy::utils {
             return -1;
         }
 
-        const DWORD data_size =
-                static_cast<DWORD>((password.size() + 1) * sizeof(wchar_t));
-
+        const DWORD data_size = static_cast<DWORD>((password.size() + 1) * sizeof(wchar_t));
         const LSTATUS status = RegSetValueExW(
                 key,
                 kRegistryValueName,
@@ -204,9 +176,23 @@ namespace bijoy::utils {
         RegCloseKey(key);
         return status == ERROR_SUCCESS ? 0 : -1;
     }
+#else
+    namespace {
+        std::wstring g_nonWinPassword;
+    }
+
+    int GetRegistryPassword(std::wstring& out_password) {
+        out_password = g_nonWinPassword;
+        return 0;
+    }
+
+    int SetRegistryPassword(const std::wstring& password) {
+        g_nonWinPassword = password;
+        return 0;
+    }
+#endif
 
     void InstallCrashHandler() {
         bijoy::error::InstallCrashDiagnostics();
     }
-
-}  // namespace bijoy::utils
+} // namespace bijoy::utils

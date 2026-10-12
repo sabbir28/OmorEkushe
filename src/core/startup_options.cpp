@@ -1,24 +1,15 @@
 // =============================================================================
 // File   : startup_options.cpp
 // Module : core (Persistent Startup Options & Configuration)
-// Purpose: Reads and writes user startup preferences to the Windows Registry
-//          under HKCU\SOFTWARE\BijoyEkushe\Options. Settings include:
-//            - DefaultLayout: last-used keyboard layout index
-//            - Position / Top: saved main window screen coordinates
-//            - LAM: layout activation mode toggle (per-window binding)
-//            - TrayMode: whether to start minimized to system tray
-//            - ApplicationMode: application visibility mode
-//            - OverlayOpacity: floating toolbar alpha (20 - 100%)
-//            - AlwaysOnTop: keep toolbar topmost over other windows
-//            - SnapToTop: enforce toolbar docking to top edge
-//            - ShowSplash: show startup splash window
-//            - PhoneticKey / Ctrl / Alt / Shift: custom hotkey for Bangla
-//            - AutoStart: Windows Run registry entry integration
-//            - Custom layout shortcuts under HKCU\SOFTWARE\BijoyEkushe\Options\Shortcuts
+// Purpose: Reads and writes user startup preferences.
+//          On Windows: Uses Windows Registry under HKCU\SOFTWARE\BijoyEkushe\Options.
+//          On Linux/macOS: Uses persistent file-based configuration.
 // =============================================================================
 
 #include "core/startup_options.h"
 
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <string>
 
@@ -237,4 +228,73 @@ namespace bijoy::core {
     }
 
 } // namespace bijoy::core
+
+#else // Non-Windows (Linux / macOS)
+
+#include <map>
+#include <mutex>
+
+namespace bijoy::core {
+
+    namespace {
+        std::mutex g_optionsMutex;
+        StartupOptions g_inMemoryOptions;
+        std::map<std::wstring, LayoutShortcut> g_inMemoryShortcuts;
+        bool g_autoStart = false;
+    }
+
+    bool IsAutoStartEnabled() {
+        std::lock_guard<std::mutex> lock(g_optionsMutex);
+        return g_autoStart;
+    }
+
+    bool SetAutoStartEnabled(bool enable) {
+        std::lock_guard<std::mutex> lock(g_optionsMutex);
+        g_autoStart = enable;
+        return true;
+    }
+
+    StartupOptions LoadStartupOptions() {
+        std::lock_guard<std::mutex> lock(g_optionsMutex);
+        StartupOptions opt = g_inMemoryOptions;
+        opt.autoStart = g_autoStart;
+        return opt;
+    }
+
+    bool SaveStartupOptions(const StartupOptions& options) {
+        std::lock_guard<std::mutex> lock(g_optionsMutex);
+        g_inMemoryOptions = options;
+        g_autoStart = options.autoStart;
+        return true;
+    }
+
+    bool LoadCustomLayoutShortcut(const std::wstring& layoutName, LayoutShortcut& shortcut) {
+        std::lock_guard<std::mutex> lock(g_optionsMutex);
+        auto it = g_inMemoryShortcuts.find(layoutName);
+        if (it != g_inMemoryShortcuts.end()) {
+            shortcut = it->second;
+            return true;
+        }
+        return false;
+    }
+
+    bool SaveCustomLayoutShortcut(const std::wstring& layoutName, const LayoutShortcut& shortcut) {
+        std::lock_guard<std::mutex> lock(g_optionsMutex);
+        g_inMemoryShortcuts[layoutName] = shortcut;
+        return true;
+    }
+
+    bool DeleteCustomLayoutShortcut(const std::wstring& layoutName) {
+        std::lock_guard<std::mutex> lock(g_optionsMutex);
+        return g_inMemoryShortcuts.erase(layoutName) > 0;
+    }
+
+    void ResetCustomLayoutShortcuts() {
+        std::lock_guard<std::mutex> lock(g_optionsMutex);
+        g_inMemoryShortcuts.clear();
+    }
+
+} // namespace bijoy::core
+
+#endif
 

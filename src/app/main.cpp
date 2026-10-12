@@ -16,7 +16,10 @@
 #include "app/application.h"
 #include "error/crash_handler.h"
 
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#endif
 
 // -----------------------------------------------------------------------------
 // Helper function to encapsulate C++ object unwinding safely outside SEH __try
@@ -32,6 +35,7 @@ static int RunApplicationHelper(HINSTANCE hInstance, int nCmdShow) {
     return app.Run();
 }
 
+#if defined(_WIN32)
 // -----------------------------------------------------------------------------
 // Forward declarations for WinMain entry points
 // -----------------------------------------------------------------------------
@@ -50,6 +54,7 @@ int WINAPI WinMain(
     return wWinMain(hInstance, hPrevInstance, GetCommandLineW(), nCmdShow);
 }
 #endif
+#endif
 
 #include <exception>
 
@@ -57,6 +62,7 @@ int WINAPI WinMain(
 // Primary application entry point (Unicode)
 // Ultra-level exception barrier surrounding Application Lifecycle Manager
 // -----------------------------------------------------------------------------
+#if defined(_WIN32)
 int WINAPI wWinMain(
     HINSTANCE hInstance,
     HINSTANCE hPrevInstance,
@@ -85,3 +91,15 @@ int WINAPI wWinMain(
     }
 #endif
 }
+#else
+int main(int argc, char* argv[]) {
+    (void)argc;
+    (void)argv;
+    try {
+        return RunApplicationHelper(nullptr, 1);
+    }
+    catch (...) {
+        return 1;
+    }
+}
+#endif

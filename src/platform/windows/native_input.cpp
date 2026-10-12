@@ -11,6 +11,7 @@
 // =============================================================================
 
 #include "platform/windows/native_input.h"
+#include "core/platform_types.h"
 
 namespace bijoy::platform::windows {
 
@@ -20,6 +21,7 @@ namespace bijoy::platform::windows {
         input.ki.wVk = 0;
         input.ki.wScan = static_cast<WORD>(scanCode);
         input.ki.dwFlags = flags;
+        input.ki.dwExtraInfo = bijoy::core::OMOR_EKUSHE_EXTRA_INFO;
         ::SendInput(1, &input, sizeof(INPUT));
     }
 
@@ -29,6 +31,7 @@ namespace bijoy::platform::windows {
         input.ki.wVk = vk;
         input.ki.wScan = 0;
         input.ki.dwFlags = flags;
+        input.ki.dwExtraInfo = bijoy::core::OMOR_EKUSHE_EXTRA_INFO;
         ::SendInput(1, &input, sizeof(INPUT));
     }
 

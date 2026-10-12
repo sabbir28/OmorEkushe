@@ -1,7 +1,12 @@
 #include "core/phonetic_engine.h"
-#include "platform/windows/native_input.h"
+#include "core/platform_input.h"
 
 #include <vector>
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
 namespace bijoy::core {
 
@@ -36,46 +41,7 @@ PhoneticEngine::DiffResult PhoneticEngine::ComputeDiff(const std::wstring& oldOu
 }
 
 void PhoneticEngine::EmitBackspacesAndChars(size_t backspaces, const std::wstring& toSend) {
-    if (backspaces == 0 && toSend.empty()) {
-        return;
-    }
-
-    std::vector<INPUT> inputs;
-    inputs.reserve(backspaces * 2 + toSend.length() * 2);
-
-    for (size_t i = 0; i < backspaces; ++i) {
-        INPUT down = {};
-        down.type = INPUT_KEYBOARD;
-        down.ki.wVk = VK_BACK;
-        down.ki.wScan = 0;
-        down.ki.dwFlags = 0;
-        down.ki.dwExtraInfo = OMOR_EKUSHE_EXTRA_INFO;
-
-        INPUT up = down;
-        up.ki.dwFlags = KEYEVENTF_KEYUP;
-
-        inputs.push_back(down);
-        inputs.push_back(up);
-    }
-
-    for (wchar_t c : toSend) {
-        INPUT down = {};
-        down.type = INPUT_KEYBOARD;
-        down.ki.wVk = 0;
-        down.ki.wScan = static_cast<WORD>(c);
-        down.ki.dwFlags = KEYEVENTF_UNICODE;
-        down.ki.dwExtraInfo = OMOR_EKUSHE_EXTRA_INFO;
-
-        INPUT up = down;
-        up.ki.dwFlags = KEYEVENTF_UNICODE | KEYEVENTF_KEYUP;
-
-        inputs.push_back(down);
-        inputs.push_back(up);
-    }
-
-    if (!inputs.empty()) {
-        ::SendInput(static_cast<UINT>(inputs.size()), inputs.data(), sizeof(INPUT));
-    }
+    PlatformEmitBackspacesAndChars(backspaces, toSend);
 }
 
 void PhoneticEngine::ApplyDiff(const std::wstring& newOutput) {
@@ -84,9 +50,13 @@ void PhoneticEngine::ApplyDiff(const std::wstring& newOutput) {
     m_lastOutput = newOutput;
 }
 
-char PhoneticEngine::MapVirtualKeyToChar(DWORD vkCode, bool shift) const {
+char PhoneticEngine::MapVirtualKeyToChar(uint32_t vkCode, bool shift) const {
     if (vkCode >= 'A' && vkCode <= 'Z') {
+#if defined(_WIN32)
         const bool caps = (GetKeyState(VK_CAPITAL) & 0x0001) != 0;
+#else
+        const bool caps = false;
+#endif
         const bool isUpper = shift ^ caps;
         return isUpper ? static_cast<char>(vkCode) : static_cast<char>(vkCode - 'A' + 'a');
     }
@@ -99,6 +69,7 @@ char PhoneticEngine::MapVirtualKeyToChar(DWORD vkCode, bool shift) const {
         return static_cast<char>(vkCode);
     }
 
+#if defined(_WIN32)
     switch (vkCode) {
         case VK_OEM_1:      return shift ? ':' : ';';
         case VK_OEM_PLUS:   return shift ? '+' : '=';
@@ -113,18 +84,57 @@ char PhoneticEngine::MapVirtualKeyToChar(DWORD vkCode, bool shift) const {
         case VK_OEM_7:      return shift ? '"' : '\'';
         default: break;
     }
+#else
+    // Standard ASCII mappings
+    if (vkCode >= 0x20 && vkCode <= 0x7E) {
+        return static_cast<char>(vkCode);
+    }
+#endif
 
     return 0;
 }
 
+bool PhoneticEngine::ProcessCharacter(char ch, NativeWindowHandle foregroundWnd) {
+    if (foregroundWnd != m_lastWindow) {
+        Reset();
+        m_lastWindow = foregroundWnd;
+    }
+
+    if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
+        Reset();
+        return false;
+    }
+
+    m_rawBuffer += ch;
+    std::wstring newOutput = m_parser.Convert(m_rawBuffer);
+    ApplyDiff(newOutput);
+    return true;
+}
+
+bool PhoneticEngine::ProcessBackspace(NativeWindowHandle foregroundWnd) {
+    if (foregroundWnd != m_lastWindow) {
+        Reset();
+        m_lastWindow = foregroundWnd;
+    }
+
+    if (m_rawBuffer.empty()) {
+        return false;
+    }
+
+    m_rawBuffer.pop_back();
+    std::wstring newOutput = m_rawBuffer.empty() ? L"" : m_parser.Convert(m_rawBuffer);
+    ApplyDiff(newOutput);
+    return true;
+}
+
 bool PhoneticEngine::ProcessKey(
-    DWORD vkCode,
+    uint32_t vkCode,
     bool isKeyDown,
     bool isSysKey,
     bool ctrl,
     bool alt,
     bool shift,
-    HWND foregroundWnd) {
+    NativeWindowHandle foregroundWnd) {
 
     (void)isSysKey;
 
@@ -144,6 +154,7 @@ bool PhoneticEngine::ProcessKey(
         return false;
     }
 
+#if defined(_WIN32)
     // Space commits the word and passes through
     if (vkCode == VK_SPACE) {
         Reset();
@@ -161,29 +172,26 @@ bool PhoneticEngine::ProcessKey(
 
     // Backspace handling
     if (vkCode == VK_BACK) {
-        if (m_rawBuffer.empty()) {
-            return false;
-        }
-
-        m_rawBuffer.pop_back();
-        std::wstring newOutput = m_rawBuffer.empty() ? L"" : m_parser.Convert(m_rawBuffer);
-        ApplyDiff(newOutput);
-        return true;
+        return ProcessBackspace(foregroundWnd);
     }
+#else
+    if (vkCode == ' ' || vkCode == 0xff08) {
+        if (vkCode == 0xff08) {
+            return ProcessBackspace(foregroundWnd);
+        }
+        Reset();
+        return false;
+    }
+#endif
 
     // Map virtual key to ASCII character
     const char ch = MapVirtualKeyToChar(vkCode, shift);
     if (ch == 0) {
-        // Unknown or non-printable key
         Reset();
         return false;
     }
 
-    // Append character to raw buffer and transliterate
-    m_rawBuffer += ch;
-    std::wstring newOutput = m_parser.Convert(m_rawBuffer);
-    ApplyDiff(newOutput);
-    return true;
+    return ProcessCharacter(ch, foregroundWnd);
 }
 
 } // namespace bijoy::core

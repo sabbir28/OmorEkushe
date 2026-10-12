@@ -1,33 +1,24 @@
 // =============================================================================
 // File   : keyboard_hook_service.cpp
 // Module : core (Global Keyboard Hook)
-// Purpose: Installs and manages a system-wide low-level keyboard hook
-//          (WH_KEYBOARD_LL / hook ID 13). Intercepts all keyboard events
-//          before they reach any application and translates them through
-//          the active Layout's key-mapping table.
-//
-//          Hook behavior:
-//            - Shortcut detection: Ctrl/Alt/Shift + KeyCode combos activate/
-//              deactivate specific layouts per foreground window.
-//            - Key remapping: When a layout is active, physical key presses
-//              are consumed and replaced with Unicode character output via
-//              SendInput(KEYEVENTF_UNICODE).
-//
-//          Safety: The hook callback is wrapped in a catch-all exception
-//          barrier to prevent exception propagation into the OS hook dispatcher,
-//          which would cause Windows to silently remove the hook.
+// Purpose: Installs and manages low-level keyboard input hooking.
+//          On Windows: Uses WH_KEYBOARD_LL.
+//          On Linux/macOS: Handled via native X11/Wayland/IMK controllers.
 // =============================================================================
 
 #include "core/keyboard_hook_service.h"
-
 #include "core/app_state.h"
 #include "core/phonetic_engine.h"
+#include "core/platform_types.h"
 #include "core/window_layout_binding.h"
-#include "platform/windows/main_window/main_window_layout.h"
-#include "platform/windows/native_input.h"
 
 #include <string>
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include "platform/windows/main_window/main_window_layout.h"
+#include "platform/windows/native_input.h"
 
 namespace bijoy::core {
 
@@ -152,7 +143,7 @@ namespace bijoy::core {
         LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
             try {
                 if (nCode == HC_ACTION && g_layoutsReady && lParam != 0) {
-                    auto* hs = reinterpret_cast<KBDLLHOOKSTRUCT_LOCAL*>(lParam);
+                    auto* hs = reinterpret_cast<const KBDLLHOOKSTRUCT_LOCAL*>(lParam);
 
                     // Ignore synthetic/injected inputs
                     if ((hs->flags & LLKHF_INJECTED) != 0 || hs->dwExtraInfo == OMOR_EKUSHE_EXTRA_INFO) {
@@ -185,6 +176,7 @@ namespace bijoy::core {
     } // namespace
 
     bool InstallKeyboardHook(HINSTANCE hInstance) {
+        if (g_hook) return true;
         g_hook = SetWindowsHookExW(WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0);
         g_mouseHook = SetWindowsHookExW(WH_MOUSE_LL, LowLevelMouseProc, hInstance, 0);
         return g_hook != nullptr;
@@ -220,3 +212,46 @@ namespace bijoy::core {
     }
 
 } // namespace bijoy::core
+
+#else // Non-Windows (Linux & macOS)
+
+namespace bijoy::core {
+
+    namespace {
+        bool g_layoutsReady = false;
+        int g_phoneticToggleKey = 0x7B; // F12
+        bool g_phoneticToggleCtrl = false;
+        bool g_phoneticToggleAlt = false;
+        bool g_phoneticToggleShift = false;
+    }
+
+    bool InstallKeyboardHook(HINSTANCE hInstance) {
+        (void)hInstance;
+        return true;
+    }
+
+    void UninstallKeyboardHook() {
+    }
+
+    void SetLayoutsReady(bool ready) {
+        g_layoutsReady = ready;
+    }
+
+    void SetPhoneticToggleShortcut(int vkCode, bool ctrl, bool alt, bool shift) {
+        g_phoneticToggleKey = vkCode;
+        g_phoneticToggleCtrl = ctrl;
+        g_phoneticToggleAlt = alt;
+        g_phoneticToggleShift = shift;
+    }
+
+    void GetPhoneticToggleShortcut(int& vkCode, bool& ctrl, bool& alt, bool& shift) {
+        vkCode = g_phoneticToggleKey;
+        ctrl = g_phoneticToggleCtrl;
+        alt = g_phoneticToggleAlt;
+        shift = g_phoneticToggleShift;
+    }
+
+} // namespace bijoy::core
+
+#endif
+

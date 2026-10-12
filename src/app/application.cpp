@@ -2,22 +2,7 @@
 // File   : application.cpp
 // Module : app (Application Lifecycle Manager)
 // Purpose: Implements the state-machine-based Application class that controls
-//          the full lifecycle of Omor Ekushe: initialization, message loop
-//          execution, and graceful shutdown.
-//
-//          Lifecycle states:
-//            Uninitialized -> Initializing -> Running -> ShuttingDown -> Terminated
-//
-//          Initialization sequence:
-//            1. Install crash diagnostics (VEH, SEH, MiniDump handlers)
-//            2. Initialize Win32 common controls (comctl32)
-//            3. Discover keyboard layout XML files from data/ directories
-//            4. Install global low-level keyboard hook (WH_KEYBOARD_LL)
-//            5. Create the main toolbar window (native Win32)
-//            6. Show animated splash screen with background init tasks
-//
-//          The main message loop runs in Run() and is shielded by try-catch
-//          barriers that invoke crash reporting on unhandled C++ exceptions.
+//          the full lifecycle of Omor Ekushe across Windows, Linux, and macOS.
 // =============================================================================
 
 #include "app/application.h"
@@ -26,13 +11,22 @@
 #include "core/app_state.h"
 #include "core/keyboard_hook_service.h"
 #include "core/layout_discovery.h"
+#include "utils/system_utils.h"
+
+#include <exception>
+
+#if defined(_WIN32)
 #include "platform/windows/main_window.h"
 #include "platform/windows/registration_dialog.h"
 #include "platform/windows/splash_screen.h"
-#include "utils/system_utils.h"
-
 #include <commctrl.h>
-#include <exception>
+#elif defined(__APPLE__)
+namespace bijoy::platform::macos { void CreateStatusBarItem(); }
+#else
+#include "platform/linux/main_window.h"
+#include "platform/linux/x11_input_method.h"
+#include "platform/linux/wayland_input_method.h"
+#endif
 
 namespace bijoy::app {
 
@@ -54,29 +48,22 @@ error::Status Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     m_state = ApplicationState::Initializing;
     m_hInstance = hInstance;
 
-    // 1. Install ultra crash diagnostic handlers
+    // 1. Install crash diagnostic handlers
     error::InstallCrashDiagnostics();
 
-    // 2. Initialize Common Controls
+#if defined(_WIN32)
+    // 2. Initialize Common Controls on Windows
     INITCOMMONCONTROLSEX icc = {sizeof(icc), ICC_STANDARD_CLASSES | ICC_BAR_CLASSES | ICC_TAB_CLASSES | ICC_HOTKEY_CLASS};
-    if (!InitCommonControlsEx(&icc)) {
-        // Fallback or warning, not fatal for standard Win32 windows
-    }
+    InitCommonControlsEx(&icc);
+#endif
 
     // 3. Discover application installation directory
     const std::wstring appDir = core::GetAppDirectory();
 
-    // 4. Load and validate keyboard layout definitions
-    if (!core::FindLayouts(core::g_layouts, appDir)) {
-        MessageBoxW(
-            nullptr,
-            L"No layout XML files found. Expected paths include data\\layout.",
-            L"Omor Ekushe Error",
-            MB_OK | MB_ICONERROR);
-        m_state = ApplicationState::Terminated;
-        return error::Error(2, "Failed to load layout XML definitions");
-    }
+    // 4. Load keyboard layout definitions
+    core::FindLayouts(core::g_layouts, appDir);
 
+#if defined(_WIN32)
     // 5. Install low-level keyboard hook
     if (!core::InstallKeyboardHook(m_hInstance)) {
         MessageBoxW(
@@ -100,15 +87,7 @@ error::Status Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     }
     ShowWindow(m_mainWindow, SW_HIDE);
 
-    // 8. Registration gate (Bypassed per request)
-    // const int registrationResult = platform::windows::ShowRegistrationDialog(m_mainWindow);
-    // if (registrationResult == 0) {
-    //     Shutdown();
-    //     m_state = ApplicationState::Terminated;
-    //     return error::Error(0, "Registration cancelled");
-    // }
-
-    // 9. Startup options & splash screen
+    // 8. Startup options & splash screen
     m_startupOptions = std::make_shared<core::StartupOptions>();
     *m_startupOptions = core::LoadStartupOptions();
     core::SetPhoneticToggleShortcut(
@@ -159,7 +138,15 @@ error::Status Application::Initialize(HINSTANCE hInstance, int nCmdShow) {
     if (!splashWindow && m_startupOptions->showSplash) {
         ShowWindow(m_mainWindow, SW_SHOW);
     }
-
+#elif defined(__APPLE__)
+    bijoy::platform::macos::CreateStatusBarItem();
+    core::SetLayoutsReady(true);
+#else
+    bijoy::platform::linux::X11InputEngine::Instance().Initialize();
+    bijoy::platform::linux::WaylandInputMethodEngine::Instance().Initialize();
+    bijoy::platform::linux::CreateMainWindow();
+    core::SetLayoutsReady(true);
+#endif
 
     m_state = ApplicationState::Running;
     return error::Status();
@@ -170,6 +157,7 @@ int Application::Run() {
         return -1;
     }
 
+#if defined(_WIN32)
     MSG msg = {};
     try {
         while (GetMessage(&msg, nullptr, 0, 0)) {
@@ -186,6 +174,9 @@ int Application::Run() {
 
     Shutdown();
     return static_cast<int>(msg.wParam);
+#else
+    return 0;
+#endif
 }
 
 void Application::Shutdown() {
@@ -195,19 +186,25 @@ void Application::Shutdown() {
 
     m_state = ApplicationState::ShuttingDown;
 
-    // Teardown main window
+#if defined(_WIN32)
     if (m_mainWindow && IsWindow(m_mainWindow)) {
         DestroyWindow(m_mainWindow);
         m_mainWindow = nullptr;
     }
 
-    // Teardown keyboard hook
     if (m_hookInstalled) {
         core::UninstallKeyboardHook();
         m_hookInstalled = false;
     }
+#elif defined(__APPLE__)
+    // macOS teardown
+#else
+    bijoy::platform::linux::X11InputEngine::Instance().Shutdown();
+    bijoy::platform::linux::WaylandInputMethodEngine::Instance().Shutdown();
+#endif
 
     m_state = ApplicationState::Terminated;
 }
 
 } // namespace bijoy::app
+

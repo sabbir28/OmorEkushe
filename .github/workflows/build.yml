@@ -35,6 +35,15 @@ jobs:
     - name: Build Executables
       run: cmake --build build --config ${{ matrix.build_type }}
 
+    - name: Run Phonetic Engine Unit Tests
+      shell: powershell
+      run: |
+        if (Test-Path "build/bin/${{ matrix.build_type }}/PhoneticTests.exe") {
+          & "build/bin/${{ matrix.build_type }}/PhoneticTests.exe"
+        } elseif (Test-Path "build/bin/PhoneticTests.exe") {
+          & "build/bin/PhoneticTests.exe"
+        }
+
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -43,4 +52,60 @@ jobs:
           build/bin/*.exe
           build/bin/*.dll
           build/data/**
+
+  build-linux:
+    name: Build (Ubuntu Linux - X11 & Wayland)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install Linux Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxtst-dev libxi-dev xorg-dev
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DBIJOY_BUILD_LAYOUT_EDITOR=OFF
+
+    - name: Build Executables
+      run: cmake --build build -j$(nproc)
+
+    - name: Run Phonetic Engine Unit Tests
+      run: ./build/bin/PhoneticTests
+
+    - name: Upload Linux Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: OmorEkushe-Linux
+        path: |
+          build/bin/OmorEkushe
+          build/bin/PhoneticTests
+          build/data/**
+
+  build-macos:
+    name: Build (macOS - InputMethodKit)
+    runs-on: macos-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DBIJOY_BUILD_LAYOUT_EDITOR=OFF
+
+    - name: Build Executables
+      run: cmake --build build -j$(sysctl -n hw.ncpu)
+
+    - name: Run Phonetic Engine Unit Tests
+      run: ./build/bin/PhoneticTests
+
+    - name: Upload macOS Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: OmorEkushe-macOS
+        path: |
+          build/bin/OmorEkushe.app
+          build/bin/PhoneticTests
+          build/data/**
+
 

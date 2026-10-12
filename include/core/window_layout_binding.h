@@ -1,17 +1,18 @@
 #pragma once
 
 #include "core/layout.h"
-#include <windows.h>
+#include "core/platform_types.h"
 
 namespace bijoy::core {
 
 struct WindowLayoutBinding {
-  HWND handle = nullptr;
+  NativeWindowHandle handle = kInvalidWindowHandle;
   Layout* status = nullptr;
 };
 
-bool AddWindowLayoutBinding(HWND hwnd, Layout* layout);
-Layout* FindWindowLayoutBinding(HWND hwnd);
-bool RemoveWindowLayoutBinding(HWND hwnd);
+bool AddWindowLayoutBinding(NativeWindowHandle hwnd, Layout* layout);
+Layout* FindWindowLayoutBinding(NativeWindowHandle hwnd);
+bool RemoveWindowLayoutBinding(NativeWindowHandle hwnd);
 
 } // namespace bijoy::core
+

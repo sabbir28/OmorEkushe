@@ -1,20 +1,8 @@
 // =============================================================================
 // File   : layout_discovery.cpp
 // Module : core (Layout Auto-Discovery)
-// Purpose: Discovers and loads keyboard layout XML files at application startup.
-//
-//          GetAppDirectory(): Resolves the directory containing the running
-//          executable using GetModuleFileNameW + PathRemoveFileSpecW.
-//
-//          FindLayouts(): Searches multiple candidate directories for .xml files:
-//            - <appDir>/Layouts/
-//            - <appDir>/data/Layouts/
-//            - <appDir>/data/layout/
-//            - <appDir>/../data/layout/   (for dev builds)
-//            - BIJOY_DATA_DIR (CMake-defined, if available)
-//
-//          The first non-empty directory wins. Each discovered XML file is
-//          parsed via Layout::loadFromFile() and added to the output vector.
+// Purpose: Discovers and loads keyboard layout XML files at application startup
+//          across Windows, Linux, and macOS using C++17 std::filesystem.
 // =============================================================================
 
 #include "core/layout_discovery.h"
@@ -22,59 +10,91 @@
 #include "core/keyboard_hook_service.h"
 #include "utils/system_utils.h"
 
-#include <shlwapi.h>
-#include <windows.h>
+#include <filesystem>
+#include <vector>
 
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <shlwapi.h>
 #ifdef _MSC_VER
 #pragma comment(lib, "shlwapi.lib")
+#endif
+#elif defined(__APPLE__)
+#include <mach-o/dyld.h>
+#include <limits.h>
+#else
+#include <unistd.h>
+#include <limits.h>
 #endif
 
 namespace bijoy::core {
 
+#ifndef VK_F12
+    constexpr int VK_F12 = 0x7B;
+#endif
+
     std::wstring GetAppDirectory() {
+#if defined(_WIN32)
         wchar_t path[MAX_PATH] = {};
         if (GetModuleFileNameW(nullptr, path, MAX_PATH) == 0) {
             return L"";
         }
         PathRemoveFileSpecW(path);
         return bijoy::utils::EnsureTrailingBackslash(path);
+#elif defined(__APPLE__)
+        char path[PATH_MAX] = {};
+        uint32_t size = sizeof(path);
+        if (_NSGetExecutablePath(path, &size) == 0) {
+            std::filesystem::path p(path);
+            return p.parent_path().wstring() + L"/";
+        }
+        return L"";
+#else
+        char path[PATH_MAX] = {};
+        ssize_t count = readlink("/proc/self/exe", path, sizeof(path) - 1);
+        if (count > 0) {
+            path[count] = '\0';
+            std::filesystem::path p(path);
+            return p.parent_path().wstring() + L"/";
+        }
+        return L"";
+#endif
     }
 
     namespace {
 
-        void FindXmlRecursive(const std::wstring& dir, std::vector<std::wstring>& out) {
-            const std::wstring search = dir + L"*";
-            WIN32_FIND_DATAW findData = {};
-            HANDLE handle = FindFirstFileW(search.c_str(), &findData);
-            if (handle == INVALID_HANDLE_VALUE) {
+        void FindXmlRecursive(const std::wstring& dirPath, std::vector<std::wstring>& out) {
+            std::error_code ec;
+            std::filesystem::path dir(dirPath);
+            if (!std::filesystem::exists(dir, ec) || !std::filesystem::is_directory(dir, ec)) {
                 return;
             }
 
-            do {
-                if ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0U) {
-                    if (wcscmp(findData.cFileName, L".") != 0 && wcscmp(findData.cFileName, L"..") != 0) {
-                        FindXmlRecursive(dir + findData.cFileName + L"\\", out);
-                    }
-                } else if (wcsstr(findData.cFileName, L".xml") != nullptr) {
-                    out.push_back(dir + findData.cFileName);
+            for (const auto& entry : std::filesystem::recursive_directory_iterator(dir, std::filesystem::directory_options::skip_permission_denied, ec)) {
+                if (ec) break;
+                if (entry.is_regular_file(ec) && entry.path().extension() == ".xml") {
+                    out.push_back(entry.path().wstring());
                 }
-            } while (FindNextFileW(handle, &findData));
-
-            FindClose(handle);
+            }
         }
 
     } // namespace
 
     bool FindLayouts(std::vector<Layout>& layouts, const std::wstring& appDir) {
+        const std::wstring slash = L"/";
         const std::wstring layoutDirs[] = {
+                appDir + L"Layouts/",
+                appDir + L"data/Layouts/",
+                appDir + L"data/layout/",
+                appDir + L"../data/layout/",
+                appDir + L"../data/Layouts/",
                 appDir + L"Layouts\\",
                 appDir + L"data\\Layouts\\",
-                appDir + L"data\\layout\\",
-                appDir + L"..\\data\\layout\\",
                 appDir + L"..\\data\\Layouts\\",
 #ifdef BIJOY_DATA_DIR
+                std::wstring(BIJOY_DATA_DIR) + L"Layouts/",
                 std::wstring(BIJOY_DATA_DIR) + L"Layouts\\",
-                std::wstring(BIJOY_DATA_DIR) + L"layout\\",
 #endif
         };
 
@@ -139,3 +159,4 @@ namespace bijoy::core {
     }
 
 } // namespace bijoy::core
+

@@ -1,17 +1,9 @@
 // =============================================================================
 // File   : window_layout_binding.cpp
 // Module : core (Per-Window Layout Binding)
-// Purpose: Manages a runtime mapping between individual HWND windows and their
-//          assigned keyboard layouts. This enables per-application layout
-//          memory: when the user activates a layout while typing in Notepad,
-//          switching to Chrome and back preserves the Notepad layout.
-//
-//          The binding list is self-cleaning: stale entries for destroyed
-//          windows (identified by IsWindow() returning FALSE) are automatically
-//          pruned on each Add operation.
-//
-//          Data structure: Simple linear vector scan. Adequate for the typical
-//          small number of simultaneously bound windows (<20).
+// Purpose: Manages a runtime mapping between individual NativeWindowHandle
+//          windows and their assigned keyboard layouts across Windows,
+//          Linux, and macOS.
 // =============================================================================
 
 #include "core/window_layout_binding.h"
@@ -24,9 +16,17 @@ namespace bijoy::core {
 
         std::vector<WindowLayoutBinding> g_bindings;
 
+        bool IsWindowAlive(NativeWindowHandle handle) {
+#if defined(_WIN32)
+            return IsWindow(handle) != FALSE;
+#else
+            return handle != kInvalidWindowHandle;
+#endif
+        }
+
     } // namespace
 
-    bool AddWindowLayoutBinding(HWND hwnd, Layout* layout) {
+    bool AddWindowLayoutBinding(NativeWindowHandle hwnd, Layout* layout) {
         for (auto it = g_bindings.begin(); it != g_bindings.end();) {
             if (it->handle == hwnd) {
                 it = g_bindings.erase(it);
@@ -38,7 +38,7 @@ namespace bijoy::core {
         g_bindings.push_back({hwnd, layout});
 
         for (auto it = g_bindings.begin(); it != g_bindings.end();) {
-            if (!IsWindow(it->handle)) {
+            if (!IsWindowAlive(it->handle)) {
                 it = g_bindings.erase(it);
             } else {
                 ++it;
@@ -48,7 +48,7 @@ namespace bijoy::core {
         return true;
     }
 
-    Layout* FindWindowLayoutBinding(HWND hwnd) {
+    Layout* FindWindowLayoutBinding(NativeWindowHandle hwnd) {
         for (auto& entry : g_bindings) {
             if (entry.handle == hwnd) {
                 return entry.status;
@@ -57,7 +57,7 @@ namespace bijoy::core {
         return nullptr;
     }
 
-    bool RemoveWindowLayoutBinding(HWND hwnd) {
+    bool RemoveWindowLayoutBinding(NativeWindowHandle hwnd) {
         for (auto it = g_bindings.begin(); it != g_bindings.end(); ++it) {
             if (it->handle == hwnd) {
                 g_bindings.erase(it);
@@ -68,3 +68,4 @@ namespace bijoy::core {
     }
 
 } // namespace bijoy::core
+

@@ -3,6 +3,9 @@
 #include <memory>
 #if defined(_WIN32)
 #include <windows.h>
+#else
+using HINSTANCE = void*;
+using HWND = void*;
 #endif
 
 #include "error/raii_handle.h"
