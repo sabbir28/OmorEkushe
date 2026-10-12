@@ -2,10 +2,27 @@
 #include "core/phonetic_engine.h"
 #include "core/layout.h"
 #include "core/startup_options.h"
+#include "core/platform_types.h"
 #include <iostream>
 #include <cassert>
 #include <string>
 #include <vector>
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else
+#define VK_BACK       0x08
+#define VK_TAB        0x09
+#define VK_RETURN     0x0D
+#define VK_SPACE      0x20
+#define VK_LEFT       0x25
+#define VK_F11        0x7A
+#define VK_F12        0x7B
+#define VK_OEM_1      0xBA
+#define VK_OEM_PERIOD 0xBE
+#define VK_OEM_3      0xC0
+#endif
 
 int main() {
     bijoy::core::PhoneticParser parser;
@@ -505,8 +522,11 @@ int main() {
         assert(engine.MapVirtualKeyToChar(VK_OEM_1, true) == ':');
         assert(engine.MapVirtualKeyToChar(VK_OEM_1, false) == ';');
 
-        // 3. ProcessKey shortcut and boundary tests
-        HWND dummyWnd = reinterpret_cast<HWND>(100);
+#if defined(_WIN32)
+        bijoy::core::NativeWindowHandle dummyWnd = reinterpret_cast<bijoy::core::NativeWindowHandle>(static_cast<uintptr_t>(100));
+#else
+        bijoy::core::NativeWindowHandle dummyWnd = 100;
+#endif
         // Ctrl+C passes through
         assert(engine.ProcessKey('C', true, false, true, false, false, dummyWnd) == false);
         // Alt+Tab passes through

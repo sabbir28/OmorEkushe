@@ -34,6 +34,12 @@ inline std::string WStringToUtf8(const std::wstring& wstr) {
 #if __has_include(<X11/Xlib.h>)
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#if __has_include(<X11/Xatom.h>)
+#include <X11/Xatom.h>
+#endif
+#ifndef XA_WINDOW
+#define XA_WINDOW ((Atom) 33)
+#endif
 #if __has_include(<X11/extensions/XTest.h>)
 #include <X11/extensions/XTest.h>
 #define HAVE_XTEST 1
