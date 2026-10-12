@@ -57,6 +57,7 @@ namespace {
 // Lock to prevent recursive execution of crash handler
 std::atomic<bool> g_isHandlingCrash{false};
 
+#if defined(_WIN32)
 typedef BOOL(WINAPI* MiniDumpWriteDumpFn)(
     HANDLE hProcess,
     DWORD ProcessId,
@@ -94,7 +95,6 @@ const wchar_t* ExceptionCodeToText(DWORD code) {
 }
 
 std::wstring GetModulePathForAddress(void* addr) {
-#if defined(_WIN32)
     HMODULE hMod = nullptr;
     if (GetModuleHandleExW(
             GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
@@ -105,12 +105,10 @@ std::wstring GetModulePathForAddress(void* addr) {
             return path;
         }
     }
-#endif
     return L"Unknown Module";
 }
 
 void WriteCrashLog(const CrashInfo& info) {
-#if defined(_WIN32)
     FILE* f = nullptr;
     if (_wfopen_s(&f, info.crashLogPath.c_str(), L"w") == 0 && f) {
         SYSTEMTIME st;
@@ -124,7 +122,6 @@ void WriteCrashLog(const CrashInfo& info) {
         fwprintf(f, L"Exception Code: 0x%08X (%s)\n", info.exceptionCode, info.exceptionName.c_str());
         fwprintf(f, L"Fault Address : 0x%p\n", info.exceptionAddress);
         fwprintf(f, L"Fault Module  : %s\n", info.moduleName.c_str());
-        // AUDIT FIX: Corrected format specifiers from %dw to %lu for DWORD Process ID and Thread ID.
         fwprintf(f, L"Process ID    : %lu\n", GetCurrentProcessId());
         fwprintf(f, L"Thread ID     : %lu\n", GetCurrentThreadId());
         if (!info.miniDumpPath.empty()) {
@@ -133,11 +130,9 @@ void WriteCrashLog(const CrashInfo& info) {
         fwprintf(f, L"=====================================================\n");
         fclose(f);
     }
-#endif
 }
 
 bool WriteMiniDump(EXCEPTION_POINTERS* pExcPtrs, const std::wstring& dumpPath) {
-#if defined(_WIN32)
     HMODULE hDbgHelp = LoadLibraryW(L"dbghelp.dll");
     if (!hDbgHelp) {
         return false;
@@ -181,14 +176,10 @@ bool WriteMiniDump(EXCEPTION_POINTERS* pExcPtrs, const std::wstring& dumpPath) {
     CloseHandle(hFile);
     FreeLibrary(hDbgHelp);
     return result == TRUE;
-#else
-    return false;
-#endif
 }
 
 void ProcessCrash(EXCEPTION_POINTERS* pExceptionInfo, const wchar_t* customReason = nullptr) {
     if (g_isHandlingCrash.exchange(true)) {
-        // Prevent infinite recursive crashes inside crash handler
         ExitProcess(1);
         return;
     }
@@ -207,13 +198,9 @@ void ProcessCrash(EXCEPTION_POINTERS* pExceptionInfo, const wchar_t* customReaso
     info.crashLogPath = std::wstring(appPath) + L"\\crash.log";
     info.miniDumpPath = std::wstring(appPath) + L"\\crash.dmp";
 
-    // Create minidump
     WriteMiniDump(pExceptionInfo, info.miniDumpPath);
-
-    // Create log file
     WriteCrashLog(info);
 
-    // Display rich user alert
     wchar_t alertMsg[1024] = {};
     swprintf_s(alertMsg,
         L"Omor Ekushe encountered an unexpected fatal error and has been safely stopped.\n\n"
@@ -241,11 +228,9 @@ void ProcessCrash(EXCEPTION_POINTERS* pExceptionInfo, const wchar_t* customReaso
 LONG WINAPI CustomVectoredExceptionHandler(EXCEPTION_POINTERS* pExceptionInfo) {
     if (pExceptionInfo && pExceptionInfo->ExceptionRecord) {
         DWORD code = pExceptionInfo->ExceptionRecord->ExceptionCode;
-        // Ignore non-fatal debug / status events
         if (code == DBG_PRINTEXCEPTION_C || code == 0x40010006 || code == STATUS_BREAKPOINT) {
             return EXCEPTION_CONTINUE_SEARCH;
         }
-        // Intercept severe hardware/memory violations early
         if (code == EXCEPTION_ACCESS_VIOLATION ||
             code == EXCEPTION_STACK_OVERFLOW ||
             code == EXCEPTION_ILLEGAL_INSTRUCTION ||
@@ -276,6 +261,19 @@ void CustomInvalidParameterHandler(
 void CustomPureCallHandler() {
     ProcessCrash(nullptr, L"Pure Virtual Function Call Exception");
 }
+#else
+void ProcessCrash(void* /*pExceptionInfo*/, const wchar_t* customReason = nullptr) {
+    if (g_isHandlingCrash.exchange(true)) {
+        std::exit(1);
+    }
+    if (customReason) {
+        std::fwprintf(stderr, L"Omor Ekushe Fatal Error: %ls\n", customReason);
+    } else {
+        std::fwprintf(stderr, L"Omor Ekushe Fatal Error\n");
+    }
+    std::exit(1);
+}
+#endif
 
 void CustomSignalHandler(int signal) {
     const wchar_t* sigName = L"C Signal Error";
@@ -319,12 +317,20 @@ void InstallCrashDiagnostics() {
 }
 
 bool GenerateCrashReport(void* exceptionPointers, const wchar_t* customReason) {
+#if defined(_WIN32)
     ProcessCrash(static_cast<EXCEPTION_POINTERS*>(exceptionPointers), customReason);
+#else
+    ProcessCrash(exceptionPointers, customReason);
+#endif
     return true;
 }
 
 std::wstring GetExceptionString(unsigned long code) {
+#if defined(_WIN32)
     return ExceptionCodeToText(code);
+#else
+    return L"Exception 0x" + std::to_wstring(code);
+#endif
 }
 
 } // namespace bijoy::error

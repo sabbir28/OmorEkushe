@@ -53,7 +53,9 @@ private:
     HWND m_mainWindow{nullptr};
     ApplicationState m_state{ApplicationState::Uninitialized};
     std::shared_ptr<bijoy::core::StartupOptions> m_startupOptions;
+#if defined(_WIN32)
     bool m_hookInstalled{false};
+#endif
 };
 
 } // namespace bijoy::app
