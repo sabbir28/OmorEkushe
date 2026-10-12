@@ -89,7 +89,8 @@ namespace {
         return static_cast<int>(wcstol(value.c_str(), nullptr, 10));
     }
 
-    std::wstring Utf8ToWstring(const std::string& str) {
+#if !defined(_WIN32)
+    [[maybe_unused]] std::wstring Utf8ToWstring(const std::string& str) {
         std::wstring out;
         out.reserve(str.size());
         for (size_t i = 0; i < str.size();) {
@@ -132,6 +133,7 @@ namespace {
         }
         return out;
     }
+#endif
 
 } // namespace
 
