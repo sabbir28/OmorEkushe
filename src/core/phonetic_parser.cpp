@@ -1,9 +1,32 @@
 #include "core/phonetic_parser.h"
+#include "core/omorekushe_fast.h"
 
 #include <cctype>
 #include <algorithm>
+#include <array>
+#include <utility>
 
 namespace bijoy::core {
+
+namespace {
+
+constexpr uint8_t InitCaseMap(size_t i) {
+    uint8_t b = static_cast<uint8_t>(i);
+    uint8_t lower = (b >= 'A' && b <= 'Z') ? static_cast<uint8_t>(b + 32) : b;
+    bool isCaseSens = (lower == 'o' || lower == 'i' || lower == 'u' || lower == 'd' ||
+                       lower == 'g' || lower == 'j' || lower == 'n' || lower == 'r' ||
+                       lower == 's' || lower == 't' || lower == 'y' || lower == 'z');
+    return isCaseSens ? b : lower;
+}
+
+template <size_t... Is>
+constexpr auto MakeCaseTable(std::index_sequence<Is...>) {
+    return std::array<uint8_t, sizeof...(Is)>{InitCaseMap(Is)...};
+}
+
+constexpr auto kCaseTable = MakeCaseTable(std::make_index_sequence<256>{});
+
+} // namespace
 
 PhoneticParser::PhoneticParser() {
     Initialize(GetBuiltinPhoneticPatterns());
@@ -46,17 +69,23 @@ bool PhoneticParser::IsPunctuation(char c) const {
 
 bool PhoneticParser::IsCaseSensitive(char c) const {
     const char lower = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-    static const std::string kCaseSensitive = "oiudgjnrstyz";
-    return kCaseSensitive.find(lower) != std::string::npos;
+    return lower == 'o' || lower == 'i' || lower == 'u' || lower == 'd' ||
+           lower == 'g' || lower == 'j' || lower == 'n' || lower == 'r' ||
+           lower == 's' || lower == 't' || lower == 'y' || lower == 'z';
 }
 
 std::string PhoneticParser::FixString(const std::string& input) const {
-    std::string result = input;
-    for (char& c : result) {
-        if (!IsCaseSensitive(c)) {
-            c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-        }
+    std::string result(input.length(), '\0');
+#if defined(OMOREKUSHE_ENABLE_RUST)
+    omorekushe_fast_fix_string(
+        reinterpret_cast<const uint8_t*>(input.data()), input.length(),
+        reinterpret_cast<uint8_t*>(&result[0]), result.length()
+    );
+#else
+    for (size_t i = 0; i < input.length(); ++i) {
+        result[i] = static_cast<char>(kCaseTable[static_cast<unsigned char>(input[i])]);
     }
+#endif
     return result;
 }
 

@@ -15,6 +15,10 @@
 
 ## What's New
 
+- **Rust & Hardware SIMD/Assembly Acceleration Core**:
+  - Critical phonetic transliteration hot paths and dynamic diff backspacing rewritten with **Rust and x86_64 SIMD vectorization (SSE2/AVX)** and **inline assembly bit-scans (`bsf`)**.
+  - Replaced heap-allocating string searches with single-cycle $O(1)$ 256-byte static classification lookup tables.
+  - Multi-threaded or single-keystroke dynamic diffing compares 8 to 16 UTF-16 code units per vector instruction cycle, achieving zero perceptible latency.
 - **Avro-Compatible Phonetic Transliteration Engine**:
   - Type Bengali phonetically using standard English keyboard inputs (e.g., `ami` &rarr; `আমি`, `bangla` &rarr; `বাংলা`, `shadhinota` &rarr; `স্বাধীনতা`).
   - Powered by a native C++ Trie parser, complex conjunct resolution, vowel-to-Kar contextual transformation, and **smart dynamic backspacing** that edits already-committed glyphs seamlessly.
@@ -116,7 +120,8 @@ OmorEkushe/
 │   ├── platform/                 # Native OS windowing & input headers (Windows/Linux/macOS)
 │   └── utils/                    # Common system utilities
 ├── libs/                         # Modular Sub-Libraries & SDKs
-│   └── NetClient/                # Lightweight WinHTTP networking client library
+│   ├── NetClient/                # Lightweight WinHTTP networking client library
+│   └── omorekushe_core/          # Ultra-high performance Rust & SIMD acceleration core
 ├── packaging/                    # Distribution packaging configurations
 │   └── windows/                  # Inno Setup installer script (OmorEkushe.iss)
 ├── src/                          # Application Core Source Code

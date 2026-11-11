@@ -42,5 +42,13 @@ target_compile_definitions(PhoneticTests PRIVATE
 
 omorekushe_set_compiler_warnings(PhoneticTests)
 
+if(TARGET omorekushe_rust_lib)
+    target_compile_definitions(PhoneticTests PRIVATE OMOREKUSHE_ENABLE_RUST=1)
+    target_link_libraries(PhoneticTests PRIVATE omorekushe_rust_lib)
+    if(WIN32)
+        target_link_libraries(PhoneticTests PRIVATE ws2_32 userenv ntdll bcrypt)
+    endif()
+endif()
+
 add_test(NAME PhoneticParserTests COMMAND PhoneticTests)
 

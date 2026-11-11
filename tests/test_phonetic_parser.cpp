@@ -507,6 +507,14 @@ int main() {
         assert(diff6.backspaceCount == 1);
         assert(diff6.toSend.empty());
 
+        // Long string test exercising 128-bit SIMD vector loop (> 8 and > 16 characters)
+        std::wstring sLong1 = L"আমি বাংলায় গান গাই, আমি বাংলার গান গাই";
+        std::wstring sLong2 = L"আমি বাংলায় গান গাই, আমি বাংলার পথ চলি";
+        auto diffLong = bijoy::core::PhoneticEngine::ComputeDiff(sLong1, sLong2);
+        assert(diffLong.commonPrefixLength == 24);
+        assert(diffLong.backspaceCount == sLong1.length() - 24);
+        assert(diffLong.toSend == L"পথ চলি");
+
         // 2. MapVirtualKeyToChar tests
         bijoy::core::PhoneticEngine engine;
         assert(engine.MapVirtualKeyToChar('A', false) == 'a');

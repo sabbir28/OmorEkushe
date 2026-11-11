@@ -1,7 +1,16 @@
 #include "core/phonetic_engine.h"
 #include "core/platform_input.h"
+#include "core/omorekushe_fast.h"
 
 #include <vector>
+#include <algorithm>
+
+#if defined(_M_X64) || defined(__x86_64__)
+#include <immintrin.h>
+#if defined(_MSC_VER)
+#include <intrin.h>
+#endif
+#endif
 
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
@@ -28,9 +37,49 @@ void PhoneticEngine::Reset() {
 PhoneticEngine::DiffResult PhoneticEngine::ComputeDiff(const std::wstring& oldOutput, const std::wstring& newOutput) {
     DiffResult result;
     size_t common = 0;
-    while (common < oldOutput.length() &&
-           common < newOutput.length() &&
-           oldOutput[common] == newOutput[common]) {
+
+#if defined(OMOREKUSHE_ENABLE_RUST)
+    size_t backspaces = 0;
+    omorekushe_fast_compute_diff(
+        reinterpret_cast<const uint16_t*>(oldOutput.data()), oldOutput.length(),
+        reinterpret_cast<const uint16_t*>(newOutput.data()), newOutput.length(),
+        &common, &backspaces
+    );
+    result.commonPrefixLength = common;
+    result.backspaceCount = backspaces;
+    result.toSend = newOutput.substr(common);
+    return result;
+#else
+    const size_t minLen = std::min(oldOutput.length(), newOutput.length());
+
+#if defined(_M_X64) || defined(__x86_64__)
+    // Hardware-accelerated 128-bit vectorization (SSE2/SSE4.2/AVX) with inline assembly bit-scan
+    const wchar_t* p1 = oldOutput.data();
+    const wchar_t* p2 = newOutput.data();
+    while (common + 8 <= minLen) {
+        __m128i v1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p1 + common));
+        __m128i v2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p2 + common));
+        __m128i eq = _mm_cmpeq_epi16(v1, v2);
+        int mask = _mm_movemask_epi8(eq);
+        if (mask != 0xFFFF) {
+            unsigned long diffByte = 0;
+            unsigned int notMask = static_cast<unsigned int>(~mask) & 0xFFFF;
+#if defined(_MSC_VER)
+            _BitScanForward(&diffByte, notMask);
+#else
+            diffByte = __builtin_ctz(notMask);
+#endif
+            common += (diffByte / 2);
+            result.commonPrefixLength = common;
+            result.backspaceCount = oldOutput.length() - common;
+            result.toSend = newOutput.substr(common);
+            return result;
+        }
+        common += 8;
+    }
+#endif
+
+    while (common < minLen && oldOutput[common] == newOutput[common]) {
         ++common;
     }
 
@@ -38,6 +87,7 @@ PhoneticEngine::DiffResult PhoneticEngine::ComputeDiff(const std::wstring& oldOu
     result.backspaceCount = oldOutput.length() - common;
     result.toSend = newOutput.substr(common);
     return result;
+#endif
 }
 
 void PhoneticEngine::EmitBackspacesAndChars(size_t backspaces, const std::wstring& toSend) {

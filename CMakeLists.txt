@@ -20,6 +20,7 @@ option(OMOREKUSHE_BUILD_SPELLING_CHECKER "Build SpellingChecker GUI tool" ON)
 option(OMOREKUSHE_BUILD_NETCLIENT "Build NetClient shared library (Windows)" ON)
 option(OMOREKUSHE_BUILD_TESTS "Build unit & regression test suite" ON)
 option(OMOREKUSHE_INCLUDE_RESOURCES "Compile Win32 resource file (app.rc)" ON)
+option(OMOREKUSHE_ENABLE_RUST "Enable Rust & SIMD acceleration core" ON)
 
 # Backward-compatibility aliases for legacy options
 if(DEFINED BIJOY_BUILD_LAYOUT_EDITOR)
@@ -148,6 +149,64 @@ if(WIN32)
 endif()
 
 omorekushe_set_compiler_warnings(OmorEkushe)
+
+# ==============================================================================
+# Rust & SIMD Acceleration Core
+# ==============================================================================
+if(OMOREKUSHE_ENABLE_RUST)
+    find_program(CARGO_EXECUTABLE cargo PATHS "$ENV{USERPROFILE}/.cargo/bin" "C:/Users/Administrator/.cargo/bin")
+    if(CARGO_EXECUTABLE)
+        message(STATUS "Found Cargo: ${CARGO_EXECUTABLE} - Enabling Rust & SIMD core")
+
+        set(RUST_MANIFEST "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/Cargo.toml")
+        set(RUST_TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/cargo_target")
+
+        if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+            set(CARGO_BUILD_FLAG "")
+            set(RUST_LIB_DIR "${RUST_TARGET_DIR}/debug")
+        else()
+            set(CARGO_BUILD_FLAG "--release")
+            set(RUST_LIB_DIR "${RUST_TARGET_DIR}/release")
+        endif()
+
+        if(WIN32)
+            set(RUST_LIB_NAME "omorekushe_core.lib")
+        else()
+            set(RUST_LIB_NAME "libomorekushe_core.a")
+        endif()
+        set(RUST_STATIC_LIB "${RUST_LIB_DIR}/${RUST_LIB_NAME}")
+
+        add_custom_command(
+            OUTPUT "${RUST_STATIC_LIB}"
+            COMMAND ${CARGO_EXECUTABLE} build ${CARGO_BUILD_FLAG} --manifest-path "${RUST_MANIFEST}" --target-dir "${RUST_TARGET_DIR}"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core"
+            DEPENDS
+                "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/lib.rs"
+                "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/simd_diff.rs"
+                "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/phonetic.rs"
+                "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/ffi.rs"
+                "${RUST_MANIFEST}"
+            COMMENT "Compiling Rust & SIMD acceleration static library"
+            VERBATIM
+        )
+
+        add_custom_target(omorekushe_core_rust DEPENDS "${RUST_STATIC_LIB}")
+        add_library(omorekushe_rust_lib STATIC IMPORTED GLOBAL)
+        set_target_properties(omorekushe_rust_lib PROPERTIES
+            IMPORTED_LOCATION "${RUST_STATIC_LIB}"
+        )
+        add_dependencies(omorekushe_rust_lib omorekushe_core_rust)
+
+        target_compile_definitions(OmorEkushe PRIVATE OMOREKUSHE_ENABLE_RUST=1)
+        target_link_libraries(OmorEkushe PRIVATE omorekushe_rust_lib)
+
+        if(WIN32)
+            target_link_libraries(OmorEkushe PRIVATE ws2_32 userenv ntdll bcrypt)
+        endif()
+    else()
+        message(STATUS "Cargo not found: falling back to C++ SIMD & Assembly vectorization")
+    endif()
+endif()
 
 # ------------------------------------------------------------------------------
 # MinGW runtime DLL packaging helper

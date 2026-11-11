@@ -9,6 +9,9 @@ build/
 bin/
 out/
 temp/
+target/
+cargo_target/
+Cargo.lock
 cmake-build-*/
 _deps/
 CMakeFiles/
