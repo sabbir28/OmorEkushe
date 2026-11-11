@@ -209,6 +209,8 @@ if(OMOREKUSHE_ENABLE_RUST)
                     "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/simd_diff.rs"
                     "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/phonetic.rs"
                     "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/spelling.rs"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/macro_expander.rs"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/predict.rs"
                     "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/ffi.rs"
                     "${RUST_MANIFEST}"
                 COMMENT "Compiling Rust & SIMD acceleration static library"

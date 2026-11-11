@@ -152,8 +152,8 @@ The features are categorized into four strategic pillars:
 
 | Feature | Pillar | Complexity | Target Release | Dependencies |
 | :--- | :--- | :--- | :--- | :--- |
-| **Predictive Next-Word Engine** | Linguistic | Medium | v1.2.0 | Trie + Rust Core |
-| **Smart Text Expander & Macros** | Linguistic | Low | v1.2.0 | Layout Engine |
+| **Predictive Next-Word Engine** | Linguistic | Medium | Completed (v1.2.0) | Trie + Rust Core |
+| **Smart Text Expander & Macros** | Linguistic | Low | Completed (v1.2.0) | Rust + C/C++ Engine |
 | **Memory-Mapped Dictionary (.cdb)**| Performance | Medium | v1.2.0 | OS File Mapping |
 | **Fluent 2.0 Ribbon & Mica UI** | Architecture | Medium | v1.2.0 | Direct2D / DWM |
 | **Lock-Free Ring Buffer Hooks** | Architecture | Medium | v1.3.0 | Atomic C++17 |

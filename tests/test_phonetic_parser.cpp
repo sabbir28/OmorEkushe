@@ -3,6 +3,7 @@
 #include "core/layout.h"
 #include "core/startup_options.h"
 #include "core/platform_types.h"
+#include "core/omorekushe_fast.h"
 #include <iostream>
 #include <cassert>
 #include <string>
@@ -631,6 +632,77 @@ int main() {
         bijoy::core::SaveStartupOptions(opts);
 
         std::cout << "StartupOptions & Custom Shortcuts Test: All persistence tests passed successfully!" << std::endl;
+    }
+
+    // =========================================================================
+    // Test: Smart Macro Expander (FUTURE_FEATURES.md 1.4)
+    // =========================================================================
+    {
+        std::cout << "Testing Smart Macro Expander..." << std::endl;
+        bijoy::core::PhoneticEngine engine(parser);
+
+        // Test shorthand //om -> অমর একুশে
+        for (char c : std::string("//om")) {
+            engine.ProcessCharacter(c);
+        }
+        assert(engine.TryExpandMacro());
+        assert(engine.GetLastOutput() == L"\u0985\u09ae\u09b0 \u098f\u0995\u09c1\u09b6\u09c7");
+        engine.Reset();
+
+        // Test shorthand //bd -> বাংলাদেশ
+        for (char c : std::string("//bd")) {
+            engine.ProcessCharacter(c);
+        }
+        assert(engine.TryExpandMacro());
+        assert(engine.GetLastOutput() == L"\u09ac\u09be\u0982\u09b2\u09be\u09a6\u09c7\u09b6");
+        engine.Reset();
+
+        // Test amount macro 1500/= -> এক হাজার পাঁচ শত টাকা মাত্র
+        for (char c : std::string("1500/=")) {
+            engine.ProcessCharacter(c);
+        }
+        assert(engine.GetLastOutput() == L"\u098f\u0995 \u09b9\u09be\u099c\u09be\u09b0 \u09aa\u09be\u0981\u099a \u09b6\u09a4 \u099f\u09be\u0995\u09be \u09ae\u09be\u09a4\u09cd\u09b0");
+        engine.Reset();
+
+        std::cout << "Smart Macro Expander: All tests passed successfully!" << std::endl;
+    }
+
+    // =========================================================================
+    // Test: Predictive Autocomplete Suggestion Engine (FUTURE_FEATURES.md 1.1)
+    // =========================================================================
+    {
+        std::cout << "Testing Predictive Autocomplete Suggestion Engine..." << std::endl;
+        bijoy::core::PhoneticEngine engine(parser);
+
+        // Type "am" -> "আম"
+        for (char c : std::string("am")) {
+            engine.ProcessCharacter(c);
+        }
+        auto suggestions = engine.GetSuggestions(5);
+        assert(!suggestions.empty());
+        // Verify all returned suggestions begin with "আম"
+        for (const auto& s : suggestions) {
+            (void)s;
+            assert(s.rfind(L"\u0986\u09ae", 0) == 0);
+        }
+
+        // Test committing first suggestion via Tab
+        assert(engine.CommitSuggestion(0));
+        assert(engine.GetRawBuffer().empty());
+
+        // Type "bang" -> "বাং"
+        for (char c : std::string("bang")) {
+            engine.ProcessCharacter(c);
+        }
+        auto banglaSuggestions = engine.GetSuggestions(5);
+        assert(!banglaSuggestions.empty());
+        for (const auto& s : banglaSuggestions) {
+            (void)s;
+            assert(s.rfind(L"\u09ac\u09be\u0982", 0) == 0);
+        }
+        engine.Reset();
+
+        std::cout << "Predictive Autocomplete Engine: All tests passed successfully!" << std::endl;
     }
 
     return failed == 0 ? 0 : 1;

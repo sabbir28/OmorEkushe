@@ -1,6 +1,8 @@
 //! Foreign Function Interface (FFI) bindings for C and C++ integration.
 
+use crate::macro_expander;
 use crate::phonetic;
+use crate::predict;
 use crate::simd_diff;
 use crate::spelling;
 use core::slice;
@@ -112,4 +114,43 @@ pub unsafe extern "C" fn omorekushe_fast_utf8_to_codepoints(
         0
     }
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn omorekushe_fast_expand_macro(
+    raw_ascii: *const u8,
+    raw_len: usize,
+    out_utf16: *mut u16,
+    max_out: usize,
+) -> usize {
+    if raw_ascii.is_null() || out_utf16.is_null() || raw_len == 0 || max_out == 0 {
+        return 0;
+    }
+    let slice_bytes = slice::from_raw_parts(raw_ascii, raw_len);
+    if let Ok(raw_str) = core::str::from_utf8(slice_bytes) {
+        if let Some(expanded) = macro_expander::try_expand_macro(raw_str) {
+            let out_slice = slice::from_raw_parts_mut(out_utf16, max_out);
+            return predict::str_to_utf16_slice(&expanded, out_slice);
+        }
+    }
+    0
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn omorekushe_fast_predict_candidates(
+    prefix_utf16: *const u16,
+    prefix_len: usize,
+    out_buffer: *mut u16,
+    max_out_chars: usize,
+    out_offsets: *mut usize,
+    max_candidates: usize,
+) -> usize {
+    if prefix_utf16.is_null() || out_buffer.is_null() || out_offsets.is_null() || prefix_len == 0 || max_candidates == 0 {
+        return 0;
+    }
+    let p_slice = slice::from_raw_parts(prefix_utf16, prefix_len);
+    let buf_slice = slice::from_raw_parts_mut(out_buffer, max_out_chars);
+    let off_slice = slice::from_raw_parts_mut(out_offsets, max_candidates);
+    predict::predict_candidates_utf16(p_slice, buf_slice, off_slice, max_candidates)
+}
+
 

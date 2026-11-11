@@ -23,6 +23,14 @@
   - Type Bengali phonetically using standard English keyboard inputs (e.g., `ami` &rarr; `আমি`, `bangla` &rarr; `বাংলা`, `shadhinota` &rarr; `স্বাধীনতা`).
   - Powered by a native C++ Trie parser, complex conjunct resolution, vowel-to-Kar contextual transformation, and **smart dynamic backspacing** that edits already-committed glyphs seamlessly.
   - Dedicated **<kbd>F12</kbd>** toggle hotkey for instantaneous switching between English and Phonetic typing.
+- **Smart Text Expander & Date/Currency Macro Engine**:
+  - Automatically expands trigger prefixes into formatted Bengali text:
+    - Shorthands: `//om` &rarr; `অমর একুশে`, `//bd` &rarr; `বাংলাদেশ`, `//dh` &rarr; `ঢাকা`, `//slm` &rarr; `আসসালামু আলাইকুম`.
+    - Localized Date & Time: `//date` &rarr; `১১ নভেম্বর ২০২৬`, `//time` &rarr; `১২:০০ অপরাহ্ন`.
+    - Numeric Currency to Bengali Words: amounts followed by `/=` (e.g. `1500/=`) expand into words: `এক হাজার পাঁচ শত টাকা মাত্র`.
+- **Predictive Autocomplete Suggestion Engine**:
+  - Real-time candidate completions for active Bengali prefixes.
+  - Press <kbd>Tab</kbd> during phonetic typing to immediately auto-complete to the top candidate suggestion.
 - **Full Native Configuration & Options Dialog**:
   - Access via system tray right-click or top bar menu &rarr; **Options...**
   - **Live Glassmorphism Opacity Slider**: Adjust overlay bar transparency from 20% to 100% with real-time visual feedback.

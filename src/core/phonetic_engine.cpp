@@ -144,6 +144,57 @@ char PhoneticEngine::MapVirtualKeyToChar(uint32_t vkCode, bool shift) const {
     return 0;
 }
 
+bool PhoneticEngine::TryExpandMacro() {
+#if defined(OMOREKUSHE_ENABLE_RUST)
+    uint16_t outBuf[256];
+    size_t len = omorekushe_fast_expand_macro(
+        m_rawBuffer.data(), m_rawBuffer.length(),
+        outBuf, 256
+    );
+    if (len > 0) {
+        std::wstring expanded(reinterpret_cast<const wchar_t*>(outBuf), len);
+        ApplyDiff(expanded);
+        return true;
+    }
+#endif
+    return false;
+}
+
+std::vector<std::wstring> PhoneticEngine::GetSuggestions(size_t maxSuggestions) const {
+    std::vector<std::wstring> results;
+    if (m_lastOutput.empty() || maxSuggestions == 0) {
+        return results;
+    }
+
+#if defined(OMOREKUSHE_ENABLE_RUST)
+    uint16_t buf[512];
+    size_t offsets[16];
+    const size_t limit = std::min(maxSuggestions, static_cast<size_t>(16));
+
+    size_t count = omorekushe_fast_predict_candidates(
+        reinterpret_cast<const uint16_t*>(m_lastOutput.data()), m_lastOutput.length(),
+        buf, 512,
+        offsets, limit
+    );
+
+    for (size_t i = 0; i < count; ++i) {
+        const wchar_t* ptr = reinterpret_cast<const wchar_t*>(buf + offsets[i]);
+        results.emplace_back(ptr);
+    }
+#endif
+    return results;
+}
+
+bool PhoneticEngine::CommitSuggestion(size_t index) {
+    auto suggestions = GetSuggestions(index + 1);
+    if (index < suggestions.size()) {
+        ApplyDiff(suggestions[index]);
+        Reset();
+        return true;
+    }
+    return false;
+}
+
 bool PhoneticEngine::ProcessCharacter(char ch, NativeWindowHandle foregroundWnd) {
     if (foregroundWnd != m_lastWindow) {
         Reset();
@@ -151,11 +202,18 @@ bool PhoneticEngine::ProcessCharacter(char ch, NativeWindowHandle foregroundWnd)
     }
 
     if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
+        TryExpandMacro();
         Reset();
         return false;
     }
 
     m_rawBuffer += ch;
+
+    // Check if macro matches on trigger suffix (e.g. 1500/=)
+    if (TryExpandMacro()) {
+        return true;
+    }
+
     std::wstring newOutput = m_parser.Convert(m_rawBuffer);
     ApplyDiff(newOutput);
     return true;
@@ -205,8 +263,18 @@ bool PhoneticEngine::ProcessKey(
     }
 
 #if defined(_WIN32)
-    // Space commits the word and passes through
+    // Space commits the word (expanding macro if active) and passes through
     if (vkCode == VK_SPACE) {
+        TryExpandMacro();
+        Reset();
+        return false;
+    }
+
+    // Tab commits the first predictive suggestion candidate if available
+    if (vkCode == VK_TAB) {
+        if (CommitSuggestion(0)) {
+            return true;
+        }
         Reset();
         return false;
     }

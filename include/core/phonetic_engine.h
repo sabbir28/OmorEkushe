@@ -3,6 +3,7 @@
 #include "core/phonetic_parser.h"
 #include "core/platform_types.h"
 #include <string>
+#include <vector>
 
 namespace bijoy::core {
 
@@ -38,6 +39,16 @@ public:
     const std::string& GetRawBuffer() const { return m_rawBuffer; }
     const std::wstring& GetLastOutput() const { return m_lastOutput; }
     const PhoneticParser& GetParser() const { return m_parser; }
+
+    /// Returns predictive autocomplete candidates for the active output.
+    std::vector<std::wstring> GetSuggestions(size_t maxSuggestions = 5) const;
+
+    /// Commits a specific suggestion candidate by index (0-based).
+    /// Returns true if a suggestion was committed.
+    bool CommitSuggestion(size_t index);
+
+    /// Checks if the current buffer matches a macro and expands it.
+    bool TryExpandMacro();
 
     /// Helper for testing diff calculation without sending input
     struct DiffResult {
