@@ -527,6 +527,7 @@ int main() {
 #else
         bijoy::core::NativeWindowHandle dummyWnd = 100;
 #endif
+        (void)dummyWnd;
         // Ctrl+C passes through
         assert(engine.ProcessKey('C', true, false, true, false, false, dummyWnd) == false);
         // Alt+Tab passes through
@@ -546,7 +547,11 @@ int main() {
     // 4. Test loading 02 Phonetic.xml
     {
         bijoy::core::Layout phoneticLayout;
-        bool loaded = phoneticLayout.loadFromFile(L"build/data/Layouts/02 Phonetic.xml");
+        bool loaded = phoneticLayout.loadFromFile(L"data/Layouts/02 Phonetic.xml") ||
+                      phoneticLayout.loadFromFile(L"../data/Layouts/02 Phonetic.xml") ||
+                      phoneticLayout.loadFromFile(L"../../data/Layouts/02 Phonetic.xml") ||
+                      phoneticLayout.loadFromFile(L"build/data/Layouts/02 Phonetic.xml");
+        (void)loaded;
         assert(loaded);
         assert(phoneticLayout.isPhonetic);
         assert(phoneticLayout.name == L"Phonetic");
@@ -572,6 +577,7 @@ int main() {
         opts.defaultLayout = 1;
 
         bool saved = bijoy::core::SaveStartupOptions(opts);
+        (void)saved;
         assert(saved);
 
         bijoy::core::StartupOptions loaded = bijoy::core::LoadStartupOptions();
@@ -592,10 +598,12 @@ int main() {
         sc.alt = true;
         sc.shift = false;
         bool scSaved = bijoy::core::SaveCustomLayoutShortcut(L"TestLayout", sc);
+        (void)scSaved;
         assert(scSaved);
 
         bijoy::core::LayoutShortcut scLoaded;
         bool scFound = bijoy::core::LoadCustomLayoutShortcut(L"TestLayout", scLoaded);
+        (void)scFound;
         assert(scFound);
         assert(scLoaded.keyCode == 'V');
         assert(scLoaded.ctrl == true);
@@ -603,6 +611,7 @@ int main() {
         assert(scLoaded.shift == false);
 
         bool scDeleted = bijoy::core::DeleteCustomLayoutShortcut(L"TestLayout");
+        (void)scDeleted;
         assert(scDeleted);
         assert(!bijoy::core::LoadCustomLayoutShortcut(L"TestLayout", scLoaded));
 

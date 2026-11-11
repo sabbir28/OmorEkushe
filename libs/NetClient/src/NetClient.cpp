@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <winhttp.h>
 #include <algorithm>
+#include <cctype>
 #pragma comment(lib, "winhttp.lib")
 #endif
 
@@ -14,11 +15,13 @@ namespace NetClient {
 
     std::string Response::header(const std::string& name) const {
         std::string lower_name = name;
-        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(),
+            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
         for (const auto& h : headers) {
             std::string h_name = h.first;
-            std::transform(h_name.begin(), h_name.end(), h_name.begin(), ::tolower);
+            std::transform(h_name.begin(), h_name.end(), h_name.begin(),
+                [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
             if (h_name == lower_name) return h.second;
         }
         return "";
