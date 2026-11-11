@@ -42,7 +42,7 @@ The `LayoutEditor` component is integrated as part of the overall CMake build pi
 
 By default, building the LayoutEditor is toggled via the CMake option:
 ```cmake
-option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor GUI (GLFW + OpenGL + Dear ImGui)" ON)
+option(OMOREKUSHE_BUILD_LAYOUT_EDITOR "Build the LayoutEditor GUI (GLFW + OpenGL + Dear ImGui)" ON)
 ```
 
 Target properties define Unicode declarations `UNICODE / _UNICODE` and link against necessary subsystems like `comctl32` and `shlwapi`. During integration, OmorEkushe's main UI provides a dedicated button or layout editor access point that attempts to execute `LayoutEditor.exe` from relative application paths.

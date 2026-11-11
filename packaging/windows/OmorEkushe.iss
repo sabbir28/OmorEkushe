@@ -27,9 +27,9 @@ AppUpdatesURL={#MyAppUpdatesURL}
 DefaultDirName={autopf}\Omor Ekushe
 DefaultGroupName=Omor Ekushe
 AllowNoIcons=yes
-OutputDir=..\release_stage
+OutputDir=..\..\release_stage
 OutputBaseFilename=OmorEkushe-Setup
-SetupIconFile=..\build\data\Icons\Phonetic.ico
+SetupIconFile=..\..\data\Icons\Phonetic.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
@@ -49,14 +49,14 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "autostart"; Description: "Start Omor Ekushe automatically when Windows starts"; GroupDescription: "System Integration:"; Flags: unchecked
 
 [Files]
-; Core Binaries
-Source: "..\build\bin\OmorEkushe.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "..\build\bin\LayoutEditor.exe"; DestDir: "{app}\bin"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "..\build\bin\SpellingChecker.exe"; DestDir: "{app}\bin"; Flags: ignoreversion skipifsourcedoesntexist
-Source: "..\build\bin\*.dll"; DestDir: "{app}\bin"; Flags: ignoreversion skipifsourcedoesntexist
+; Core Binaries (from build/bin)
+Source: "..\..\build\bin\OmorEkushe.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "..\..\build\bin\LayoutEditor.exe"; DestDir: "{app}\bin"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "..\..\build\bin\SpellingChecker.exe"; DestDir: "{app}\bin"; Flags: ignoreversion skipifsourcedoesntexist
+Source: "..\..\build\bin\*.dll"; DestDir: "{app}\bin"; Flags: ignoreversion skipifsourcedoesntexist
 
-; Data Directory (Layouts, Icons, Assets)
-Source: "..\build\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs skipifsourcedoesntexist
+; Canonical Data Directory (Layouts, Icons, Assets)
+Source: "..\..\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\bin\{#MyAppExeName}"; IconFilename: "{app}\bin\{#MyAppExeName}"
@@ -71,4 +71,3 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 
 [Run]
 Filename: "{app}\bin\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-

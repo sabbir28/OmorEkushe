@@ -7,7 +7,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/sabbir28/OmorEkushe?color=emerald&label=Release)](https://github.com/sabbir28/OmorEkushe/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011%20(x64)-blue.svg)](https://github.com/sabbir28/OmorEkushe)
 [![Language](https://img.shields.io/badge/language-C%2B%2B17-orange.svg)](https://github.com/sabbir28/OmorEkushe)
-[![Installer](https://img.shields.io/badge/installer-Inno%20Setup%20CI-teal.svg)](setup/OmorEkushe.iss)
+[![Installer](https://img.shields.io/badge/installer-Inno%20Setup%20CI-teal.svg)](packaging/windows/OmorEkushe.iss)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![RAM Usage](https://img.shields.io/badge/RAM-~5%20MB-red.svg)](#performance)
 
@@ -25,7 +25,7 @@
   - **Auto-Start with Windows**: Toggle seamless startup via `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
   - **Customizable Global Hotkeys**: Configure distinct keyboard shortcuts for Layout Cycle (<kbd>Ctrl+Alt+B</kbd>), Phonetic Toggle (<kbd>F12</kbd> or <kbd>Ctrl+Alt+P</kbd>).
 - 📦 **Automated Inno Setup Architecture (Zero Local Overhead)**:
-  - Replaced internal C++ binary bundler with an industry-standard **Inno Setup** packaging pipeline (`setup/OmorEkushe.iss`).
+  - Replaced internal C++ binary bundler with an industry-standard **Inno Setup** packaging pipeline (`packaging/windows/OmorEkushe.iss`).
   - Developers compile pure C++ application binaries locally; GitHub Actions CI automatically builds and signs the official **`OmorEkushe-Setup.exe`** and **`OmorEkushe-Portable.zip`**.
 - 🔄 **Smart Seamless Updates**:
   - Upgraded installer detects running instances of `OmorEkushe.exe`, gracefully closes them, applies the update, and relaunches the application.
@@ -99,31 +99,40 @@ With **Phonetic Mode** active (<kbd>F12</kbd>), type English phonetically accord
 
 ```
 OmorEkushe/
+├── .github/                      # Automated CI/CD Automation Workflows
+│   ├── workflows/                # Multi-compiler CI & Inno Setup automated release
+│   └── ISSUE_TEMPLATE/           # Structured bug reports & feature requests
+├── cmake/                        # Modular CMake helper scripts & warning profiles
+│   └── CompilerWarnings.cmake    # Standardized compiler warnings (MSVC, GCC, Clang)
+├── data/                         # Shipped Canonical Assets (never inside build/!)
+│   ├── Icons/                    # Application and layout-specific .ico icons
+│   └── Layouts/                  # Shipped XML Keymaps (Classic, Phonetic, Unicode)
+├── docs/                         # Modern Project Documentation & GitHub Pages Site
+├── include/                      # Public C++ Header Files
+│   ├── app/                      # Application lifecycle headers
+│   ├── core/                     # Transliteration, hooking, state, layout headers
+│   ├── error/                    # Crash handling and RAII utilities
+│   ├── lib/                      # Third-party single-header libraries (stb_image)
+│   ├── platform/                 # Native OS windowing & input headers (Windows/Linux/macOS)
+│   └── utils/                    # Common system utilities
+├── libs/                         # Modular Sub-Libraries & SDKs
+│   └── NetClient/                # Lightweight WinHTTP networking client library
+├── packaging/                    # Distribution packaging configurations
+│   └── windows/                  # Inno Setup installer script (OmorEkushe.iss)
 ├── src/                          # Application Core Source Code
 │   ├── app/                      # Main Entry & Lifecycle (main.cpp, application.cpp)
-│   ├── core/                     # Core Engines & Logic
-│   │   ├── phonetic_engine.cpp   # Avro Phonetic Transliteration & Dynamic Diff Engine
-│   │   ├── phonetic_parser.cpp   # Phonetic Trie & Phonetic Grammar Rules
-│   │   ├── keyboard_hook_service.cpp # WH_KEYBOARD_LL Low-Level Interception Service
-│   │   ├── layout.cpp            # XML Layout Parsing & Unicode Translation
-│   │   ├── layout_discovery.cpp  # Dynamic XML Scanning (data/Layouts/)
-│   │   ├── startup_options.cpp   # Registry Persistence (HKCU\Software\OmorEkushe)
-│   │   └── window_binding.cpp    # Per-Window Layout Memory
-│   └── platform/windows/         # Win32 Native UI Implementations
-│       ├── main_window.cpp       # Top Acrylic Control Bar & Window Messaging
-│       ├── main_window_tray.cpp  # System Tray Notification Icon & Context Menu
-│       ├── options_dialog.cpp    # Full Options & Settings Dialog (Opacity, Shortcuts)
-│       └── splash_screen.cpp     # Instant Win32 Startup Splash Screen
-├── include/                      # C++ Header Files
-├── setup/                        # Standard Inno Setup Packaging Script
-│   └── OmorEkushe.iss            # Inno Setup Script (built automatically via GitHub Actions CI)
-├── build/data/Layouts/           # Shipped XML Keymaps (Bijoy, Unijoy, Phonetic)
-├── .github/workflows/            # Automated CI/CD Automation Workflows
-│   ├── release.yml               # Automated CMake Release & Inno Setup Publication
-│   └── build.yml                 # Multi-compiler CI Matrix (MSVC, MinGW)
-├── docs/                         # Modern Project Documentation & GitHub Pages Site
-├── CMakeLists.txt                # Unified Root CMake Build File
-└── remove_registry.bat           # Utility Script to Reset Configuration
+│   ├── core/                     # Core Engines & Logic (phonetic engine, parser, hooks)
+│   ├── error/                    # Win32/POSIX minidump crash handler
+│   ├── platform/                 # Native OS implementations (Win32 Acrylic UI, Linux, macOS)
+│   └── utils/                    # System utilities
+├── tests/                        # Automated Unit & Regression Test Suite
+│   ├── CMakeLists.txt            # Dedicated CTest build definition
+│   └── test_phonetic_parser.cpp  # Avro phonetic grammar & transliteration tests (410+ assertions)
+├── tools/                        # Companion Developer & Desktop Tools
+│   ├── LayoutEditor/             # Dear ImGui visual keyboard layout designer
+│   └── SpellingChecker/          # Bengali dictionary verification utility
+├── .gitignore                    # Clean standard ignore rules (build/ fully untracked)
+└── CMakeLists.txt                # Unified Root Modern CMake Configuration File
 ```
 
 ---
@@ -132,9 +141,9 @@ OmorEkushe/
 
 ### Prerequisites
 
-- **Operating System**: Windows 10 / 11 (64-bit)
-- **Compiler**: Visual Studio 2019 / 2022 (MSVC Desktop C++) or MinGW-w64 GCC 9.0+
-- **Build System**: [CMake 3.14+](https://cmake.org/) & [Ninja](https://ninja-build.org/) (optional, recommended)
+- **Operating System**: Windows 10 / 11 (64-bit), Ubuntu Linux 22.04+, or macOS 12+
+- **Compiler**: Visual Studio 2019 / 2022 (MSVC Desktop C++), MinGW-w64 GCC 9.0+, or Clang
+- **Build System**: [CMake 3.16+](https://cmake.org/) & [Ninja](https://ninja-build.org/) (optional, recommended)
 
 > [!NOTE]
 > **No local installer tools required!** The developer machine only builds the pure C++ application binaries. The setup installer is automatically generated in the cloud by GitHub Actions CI.
@@ -147,16 +156,16 @@ git clone https://github.com/sabbir28/OmorEkushe.git
 cd OmorEkushe
 
 # 2. Configure build with CMake
-cmake -B out/build/x64-Release -DCMAKE_BUILD_TYPE=Release
+cmake -B build -DCMAKE_BUILD_TYPE=Release
 
-# 3. Build executable and test suite
-cmake --build out/build/x64-Release --config Release
+# 3. Build all targets
+cmake --build build --config Release
 
-# 4. Run Phonetic test suite (410+ tests)
-.\build\bin\PhoneticTests.exe
+# 4. Run automated test suite via CTest (410+ tests)
+ctest --test-dir build -C Release --output-on-failure
 ```
 
-The compiled binaries are generated in `build/bin/OmorEkushe.exe`.
+The compiled binaries are generated in `build/bin/OmorEkushe.exe` (with runtime assets dynamically deployed from `data/`).
 
 ---
 

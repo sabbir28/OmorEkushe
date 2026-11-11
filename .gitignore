@@ -1,14 +1,12 @@
 # =========================================================================
-# OmorEkushe Git Ignore File
+# Omor Ekushe Git Ignore File
 # =========================================================================
 
 # -------------------------------------------------
 # Build Output & CMake Directories
 # -------------------------------------------------
-build/*
-
+build/
 bin/
-data/
 out/
 temp/
 cmake-build-*/
@@ -19,6 +17,9 @@ cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
 compile_commands.json
+release_stage/
+portable_pack/
+setup/Output/
 
 # -------------------------------------------------
 # Compiled Binaries & Build Artifacts
@@ -93,6 +94,7 @@ ARM64/
 *.swp
 *~
 *.log
+*.ini
 Thumbs.db
 ehthumbs.db
 Desktop.ini
@@ -101,20 +103,3 @@ Desktop.ini
 ._*
 .Spotlight-V100
 .Trashes
-
-# -------------------------------------------------
-# Explicitly Tracked Build Binaries & Data
-# -------------------------------------------------
-!build/
-!build/bin/
-!build/bin/*
-build/bin/*.ilk
-build/bin/*.pdb
-!build/bin/OmorEkushe.ilk
-!build/bin/OmorEkushe.pdb
-build/bin/PhoneticTests*
-setup/Output/
-release_stage/
-portable_pack/
-!build/data/
-!build/data/**

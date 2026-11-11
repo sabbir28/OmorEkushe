@@ -92,6 +92,10 @@ namespace bijoy::core {
                 appDir + L"Layouts\\",
                 appDir + L"data\\Layouts\\",
                 appDir + L"..\\data\\Layouts\\",
+#ifdef OMOREKUSHE_DATA_DIR
+                std::wstring(OMOREKUSHE_DATA_DIR) + L"Layouts/",
+                std::wstring(OMOREKUSHE_DATA_DIR) + L"Layouts\\",
+#endif
 #ifdef BIJOY_DATA_DIR
                 std::wstring(BIJOY_DATA_DIR) + L"Layouts/",
                 std::wstring(BIJOY_DATA_DIR) + L"Layouts\\",

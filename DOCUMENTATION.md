@@ -38,7 +38,7 @@ Omor Ekushe is built on three core pillars:
 
 ## Inno Setup & Silent Upgrades
 
-The application installer is configured in `setup/OmorEkushe.iss` and generated automatically via GitHub Actions CI:
+The application installer is configured in `packaging/windows/OmorEkushe.iss` and generated automatically via GitHub Actions CI:
 - **Clean In-Place Upgrades**: Uses `CloseApplications=yes` and `RestartApplications=yes` to detect and safely close running instances during updates.
 - **Silent Installation Flag**: Supports unattended deployments:
   ```powershell

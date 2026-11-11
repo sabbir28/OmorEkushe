@@ -26,23 +26,19 @@ jobs:
 
     - name: Configure CMake (MSVC)
       if: matrix.compiler == 'msvc'
-      run: cmake -B build -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBIJOY_BUILD_LAYOUT_EDITOR=ON
+      run: cmake -B build -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOMOREKUSHE_BUILD_LAYOUT_EDITOR=ON
 
     - name: Configure CMake (MinGW)
       if: matrix.compiler == 'mingw'
-      run: cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBIJOY_BUILD_LAYOUT_EDITOR=ON
+      run: cmake -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOMOREKUSHE_BUILD_LAYOUT_EDITOR=ON
 
     - name: Build Executables
       run: cmake --build build --config ${{ matrix.build_type }}
 
-    - name: Run Phonetic Engine Unit Tests
+    - name: Run Unit Tests (CTest)
       shell: powershell
       run: |
-        if (Test-Path "build/bin/${{ matrix.build_type }}/PhoneticTests.exe") {
-          & "build/bin/${{ matrix.build_type }}/PhoneticTests.exe"
-        } elseif (Test-Path "build/bin/PhoneticTests.exe") {
-          & "build/bin/PhoneticTests.exe"
-        }
+        ctest --test-dir build -C ${{ matrix.build_type }} --output-on-failure
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
@@ -51,7 +47,7 @@ jobs:
         path: |
           build/bin/*.exe
           build/bin/*.dll
-          build/data/**
+          data/**
 
   build-linux:
     name: Build (Ubuntu Linux - X11 & Wayland)
@@ -66,13 +62,13 @@ jobs:
         sudo apt-get install -y libx11-dev libxtst-dev libxi-dev xorg-dev
 
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DBIJOY_BUILD_LAYOUT_EDITOR=OFF
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DOMOREKUSHE_BUILD_LAYOUT_EDITOR=OFF
 
     - name: Build Executables
       run: cmake --build build -j$(nproc)
 
-    - name: Run Phonetic Engine Unit Tests
-      run: ./build/bin/PhoneticTests
+    - name: Run Unit Tests (CTest)
+      run: ctest --test-dir build --output-on-failure
 
     - name: Upload Linux Artifacts
       uses: actions/upload-artifact@v4
@@ -81,7 +77,7 @@ jobs:
         path: |
           build/bin/OmorEkushe
           build/bin/PhoneticTests
-          build/data/**
+          data/**
 
   build-macos:
     name: Build (macOS - InputMethodKit)
@@ -91,13 +87,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DBIJOY_BUILD_LAYOUT_EDITOR=OFF
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DOMOREKUSHE_BUILD_LAYOUT_EDITOR=OFF
 
     - name: Build Executables
       run: cmake --build build -j$(sysctl -n hw.ncpu)
 
-    - name: Run Phonetic Engine Unit Tests
-      run: ./build/bin/PhoneticTests
+    - name: Run Unit Tests (CTest)
+      run: ctest --test-dir build --output-on-failure
 
     - name: Upload macOS Artifacts
       uses: actions/upload-artifact@v4
@@ -106,6 +102,4 @@ jobs:
         path: |
           build/bin/OmorEkushe.app
           build/bin/PhoneticTests
-          build/data/**
-
-
+          data/**

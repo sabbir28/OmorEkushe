@@ -35,19 +35,24 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake -B build -A x64 -DCMAKE_BUILD_TYPE=Release -DBIJOY_BUILD_LAYOUT_EDITOR=ON
+        cmake -B build -A x64 -DCMAKE_BUILD_TYPE=Release -DOMOREKUSHE_BUILD_LAYOUT_EDITOR=ON
 
     - name: Build All Executables
       run: |
         cmake --build build --config Release
+
+    - name: Run Unit Tests (CTest)
+      shell: powershell
+      run: |
+        ctest --test-dir build -C Release --output-on-failure
 
     - name: Prepare Release Directories
       shell: powershell
       run: |
         New-Item -ItemType Directory -Force -Path release_stage
         
-        # When using Visual Studio CMake generator, binaries are placed under build/bin/Release/
-        # Copy them into build/bin/ so Inno Setup and portable packaging find them reliably
+        # When using Visual Studio multi-config CMake generator, binaries are placed under build/bin/Release/
+        # Consolidate into build/bin/ so Inno Setup and portable packaging find them reliably
         if (Test-Path "build/bin/Release") {
           Write-Host "Copying Release binaries from build/bin/Release/ to build/bin/..."
           Copy-Item -Recurse -Force build/bin/Release/* build/bin/
@@ -62,7 +67,7 @@ jobs:
           choco install innosetup -y --no-progress
           $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
         }
-        & $iscc "/DMyAppVersion=$version" setup/OmorEkushe.iss
+        & $iscc "/DMyAppVersion=$version" packaging/windows/OmorEkushe.iss
 
     - name: Package Portable Distribution
       shell: powershell
@@ -72,8 +77,8 @@ jobs:
         
         Copy-Item -Recurse -Force build/bin/*.exe portable_pack/bin/ -Exclude "PhoneticTests.exe"
         Copy-Item -Recurse -Force build/bin/*.dll portable_pack/bin/
-        if (Test-Path "build/data") {
-          Copy-Item -Recurse -Force build/data/* portable_pack/data/
+        if (Test-Path "data") {
+          Copy-Item -Recurse -Force data/* portable_pack/data/
         }
         
         Compress-Archive -Path portable_pack/* -DestinationPath release_stage/OmorEkushe-Portable.zip -Force
@@ -91,4 +96,3 @@ jobs:
           release_stage/OmorEkushe-Portable.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

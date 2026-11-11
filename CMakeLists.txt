@@ -1,29 +1,53 @@
-cmake_minimum_required(VERSION 3.14)
-project(OmorEkushe LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.16)
+project(OmorEkushe VERSION 1.1.0 LANGUAGES CXX)
 
+# ==============================================================================
+# Global C++ Standards & Build Configuration
+# ==============================================================================
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(BIJOY_BUILD_LAYOUT_EDITOR "Build the LayoutEditor GUI (GLFW + OpenGL + Dear ImGui)" ON)
+# Modular CMake helper functions
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(CompilerWarnings)
 
-set(BIJOY_BUILD_ROOT "${CMAKE_SOURCE_DIR}/build")
-set(BIJOY_RUNTIME_OUTPUT_DIR "${BIJOY_BUILD_ROOT}/bin")
-set(BIJOY_DATA_DIR "${BIJOY_BUILD_ROOT}/data")
-set(FETCHCONTENT_BASE_DIR "${BIJOY_BUILD_ROOT}/_deps" CACHE PATH "Dependencies Base Directory")
+# ==============================================================================
+# Build Options
+# ==============================================================================
+option(OMOREKUSHE_BUILD_LAYOUT_EDITOR "Build LayoutEditor GUI tool (GLFW + OpenGL + ImGui)" ON)
+option(OMOREKUSHE_BUILD_SPELLING_CHECKER "Build SpellingChecker GUI tool" ON)
+option(OMOREKUSHE_BUILD_NETCLIENT "Build NetClient shared library (Windows)" ON)
+option(OMOREKUSHE_BUILD_TESTS "Build unit & regression test suite" ON)
+option(OMOREKUSHE_INCLUDE_RESOURCES "Compile Win32 resource file (app.rc)" ON)
 
-file(MAKE_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}")
-file(MAKE_DIRECTORY "${BIJOY_DATA_DIR}")
-file(MAKE_DIRECTORY "${BIJOY_BUILD_ROOT}/temp")
-file(MAKE_DIRECTORY "${BIJOY_BUILD_ROOT}/_deps")
-
-if(EXISTS "${CMAKE_SOURCE_DIR}/data")
-    file(COPY "${CMAKE_SOURCE_DIR}/data/" DESTINATION "${BIJOY_DATA_DIR}")
+# Backward-compatibility aliases for legacy options
+if(DEFINED BIJOY_BUILD_LAYOUT_EDITOR)
+    set(OMOREKUSHE_BUILD_LAYOUT_EDITOR ${BIJOY_BUILD_LAYOUT_EDITOR})
+endif()
+if(DEFINED BIJOY_INCLUDE_RESOURCES)
+    set(OMOREKUSHE_INCLUDE_RESOURCES ${BIJOY_INCLUDE_RESOURCES})
 endif()
 
-# =========================================================
+# ==============================================================================
+# Output Directories & Asset Deployment
+# ==============================================================================
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+set(OMOREKUSHE_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/data")
+
+# Deploy canonical runtime assets to build directories
+if(EXISTS "${OMOREKUSHE_DATA_DIR}")
+    file(MAKE_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+    file(COPY "${OMOREKUSHE_DATA_DIR}" DESTINATION "${CMAKE_BINARY_DIR}")
+    file(COPY "${OMOREKUSHE_DATA_DIR}" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+endif()
+
+# ==============================================================================
 # Main Executable: OmorEkushe (Cross-Platform Native Engine)
-# =========================================================
+# ==============================================================================
 if(WIN32)
     add_executable(OmorEkushe WIN32)
     target_sources(OmorEkushe PRIVATE
@@ -74,123 +98,98 @@ elseif(UNIX AND NOT APPLE)
     target_link_libraries(OmorEkushe PRIVATE pthread dl)
 endif()
 
+# Core engine and architecture sources
 target_sources(OmorEkushe PRIVATE
-        src/app/main.cpp
-        src/app/application.cpp
-        src/error/crash_handler.cpp
-        src/core/app_state.cpp
-        src/core/keyboard_hook_service.cpp
-        src/core/layout.cpp
-        src/core/layout_discovery.cpp
-        src/core/phonetic_data.cpp
-        src/core/phonetic_parser.cpp
-        src/core/phonetic_engine.cpp
-        src/core/startup_options.cpp
-        src/core/window_layout_binding.cpp
-        src/utils/system_utils.cpp
-)
-
-option(BIJOY_INCLUDE_RESOURCES "Compile Win32 resource file (app.rc)" ON)
-if(WIN32 AND BIJOY_INCLUDE_RESOURCES)
-  if(CMAKE_RC_COMPILER)
-    enable_language(RC)
-    target_sources(OmorEkushe PRIVATE src/platform/windows/app.rc)
-  else()
-    message(WARNING "Resource compiler not found. Building without src/platform/windows/app.rc")
-  endif()
-endif()
-
-target_include_directories(OmorEkushe PRIVATE include)
-target_compile_definitions(
-        OmorEkushe
-        PRIVATE
-        UNICODE
-        _UNICODE
-        NOMINMAX
-        BIJOY_DATA_DIR=L"${BIJOY_DATA_DIR}/"
-)
-
-if(WIN32)
-    target_link_libraries(OmorEkushe PRIVATE comctl32 shell32 shlwapi msimg32 dbghelp user32 gdi32 advapi32)
-endif()
-
-set_target_properties(OmorEkushe PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}"
-)
-
-if(MSVC)
-  target_compile_options(OmorEkushe PRIVATE /W4)
-else()
-  target_compile_options(OmorEkushe PRIVATE -Wall -Wextra)
-endif()
-
-# ------------------------------------------------------------------
-# MinGW runtime DLL copy fix (libstdc++-6.dll, libgcc, winpthread)
-# ------------------------------------------------------------------
-if(MINGW)
-  get_filename_component(MINGW_BIN_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
-
-  set(MINGW_DLLS
-          libstdc++-6.dll
-          libgcc_s_seh-1.dll
-          libgcc_s_dw2-1.dll
-          libwinpthread-1.dll
-          )
-
-  foreach(DLL ${MINGW_DLLS})
-    if(EXISTS "${MINGW_BIN_DIR}/${DLL}")
-      add_custom_command(
-              TARGET OmorEkushe POST_BUILD
-              COMMAND ${CMAKE_COMMAND} -E copy_if_different
-              "${MINGW_BIN_DIR}/${DLL}"
-              "$<TARGET_FILE_DIR:OmorEkushe>"
-      )
-    endif()
-  endforeach()
-endif()
-
-add_custom_target(omorekushe_all
-        DEPENDS OmorEkushe
-)
-
-add_executable(PhoneticTests
+    src/app/main.cpp
+    src/app/application.cpp
+    src/error/crash_handler.cpp
+    src/core/app_state.cpp
+    src/core/keyboard_hook_service.cpp
+    src/core/layout.cpp
+    src/core/layout_discovery.cpp
     src/core/phonetic_data.cpp
     src/core/phonetic_parser.cpp
     src/core/phonetic_engine.cpp
-    src/core/layout.cpp
     src/core/startup_options.cpp
-    src/core/test_phonetic_parser.cpp
+    src/core/window_layout_binding.cpp
+    src/utils/system_utils.cpp
 )
-target_include_directories(PhoneticTests PRIVATE include)
 
-if(WIN32)
-    target_sources(PhoneticTests PRIVATE src/platform/windows/platform_input_win.cpp)
-    target_link_libraries(PhoneticTests PRIVATE advapi32 user32)
-elseif(APPLE)
-    target_sources(PhoneticTests PRIVATE src/platform/macos/platform_input_macos.mm)
-    target_link_libraries(PhoneticTests PRIVATE ${COREGRAPHICS_LIB} ${COCOA_LIB})
-else()
-    target_sources(PhoneticTests PRIVATE
-        src/platform/linux/platform_input_linux.cpp
-        src/platform/linux/x11_input_method.cpp
-        src/platform/linux/wayland_input_method.cpp
-    )
-    if(X11_FOUND)
-        target_include_directories(PhoneticTests PRIVATE ${X11_INCLUDE_DIR})
-        target_link_libraries(PhoneticTests PRIVATE ${X11_LIBRARIES})
-        if(XTST_LIB)
-            target_link_libraries(PhoneticTests PRIVATE ${XTST_LIB})
-        endif()
+# Win32 resource script compilation
+if(WIN32 AND OMOREKUSHE_INCLUDE_RESOURCES)
+    if(CMAKE_RC_COMPILER)
+        enable_language(RC)
+        target_sources(OmorEkushe PRIVATE src/platform/windows/app.rc)
+    else()
+        message(WARNING "Resource compiler not found. Building without src/platform/windows/app.rc")
     endif()
-    target_link_libraries(PhoneticTests PRIVATE pthread dl)
 endif()
 
-set_target_properties(PhoneticTests PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${BIJOY_RUNTIME_OUTPUT_DIR}"
+target_include_directories(OmorEkushe PRIVATE include)
+target_compile_definitions(OmorEkushe PRIVATE
+    UNICODE
+    _UNICODE
+    NOMINMAX
+    OMOREKUSHE_DATA_DIR=L"${OMOREKUSHE_DATA_DIR}/"
+    BIJOY_DATA_DIR=L"${OMOREKUSHE_DATA_DIR}/"
 )
 
-# Optional Layout Editor dependencies (only if explicitly enabled on Windows)
-if(BIJOY_BUILD_LAYOUT_EDITOR AND WIN32)
+if(WIN32)
+    target_link_libraries(OmorEkushe PRIVATE
+        comctl32
+        shell32
+        shlwapi
+        msimg32
+        dbghelp
+        user32
+        gdi32
+        advapi32
+    )
+endif()
+
+omorekushe_set_compiler_warnings(OmorEkushe)
+
+# ------------------------------------------------------------------------------
+# MinGW runtime DLL packaging helper
+# ------------------------------------------------------------------------------
+if(MINGW)
+    get_filename_component(MINGW_BIN_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
+    set(MINGW_DLLS
+        libstdc++-6.dll
+        libgcc_s_seh-1.dll
+        libgcc_s_dw2-1.dll
+        libwinpthread-1.dll
+    )
+    foreach(DLL ${MINGW_DLLS})
+        if(EXISTS "${MINGW_BIN_DIR}/${DLL}")
+            add_custom_command(
+                TARGET OmorEkushe POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${MINGW_BIN_DIR}/${DLL}"
+                "$<TARGET_FILE_DIR:OmorEkushe>"
+            )
+        endif()
+    endforeach()
+endif()
+
+# ==============================================================================
+# Aggregate Target
+# ==============================================================================
+add_custom_target(omorekushe_all DEPENDS OmorEkushe)
+
+# ==============================================================================
+# Automated Tests Suite (CTest)
+# ==============================================================================
+if(OMOREKUSHE_BUILD_TESTS)
+    include(CTest)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
+# ==============================================================================
+# Tools & External Dependencies (GLFW + Dear ImGui)
+# ==============================================================================
+if((OMOREKUSHE_BUILD_LAYOUT_EDITOR OR OMOREKUSHE_BUILD_SPELLING_CHECKER) AND WIN32)
     include(FetchContent)
     set(FETCHCONTENT_BASE_DIR ${CMAKE_BINARY_DIR}/_deps CACHE PATH "Dependencies Base Directory")
     set(FETCHCONTENT_QUIET OFF)
@@ -198,7 +197,6 @@ if(BIJOY_BUILD_LAYOUT_EDITOR AND WIN32)
     set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
     set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-    # AUDIT FIX: Disable GLFW_INSTALL to prevent configure_package_config_file failures during subproject builds.
     set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
@@ -234,6 +232,7 @@ if(BIJOY_BUILD_LAYOUT_EDITOR AND WIN32)
             ${imgui_SOURCE_DIR}/imgui_tables.cpp
             ${imgui_SOURCE_DIR}/imgui_widgets.cpp
             ${imgui_SOURCE_DIR}/imgui_demo.cpp
+            ${backends_dir}
             ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
             ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
         )
@@ -242,12 +241,18 @@ if(BIJOY_BUILD_LAYOUT_EDITOR AND WIN32)
         target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
     endif()
 
-    add_subdirectory(LayoutEditor)
-    add_subdirectory(SpellingChecker)
+    if(OMOREKUSHE_BUILD_LAYOUT_EDITOR)
+        add_subdirectory(tools/LayoutEditor)
+    endif()
+
+    if(OMOREKUSHE_BUILD_SPELLING_CHECKER)
+        add_subdirectory(tools/SpellingChecker)
+    endif()
 endif()
 
-# Add NetClient (Windows)
-if(WIN32)
-    add_subdirectory(NetClient)
+# ==============================================================================
+# Internal Sub-Libraries (NetClient SDK)
+# ==============================================================================
+if(WIN32 AND OMOREKUSHE_BUILD_NETCLIENT)
+    add_subdirectory(libs/NetClient)
 endif()
-

@@ -21,7 +21,7 @@ Before opening a bug report, please check existing issues to ensure it hasn't be
 ### 3. Contributing Keyboard Layouts
 We welcome new Bengali keyboard layout XML maps! To contribute a layout:
 - Create an XML file following the schema documented in `README.md`.
-- Place the XML in `data/` or test it using the `LayoutEditor`.
+- Place the XML in `data/Layouts/` or test it using `tools/LayoutEditor`.
 - Verify key mappings across normal, Shift, and AltGr states.
 
 ### 4. Code Contributions
