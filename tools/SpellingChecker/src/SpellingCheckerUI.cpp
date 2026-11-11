@@ -144,7 +144,7 @@ void SpellingCheckerUI::RenderResultsPanel() {
                 if (res.isCorrect) continue; // Only show wrong words
                 
                 ImGui::PushID(&res);
-                ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "❌ %s", res.word.c_str());
+                ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "[X] %s", res.word.c_str());
                 ImGui::SameLine();
                 
                 if (res.suggestions.empty()) {
@@ -242,7 +242,7 @@ void SpellingCheckerUI::RenderSuggestionPopup() {
     
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing;
     if (ImGui::Begin("LiveSuggestionsPopup", nullptr, flags)) {
-        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "❌ %s", s_currentWord.c_str());
+        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "[X] %s", s_currentWord.c_str());
         ImGui::Separator();
         for (const auto& suggestion : s_liveSuggestions) {
             if (ImGui::Selectable(suggestion.c_str())) {

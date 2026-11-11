@@ -13,27 +13,27 @@
 
 ---
 
-## 🌟 What's New
+## What's New
 
-- 🚀 **Avro-Compatible Phonetic Transliteration Engine**:
+- **Avro-Compatible Phonetic Transliteration Engine**:
   - Type Bengali phonetically using standard English keyboard inputs (e.g., `ami` &rarr; `আমি`, `bangla` &rarr; `বাংলা`, `shadhinota` &rarr; `স্বাধীনতা`).
   - Powered by a native C++ Trie parser, complex conjunct resolution, vowel-to-Kar contextual transformation, and **smart dynamic backspacing** that edits already-committed glyphs seamlessly.
   - Dedicated **<kbd>F12</kbd>** toggle hotkey for instantaneous switching between English and Phonetic typing.
-- ⚙️ **Full Native Configuration & Options Dialog**:
+- **Full Native Configuration & Options Dialog**:
   - Access via system tray right-click or top bar menu &rarr; **Options...**
   - **Live Glassmorphism Opacity Slider**: Adjust overlay bar transparency from 20% to 100% with real-time visual feedback.
   - **Auto-Start with Windows**: Toggle seamless startup via `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
   - **Customizable Global Hotkeys**: Configure distinct keyboard shortcuts for Layout Cycle (<kbd>Ctrl+Alt+B</kbd>), Phonetic Toggle (<kbd>F12</kbd> or <kbd>Ctrl+Alt+P</kbd>).
-- 📦 **Automated Inno Setup Architecture (Zero Local Overhead)**:
+- **Automated Inno Setup Architecture (Zero Local Overhead)**:
   - Replaced internal C++ binary bundler with an industry-standard **Inno Setup** packaging pipeline (`packaging/windows/OmorEkushe.iss`).
   - Developers compile pure C++ application binaries locally; GitHub Actions CI automatically builds and signs the official **`OmorEkushe-Setup.exe`** and **`OmorEkushe-Portable.zip`**.
-- 🔄 **Smart Seamless Updates**:
+- **Smart Seamless Updates**:
   - Upgraded installer detects running instances of `OmorEkushe.exe`, gracefully closes them, applies the update, and relaunches the application.
   - Supports silent automation switches: `OmorEkushe-Setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART`.
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Key Features](#key-features)
@@ -206,7 +206,7 @@ reg delete "HKCU\Software\OmorEkushe" /f
 
 ---
 
-## 🚀 Visionary Future Roadmap
+## Visionary Future Roadmap
 
 We are constantly evolving Omor Ekushe to make it the fastest, smartest Bengali typing platform in the world. Upcoming architectural milestones:
 
