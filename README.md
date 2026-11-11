@@ -213,7 +213,9 @@ reg delete "HKCU\Software\OmorEkushe" /f
 
 ## Visionary Future Roadmap
 
-We are constantly evolving Omor Ekushe to make it the fastest, smartest Bengali typing platform in the world. Upcoming architectural milestones:
+We are constantly evolving Omor Ekushe to make it the fastest, smartest Bengali typing platform in the world. For the detailed architectural specification, feasibility matrix, and full feature proposals, see [FUTURE_FEATURES.md](FUTURE_FEATURES.md).
+
+Upcoming architectural milestones:
 
 - [ ] **AI-Powered Predictive Suggestion Engine**:
   - Contextual n-gram and lightweight local LLM/Trie autocomplete displaying a discreet, non-intrusive floating suggestion pill for high-speed word completion.
