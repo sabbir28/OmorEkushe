@@ -2,6 +2,7 @@
 
 use crate::phonetic;
 use crate::simd_diff;
+use crate::spelling;
 use core::slice;
 
 #[no_mangle]
@@ -75,5 +76,40 @@ pub extern "C" fn omorekushe_fast_is_vowel(c: u8) -> bool {
 #[no_mangle]
 pub extern "C" fn omorekushe_fast_is_consonant(c: u8) -> bool {
     phonetic::is_consonant(c)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn omorekushe_fast_levenshtein(
+    a: *const u32,
+    len_a: usize,
+    b: *const u32,
+    len_b: usize,
+    max_dist: u32,
+) -> u32 {
+    if a.is_null() || b.is_null() {
+        return max_dist + 1;
+    }
+    let slice_a = slice::from_raw_parts(a, len_a);
+    let slice_b = slice::from_raw_parts(b, len_b);
+    spelling::myers_levenshtein_64(slice_a, slice_b, max_dist)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn omorekushe_fast_utf8_to_codepoints(
+    utf8_ptr: *const u8,
+    utf8_len: usize,
+    out_cp: *mut u32,
+    max_out: usize,
+) -> usize {
+    if utf8_ptr.is_null() || out_cp.is_null() || utf8_len == 0 || max_out == 0 {
+        return 0;
+    }
+    let slice_bytes = slice::from_raw_parts(utf8_ptr, utf8_len);
+    if let Ok(text) = core::str::from_utf8(slice_bytes) {
+        let out_slice = slice::from_raw_parts_mut(out_cp, max_out);
+        spelling::utf8_to_codepoints(text, out_slice)
+    } else {
+        0
+    }
 }
 

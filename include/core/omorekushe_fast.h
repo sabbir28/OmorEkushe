@@ -29,6 +29,18 @@ size_t omorekushe_fast_fix_string(
 bool omorekushe_fast_is_vowel(uint8_t c);
 bool omorekushe_fast_is_consonant(uint8_t c);
 
+/// Bit-parallel Myers Levenshtein distance using assembly POPCNT.
+/// Executes in nanoseconds with zero matrix/vector dynamic heap allocations.
+uint32_t omorekushe_fast_levenshtein(
+    const uint32_t* a, size_t len_a,
+    const uint32_t* b, size_t len_b,
+    uint32_t max_dist);
+
+/// Zero-allocation UTF-8 to Unicode codepoints decoder.
+size_t omorekushe_fast_utf8_to_codepoints(
+    const uint8_t* utf8_ptr, size_t utf8_len,
+    uint32_t* out_cp, size_t max_out);
+
 #ifdef __cplusplus
 }
 #endif

@@ -16,6 +16,7 @@ add_executable(SpellingChecker WIN32
 
 target_include_directories(SpellingChecker PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include
 )
 
 target_compile_definitions(SpellingChecker PRIVATE
@@ -25,6 +26,14 @@ target_compile_definitions(SpellingChecker PRIVATE
     OMOREKUSHE_DATA_DIR="${OMOREKUSHE_DATA_DIR}"
     BIJOY_DATA_DIR="${OMOREKUSHE_DATA_DIR}"
 )
+
+if(TARGET omorekushe_rust_lib)
+    target_compile_definitions(SpellingChecker PRIVATE OMOREKUSHE_ENABLE_RUST=1)
+    target_link_libraries(SpellingChecker PRIVATE omorekushe_rust_lib)
+    if(WIN32)
+        target_link_libraries(SpellingChecker PRIVATE ws2_32 userenv ntdll bcrypt)
+    endif()
+endif()
 
 target_link_libraries(SpellingChecker PRIVATE
     imgui

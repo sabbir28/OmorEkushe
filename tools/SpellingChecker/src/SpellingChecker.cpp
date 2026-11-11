@@ -1,9 +1,17 @@
 #include "SpellingChecker.h"
+#include "core/omorekushe_fast.h"
 
 #include <algorithm>
 #include <queue>
 #include <filesystem>
 #include <iostream>
+#include <cstring>
+
+#if defined(_M_X64) || defined(__x86_64__)
+#if defined(_MSC_VER)
+#include <intrin.h>
+#endif
+#endif
 
 namespace bijoy::spelling {
 
@@ -50,36 +58,59 @@ size_t SpellChecker::GetDictionarySize() const {
 bool SpellChecker::ReadNextWordFromOffset(uintmax_t offset, std::string& outWord, uintmax_t& outStartOffset) {
     if (offset >= m_fileSize) return false;
 
-    // AUDIT FIX: Clear eofbit/failbit before seeking. If a previous read reached EOF,
-    // std::ifstream::seekg silently fails unless clear() is invoked first, breaking subsequent queries.
     m_file.clear();
     m_file.seekg(offset);
-    char buf[1];
+    char buffer[512];
     
-    // If we're not at the beginning, we must skip characters until we see a newline
+    // Fast buffered scanning replacing 1-byte read system calls
     if (offset > 0) {
         bool foundNewline = false;
-        while (m_file.read(buf, 1)) {
-            if (buf[0] == '\n') {
+        while (!foundNewline && m_file.read(buffer, sizeof(buffer))) {
+            const std::streamsize bytesRead = m_file.gcount();
+            const char* nl = static_cast<const char*>(std::memchr(buffer, '\n', static_cast<size_t>(bytesRead)));
+            if (nl) {
+                const uintmax_t posAfterNl = offset + (nl - buffer) + 1;
+                m_file.seekg(posAfterNl);
                 foundNewline = true;
                 break;
             }
+            offset += bytesRead;
         }
-        if (!foundNewline) return false; // Reached EOF without finding a word
+        if (!foundNewline) {
+            const std::streamsize bytesRead = m_file.gcount();
+            if (bytesRead > 0) {
+                const char* nl = static_cast<const char*>(std::memchr(buffer, '\n', static_cast<size_t>(bytesRead)));
+                if (nl) {
+                    const uintmax_t posAfterNl = offset + (nl - buffer) + 1;
+                    m_file.seekg(posAfterNl);
+                    foundNewline = true;
+                }
+            }
+        }
+        if (!foundNewline) return false;
     }
 
     outStartOffset = m_file.tellg();
     outWord.clear();
 
-    // Read the word until the next newline or EOF
-    while (m_file.read(buf, 1)) {
-        if (buf[0] == '\r') continue; // Ignore carriage return
-        if (buf[0] == '\n') break;
-        outWord.push_back(buf[0]);
+    // Fast buffered word extraction
+    while (m_file.read(buffer, sizeof(buffer)) || m_file.gcount() > 0) {
+        const std::streamsize bytesRead = m_file.gcount();
+        bool foundEnd = false;
+        for (std::streamsize i = 0; i < bytesRead; ++i) {
+            char c = buffer[i];
+            if (c == '\r') continue;
+            if (c == '\n') {
+                foundEnd = true;
+                m_file.seekg(outStartOffset + outWord.size() + i + 1);
+                break;
+            }
+            outWord.push_back(c);
+        }
+        if (foundEnd || bytesRead == 0) break;
     }
 
-    // Skip empty lines or trailing newlines
-    if (outWord.empty() && !m_file.eof()) {
+    if (outWord.empty() && !m_file.eof() && outStartOffset < m_fileSize) {
         return ReadNextWordFromOffset(outStartOffset + 1, outWord, outStartOffset);
     }
     
@@ -287,61 +318,85 @@ int SpellChecker::LevenshteinDistanceEarlyAbort(
     int maxDist) 
 {
     const size_t lenA = cpA.size();
-    // AUDIT FIX: Stack arrays prev[128] and curr[128] have a maximum indexed size of 127.
-    // If lenA >= 127 (e.g. pasted text/very long input), abort early to prevent stack buffer overflow.
     if (lenA >= 127) {
         return maxDist + 1;
     }
 
-    int prev[128], curr[128];
-    for (size_t j = 0; j <= 127; ++j) prev[j] = static_cast<int>(j);
+    uint32_t cpB[128];
+    size_t lenB = 0;
 
-    const auto* bytes = reinterpret_cast<const unsigned char*>(bUtf8.data());
-    size_t lenByteB = bUtf8.size();
-    size_t i = 1, byteIdx = 0;
-    
-    while (byteIdx < lenByteB && i < 127) {
-        uint32_t cpB = 0;
-        unsigned char b = bytes[byteIdx];
-        if (b < 0x80) {
-            cpB = b; byteIdx += 1;
-        } else if ((b & 0xE0) == 0xC0) {
-            cpB = b & 0x1F;
-            if (byteIdx + 1 < lenByteB) cpB = (cpB << 6) | (bytes[byteIdx + 1] & 0x3F);
-            byteIdx += 2;
-        } else if ((b & 0xF0) == 0xE0) {
-            cpB = b & 0x0F;
-            if (byteIdx + 1 < lenByteB) cpB = (cpB << 6) | (bytes[byteIdx + 1] & 0x3F);
-            if (byteIdx + 2 < lenByteB) cpB = (cpB << 6) | (bytes[byteIdx + 2] & 0x3F);
-            byteIdx += 3;
-        } else if ((b & 0xF8) == 0xF0) {
-            cpB = b & 0x07;
-            if (byteIdx + 1 < lenByteB) cpB = (cpB << 6) | (bytes[byteIdx + 1] & 0x3F);
-            if (byteIdx + 2 < lenByteB) cpB = (cpB << 6) | (bytes[byteIdx + 2] & 0x3F);
-            if (byteIdx + 3 < lenByteB) cpB = (cpB << 6) | (bytes[byteIdx + 3] & 0x3F);
-            byteIdx += 4;
-        } else {
-            byteIdx += 1; continue; 
+#if defined(OMOREKUSHE_ENABLE_RUST)
+    lenB = omorekushe_fast_utf8_to_codepoints(
+        reinterpret_cast<const uint8_t*>(bUtf8.data()), bUtf8.size(),
+        cpB, 128
+    );
+#else
+    auto decodedB = Utf8ToCodepoints(bUtf8);
+    lenB = std::min(decodedB.size(), static_cast<size_t>(127));
+    std::memcpy(cpB, decodedB.data(), lenB * sizeof(uint32_t));
+#endif
+
+    if (std::abs(static_cast<int>(lenA) - static_cast<int>(lenB)) > maxDist) {
+        return maxDist + 1;
+    }
+
+#if defined(OMOREKUSHE_ENABLE_RUST)
+    return static_cast<int>(omorekushe_fast_levenshtein(
+        cpA.data(), lenA,
+        cpB, lenB,
+        static_cast<uint32_t>(maxDist)
+    ));
+#else
+    // Hardware-accelerated Myers 64-bit Bit-Parallel algorithm with assembly POPCNT
+    if (lenA <= 64 && lenB <= 64) {
+        uint64_t vp = ~0ULL;
+        uint64_t vn = 0ULL;
+        uint32_t currDist = static_cast<uint32_t>(lenA);
+
+        for (size_t k = 0; k < lenB; ++k) {
+            const uint32_t chB = cpB[k];
+            uint64_t pm = 0;
+            for (size_t i = 0; i < lenA; ++i) {
+                if (cpA[i] == chB) pm |= (1ULL << i);
+            }
+
+            uint64_t x = pm | vn;
+            uint64_t d0 = ((vp + (x & vp)) ^ vp) | x;
+            uint64_t hn = vp & d0;
+            uint64_t hp = vn | ~(vp | d0);
+            x = (hp << 1) | 1ULL;
+            vn = x & d0;
+            vp = (hn << 1) | ~(x | d0);
+
+            uint64_t maskLast = 1ULL << (lenA - 1);
+            if ((hp & maskLast) != 0) {
+                currDist++;
+            } else if ((hn & maskLast) != 0) {
+                if (currDist > 0) currDist--;
+            }
         }
-        
+        return static_cast<int>(currDist);
+    }
+
+    int prev[128], curr[128];
+    for (size_t j = 0; j <= lenA; ++j) prev[j] = static_cast<int>(j);
+
+    for (size_t i = 1; i <= lenB; ++i) {
         curr[0] = static_cast<int>(i);
         int minRowCost = curr[0];
 
         for (size_t j = 1; j <= lenA; ++j) {
-            int cost = (cpA[j - 1] == cpB) ? 0 : 1;
+            int cost = (cpA[j - 1] == cpB[i - 1]) ? 0 : 1;
             curr[j] = std::min({ prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost });
             if (curr[j] < minRowCost) minRowCost = curr[j];
         }
-        
+
         if (minRowCost > maxDist) return maxDist + 1;
         for (size_t j = 0; j <= lenA; ++j) prev[j] = curr[j];
-        ++i;
     }
-    
-    size_t lenB = i - 1;
-    if (std::abs(static_cast<int>(lenA) - static_cast<int>(lenB)) > maxDist) return maxDist + 1; 
 
     return prev[lenA];
+#endif
 }
 
 } // namespace bijoy::spelling
