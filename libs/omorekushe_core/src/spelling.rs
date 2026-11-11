@@ -208,11 +208,19 @@ pub fn scan_proximity_chunk(
                         if found < results.len() {
                             results[found] = cand;
                             found += 1;
-                            // Sift up
-                            results[..found].sort_by_key(|c| c.dist);
+                            // In-place sift-up (zero stack buffer)
+                            let mut k = found - 1;
+                            while k > 0 && results[k - 1].dist > results[k].dist {
+                                results.swap(k - 1, k);
+                                k -= 1;
+                            }
                         } else if dist < results[results.len() - 1].dist {
                             results[results.len() - 1] = cand;
-                            results.sort_by_key(|c| c.dist);
+                            let mut k = results.len() - 1;
+                            while k > 0 && results[k - 1].dist > results[k].dist {
+                                results.swap(k - 1, k);
+                                k -= 1;
+                            }
                         }
                     }
                 }

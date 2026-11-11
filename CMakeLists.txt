@@ -156,52 +156,81 @@ omorekushe_set_compiler_warnings(OmorEkushe)
 if(OMOREKUSHE_ENABLE_RUST)
     find_program(CARGO_EXECUTABLE cargo PATHS "$ENV{USERPROFILE}/.cargo/bin" "C:/Users/Administrator/.cargo/bin")
     if(CARGO_EXECUTABLE)
-        message(STATUS "Found Cargo: ${CARGO_EXECUTABLE} - Enabling Rust & SIMD core")
-
         set(RUST_MANIFEST "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/Cargo.toml")
         set(RUST_TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/cargo_target")
 
         if(CMAKE_BUILD_TYPE STREQUAL "Debug")
             set(CARGO_BUILD_FLAG "")
-            set(RUST_LIB_DIR "${RUST_TARGET_DIR}/debug")
+            set(RUST_BUILD_SUBDIR "debug")
         else()
             set(CARGO_BUILD_FLAG "--release")
-            set(RUST_LIB_DIR "${RUST_TARGET_DIR}/release")
+            set(RUST_BUILD_SUBDIR "release")
         endif()
 
-        if(WIN32)
+        set(RUST_TARGET_ARGS "")
+        set(RUST_LIB_DIR "${RUST_TARGET_DIR}/${RUST_BUILD_SUBDIR}")
+        set(RUST_ENABLED_FOR_COMPILER TRUE)
+
+        if(MSVC)
+            # MSVC compiler: standard Windows MSVC target produces omorekushe_core.lib
             set(RUST_LIB_NAME "omorekushe_core.lib")
+        elseif(MINGW)
+            # MinGW GCC toolchain requires the x86_64-pc-windows-gnu Rust target to prevent ABI mismatch (__chkstk)
+            execute_process(
+                COMMAND ${CARGO_EXECUTABLE} check --target x86_64-pc-windows-gnu --manifest-path "${RUST_MANIFEST}"
+                RESULT_VARIABLE RUST_GNU_CHECK_RESULT
+                OUTPUT_QUIET ERROR_QUIET
+            )
+            if(RUST_GNU_CHECK_RESULT EQUAL 0)
+                set(RUST_TARGET_ARGS "--target" "x86_64-pc-windows-gnu")
+                set(RUST_LIB_DIR "${RUST_TARGET_DIR}/x86_64-pc-windows-gnu/${RUST_BUILD_SUBDIR}")
+                set(RUST_LIB_NAME "libomorekushe_core.a")
+                message(STATUS "MinGW GCC detected: Using Rust target x86_64-pc-windows-gnu")
+            else()
+                message(STATUS "MinGW GCC detected, but Rust target 'x86_64-pc-windows-gnu' is not installed.")
+                message(STATUS "Disabling Rust library to avoid MSVC/MinGW ABI conflicts. Falling back to native C++ SIMD vectorization.")
+                set(RUST_ENABLED_FOR_COMPILER FALSE)
+            endif()
         else()
+            # Non-Windows (Linux, macOS, Unix GCC/Clang)
             set(RUST_LIB_NAME "libomorekushe_core.a")
         endif()
-        set(RUST_STATIC_LIB "${RUST_LIB_DIR}/${RUST_LIB_NAME}")
 
-        add_custom_command(
-            OUTPUT "${RUST_STATIC_LIB}"
-            COMMAND ${CARGO_EXECUTABLE} build ${CARGO_BUILD_FLAG} --manifest-path "${RUST_MANIFEST}" --target-dir "${RUST_TARGET_DIR}"
-            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core"
-            DEPENDS
-                "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/lib.rs"
-                "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/simd_diff.rs"
-                "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/phonetic.rs"
-                "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/ffi.rs"
-                "${RUST_MANIFEST}"
-            COMMENT "Compiling Rust & SIMD acceleration static library"
-            VERBATIM
-        )
+        if(RUST_ENABLED_FOR_COMPILER)
+            set(RUST_STATIC_LIB "${RUST_LIB_DIR}/${RUST_LIB_NAME}")
+            message(STATUS "Found Cargo: ${CARGO_EXECUTABLE} - Enabling Rust & SIMD core (${RUST_LIB_NAME})")
 
-        add_custom_target(omorekushe_core_rust DEPENDS "${RUST_STATIC_LIB}")
-        add_library(omorekushe_rust_lib STATIC IMPORTED GLOBAL)
-        set_target_properties(omorekushe_rust_lib PROPERTIES
-            IMPORTED_LOCATION "${RUST_STATIC_LIB}"
-        )
-        add_dependencies(omorekushe_rust_lib omorekushe_core_rust)
+            add_custom_command(
+                OUTPUT "${RUST_STATIC_LIB}"
+                COMMAND ${CARGO_EXECUTABLE} build ${CARGO_BUILD_FLAG} ${RUST_TARGET_ARGS} --manifest-path "${RUST_MANIFEST}" --target-dir "${RUST_TARGET_DIR}"
+                WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core"
+                DEPENDS
+                    "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/lib.rs"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/simd_diff.rs"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/phonetic.rs"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/spelling.rs"
+                    "${CMAKE_CURRENT_SOURCE_DIR}/libs/omorekushe_core/src/ffi.rs"
+                    "${RUST_MANIFEST}"
+                COMMENT "Compiling Rust & SIMD acceleration static library"
+                VERBATIM
+            )
 
-        target_compile_definitions(OmorEkushe PRIVATE OMOREKUSHE_ENABLE_RUST=1)
-        target_link_libraries(OmorEkushe PRIVATE omorekushe_rust_lib)
+            add_custom_target(omorekushe_core_rust DEPENDS "${RUST_STATIC_LIB}")
+            add_library(omorekushe_rust_lib STATIC IMPORTED GLOBAL)
+            set_target_properties(omorekushe_rust_lib PROPERTIES
+                IMPORTED_LOCATION "${RUST_STATIC_LIB}"
+            )
+            add_dependencies(omorekushe_rust_lib omorekushe_core_rust)
 
-        if(WIN32)
-            target_link_libraries(OmorEkushe PRIVATE ws2_32 userenv ntdll bcrypt)
+            target_compile_definitions(OmorEkushe PRIVATE OMOREKUSHE_ENABLE_RUST=1)
+            target_link_libraries(OmorEkushe PRIVATE omorekushe_rust_lib)
+
+            if(WIN32)
+                target_link_libraries(OmorEkushe PRIVATE ws2_32 userenv ntdll bcrypt)
+                if(MINGW)
+                    target_link_libraries(OmorEkushe PRIVATE pthread)
+                endif()
+            endif()
         endif()
     else()
         message(STATUS "Cargo not found: falling back to C++ SIMD & Assembly vectorization")

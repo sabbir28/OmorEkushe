@@ -24,6 +24,10 @@ jobs:
       if: matrix.compiler == 'msvc'
       uses: ilammy/msvc-dev-cmd@v1
 
+    - name: Set up Rust for MinGW
+      if: matrix.compiler == 'mingw'
+      run: rustup target add x86_64-pc-windows-gnu
+
     - name: Configure CMake (MSVC)
       if: matrix.compiler == 'msvc'
       run: cmake -B build -A x64 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DOMOREKUSHE_BUILD_LAYOUT_EDITOR=ON
